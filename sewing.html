@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sewing — Custom Pattern Drafting</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #f5f1ea;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #3d2f1f;
+    line-height: 1.5;
+  }
+  .display { font-family: 'Cormorant Garamond', Georgia, serif; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============= HERO / LANDING ============= */
+  .landing {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #ede5d6 0%, #f5f1ea 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 24px;
+  }
+  .landing-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .landing h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 88px;
+    line-height: 0.95;
+    margin: 0 0 12px 0;
+    color: #3d2f1f;
+  }
+  @media (max-width: 700px) { .landing h1 { font-size: 56px; } }
+  .landing .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: #8b6f47;
+    margin: 0 0 48px 0;
+  }
+  .landing .tagline::before, .landing .tagline::after {
+    content: '✦'; opacity: 0.4; margin: 0 16px; font-size: 14px;
+  }
+
+  .start-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  @media (max-width: 600px) { .start-options { grid-template-columns: 1fr; } }
+  .start-card {
+    background: white;
+    border: 1px solid #c9b89a;
+    padding: 32px 28px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+  }
+  .start-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(94, 71, 49, 0.15);
+    border-color: #3d2f1f;
+  }
+  .start-card .icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .start-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 26px;
+    margin: 0 0 8px 0;
+    color: #3d2f1f;
+  }
+  .start-card p {
+    font-size: 13px;
+    color: #6b5840;
+    margin: 0;
+  }
+
+  .landing-footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid #d4c5b0;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ============= MAIN APP ============= */
+  .app { display: none; }
+  .app.active { display: block; }
+
+  header.app-header {
+    background: #ede5d6;
+    border-bottom: 1px solid #d4c5b0;
+    padding: 20px 0;
+  }
+  .app-header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 32px;
+    color: #3d2f1f;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .header-progress {
+    display: flex;
+    gap: 24px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #8b6f47;
+  }
+  .progress-step { display: flex; align-items: center; gap: 8px; }
+  .progress-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1px solid #c9b89a;
+    background: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: #8b6f47;
+  }
+  .progress-step.active .progress-dot {
+    background: #3d2f1f;
+    color: #f5f1ea;
+    border-color: #3d2f1f;
+  }
+  .progress-step.complete .progress-dot {
+    background: #ede5d6;
+    color: #3d2f1f;
+    border-color: #3d2f1f;
+  }
+  .progress-step.active { color: #3d2f1f; font-weight: 600; }
+
+  /* ============= STEPS ============= */
+  .step-panel { display: none; padding: 48px 0 80px; }
+  .step-panel.active { display: block; animation: fadeIn 0.4s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2.step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 44px;
+    margin: 0 0 8px 0;
+    color: #3d2f1f;
+  }
+  .step-lede { color: #6b5840; font-size: 14px; margin: 0 0 40px 0; }
+
+  /* Step 1: Size method */
+  .method-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 600px) { .method-grid { grid-template-columns: 1fr; } }
+  .method-card {
+    background: white;
+    border: 2px solid #c9b89a;
+    padding: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .method-card:hover { border-color: #8b6f47; }
+  .method-card.selected { border-color: #3d2f1f; background: #fdfbf6; }
+  .method-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    margin: 0 0 6px 0;
+    color: #3d2f1f;
+  }
+  .method-card p { font-size: 13px; color: #6b5840; margin: 0; }
+
+  /* Size selector */
+  .size-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .size-card {
+    background: white;
+    border: 2px solid #c9b89a;
+    padding: 20px 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .size-card:hover { border-color: #8b6f47; }
+  .size-card.selected { border-color: #3d2f1f; background: #fdfbf6; }
+  .size-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 36px;
+    color: #3d2f1f;
+    line-height: 1;
+  }
+  .size-name {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #8b6f47;
+    margin-top: 4px;
+  }
+  .size-measurements {
+    font-size: 11px;
+    color: #6b5840;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  /* Custom measurements form */
+  .measure-group { margin-bottom: 28px; }
+  .measure-group h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: #5e4731;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d4c5b0;
+  }
+  .measure-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  label.field { display: block; }
+  .field-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6b5840;
+    margin-bottom: 4px;
+  }
+  .field-hint {
+    display: block;
+    font-size: 10px;
+    font-style: italic;
+    color: #a89478;
+    margin-bottom: 6px;
+  }
+  input[type="number"], input[type="text"], select {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 14px;
+    border: 1px solid #c9b89a;
+    background: rgba(255,255,255,0.7);
+    color: #3d2f1f;
+    font-family: inherit;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #8b6f47;
+    box-shadow: 0 0 0 1px #8b6f47;
+  }
+
+  .units-toggle {
+    display: inline-flex;
+    background: #ede5d6;
+    border: 1px solid #c9b89a;
+    margin-bottom: 24px;
+  }
+  .units-toggle button {
+    padding: 8px 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #8b6f47;
+  }
+  .units-toggle button.active {
+    background: #3d2f1f;
+    color: #f5f1ea;
+  }
+
+  /* Step 2: Garment design */
+  .design-section { margin-bottom: 36px; }
+  .design-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 24px;
+    margin: 0 0 16px 0;
+    color: #3d2f1f;
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .option-card {
+    background: white;
+    border: 1px solid #c9b89a;
+    padding: 18px 12px 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-size: 13px;
+    color: #3d2f1f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 100px;
+    justify-content: space-between;
+  }
+  .option-card:hover { border-color: #8b6f47; }
+  .option-card.selected {
+    border: 2px solid #3d2f1f;
+    background: #fdfbf6;
+    padding: 17px 11px 13px;
+  }
+  .option-icon {
+    line-height: 0;
+    color: #8b6f47;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+  }
+  .option-card.selected .option-icon { color: #3d2f1f; }
+  .option-card:hover .option-icon { color: #5e4731; }
+  .option-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+
+  /* Ease + style sliders */
+  .slider-row {
+    display: flex;
+    gap: 8px;
+  }
+  .slider-btn {
+    flex: 1;
+    padding: 10px;
+    background: white;
+    border: 1px solid #c9b89a;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #3d2f1f;
+  }
+  .slider-btn.active {
+    background: #3d2f1f;
+    color: #f5f1ea;
+    border-color: #3d2f1f;
+  }
+
+  /* Step 3: Review */
+  .review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 700px) { .review-grid { grid-template-columns: 1fr; } }
+  .review-card {
+    background: white;
+    border: 1px solid #c9b89a;
+    padding: 24px;
+  }
+  .review-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    margin: 0 0 16px 0;
+    color: #3d2f1f;
+    border-bottom: 1px solid #d4c5b0;
+    padding-bottom: 12px;
+  }
+  .review-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px dotted #ede5d6;
+  }
+  .review-row:last-child { border: none; }
+  .review-label { color: #6b5840; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+  .review-value { color: #3d2f1f; font-weight: 500; text-transform: capitalize; }
+
+  /* Pattern preview / output */
+  .preview-container {
+    background: white;
+    border: 1px solid #c9b89a;
+    padding: 16px;
+    overflow: auto;
+    margin-bottom: 24px;
+  }
+
+  .actions-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+
+  /* Buttons */
+  button.btn {
+    background: #3d2f1f;
+    color: #f5f1ea;
+    border: 1px solid #3d2f1f;
+    padding: 14px 28px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  button.btn:hover { background: #5e4731; }
+  button.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.btn-outline {
+    background: transparent;
+    color: #3d2f1f;
+  }
+  button.btn-outline:hover { background: rgba(61,47,31,0.08); }
+  button.btn-text {
+    background: transparent;
+    border: none;
+    color: #8b6f47;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 8px 0;
+  }
+  button.btn-text:hover { color: #3d2f1f; }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #d4c5b0;
+  }
+
+  /* Construction Instructions */
+  .instructions-card {
+    background: white;
+    border: 2px solid #c9b89a;
+    margin: 32px 0;
+  }
+  .instructions-header {
+    padding: 20px 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .instructions-header:hover { background: #fdfbf6; }
+  .instructions-eyebrow {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #8b6f47;
+    margin-bottom: 4px;
+  }
+  .instructions-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 28px;
+    margin: 0;
+    color: #3d2f1f;
+  }
+  .instructions-sub {
+    font-size: 13px;
+    color: #6b5840;
+    margin: 4px 0 0;
+    font-style: italic;
+  }
+  .instructions-content {
+    padding: 0 24px 32px;
+    border-top: 1px solid #d4c5b0;
+  }
+  .instruction-section {
+    margin-top: 32px;
+  }
+  .instruction-section .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: #a8612d;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .instruction-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 26px;
+    color: #3d2f1f;
+    border-bottom: 1.5px solid #3d2f1f;
+    padding-bottom: 8px;
+    margin: 0 0 16px 0;
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    margin: 12px 0;
+    padding: 12px 14px;
+    background: #fdfbf6;
+    border-left: 3px solid #c9b89a;
+  }
+  .step-num {
+    flex-shrink: 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: #a8612d;
+    line-height: 1;
+    width: 28px;
+  }
+  .step-body {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #3d2f1f;
+  }
+  .step-body strong { color: #3d2f1f; }
+  .tip {
+    background: #f4e4d4;
+    border-left: 3px solid #a8612d;
+    padding: 12px 14px;
+    margin: 14px 0;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .tip strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: #a8612d;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .materials-list {
+    background: #ede5d6;
+    border: 1px solid #c9b89a;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  .materials-list ul { margin: 6px 0 0 0; padding-left: 18px; }
+  .materials-list li { padding: 2px 0; }
+
+  @media print {
+    nav.tabs, header, footer, .step-panel:not(.active),
+    .actions-bar, .preview-container, .info-banner,
+    .nav-buttons, .instructions-header { display: none !important; }
+    .instructions-content { display: block !important; padding: 0 !important; border: none !important; }
+    .instructions-card { border: none !important; }
+    body { background: white; }
+    .instruction-section { page-break-inside: avoid; }
+  }
+
+  /* Notes */
+  .info-banner {
+    background: #f4e4d4;
+    border-left: 4px solid #a8612d;
+    padding: 14px 18px;
+    margin: 24px 0;
+    font-size: 13px;
+  }
+  .info-banner strong { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: #a8612d; }
+
+  /* Output / pattern step */
+  .output-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .stat-mini {
+    background: #ede5d6;
+    border: 1px solid #c9b89a;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-mini-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #8b6f47;
+  }
+  .stat-mini-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: #3d2f1f;
+    margin-top: 4px;
+  }
+
+  footer.app-footer {
+    border-top: 1px solid #d4c5b0;
+    padding: 32px 0;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: #8b6f47;
+  }
+  footer.app-footer::before, footer.app-footer::after { content: '✦'; opacity: 0.4; margin: 0 12px; font-size: 12px; }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .header-progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============= LANDING PAGE ============= -->
+<div class="landing" id="landingPage">
+  <div class="landing-inner">
+    <h1>Sewing</h1>
+    <div class="tagline">custom patterns, drafted to fit you</div>
+
+    <p style="max-width: 540px; margin: 0 auto 40px; font-size: 16px; color: #5e4731; line-height: 1.7;">
+      Custom patterns made exactly in the style you want. Rebuild your entire wardrobe
+      with our easy, accessible, practical patterns.
+    </p>
+
+    <div class="start-options">
+      <div class="start-card" onclick="startApp('size')">
+        <span class="icon">📏</span>
+        <h3>Quick start</h3>
+        <p>Pick a size (S, M, L, XL). Best if you don't have a tape measure handy or want to try the tool first.</p>
+      </div>
+      <div class="start-card" onclick="startApp('custom')">
+        <span class="icon">✦</span>
+        <h3>Drafted for you</h3>
+        <p>Enter your measurements for a pattern shaped to you. Best fit, especially if commercial sizes never quite work.</p>
+      </div>
+    </div>
+
+    <div class="landing-footer">
+      <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #3d2f1f; margin-bottom: 6px;">
+        First pattern free · Every pattern after $1.50
+      </div>
+      <div style="font-size: 11px; color: #8b6f47; letter-spacing: 1px; text-transform: uppercase;">
+        No account · No subscription · No catch
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= MAIN APP ============= -->
+<div class="app" id="appPage">
+  <header class="app-header">
+    <div class="container app-header-inner">
+      <div class="brand" onclick="goHome()">Sewing</div>
+      <div class="header-progress" id="progressBar">
+        <div class="progress-step" data-step="1"><span class="progress-dot">1</span> <span>Body</span></div>
+        <div class="progress-step" data-step="2"><span class="progress-dot">2</span> <span>Design</span></div>
+        <div class="progress-step" data-step="3"><span class="progress-dot">3</span> <span>Review</span></div>
+        <div class="progress-step" data-step="4"><span class="progress-dot">4</span> <span>Pattern</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ============= STEP 1: SIZE / MEASUREMENTS ============= -->
+    <div class="step-panel" id="step-1">
+      <h2 class="step-title">Tell us about your body</h2>
+      <p class="step-lede">The pattern will be drafted to fit you specifically. The more accurate your input, the better the fit.</p>
+
+      <div class="method-grid" id="methodGrid">
+        <div class="method-card" data-method="size" onclick="selectMethod('size')">
+          <h3>Quick: Pick a size</h3>
+          <p>Choose S, M, L, or XL. Uses standard measurements for that size.</p>
+        </div>
+        <div class="method-card" data-method="custom" onclick="selectMethod('custom')">
+          <h3>Custom: Enter measurements</h3>
+          <p>Best fit. Takes 5–10 minutes with a soft tape measure.</p>
+        </div>
+      </div>
+
+      <!-- Size picker (visible when method=size) -->
+      <div id="sizePickerSection" style="display: none;">
+        <div class="size-grid" id="sizeGrid"></div>
+        <p style="font-size: 12px; color: #6b5840; font-style: italic;">Sizes shown in inches. The chosen size's measurements will be used to draft your pattern.</p>
+      </div>
+
+      <!-- Custom measurements (visible when method=custom) -->
+      <div id="customMeasurementsSection" style="display: none;">
+        <div class="units-toggle">
+          <button class="active" data-unit="in" onclick="setUnit('in')">Inches</button>
+          <button data-unit="cm" onclick="setUnit('cm')">Centimetres</button>
+        </div>
+        <div id="measurementsForm"></div>
+      </div>
+
+      <div class="nav-buttons">
+        <div></div>
+        <button class="btn" id="step1Next" onclick="goToStep(2)" disabled>Next: Design →</button>
+      </div>
+    </div>
+
+    <!-- ============= STEP 2: DESIGN ============= -->
+    <div class="step-panel" id="step-2">
+      <h2 class="step-title">Design your garment</h2>
+      <p class="step-lede">Choose every detail. The pattern will be drafted with all your selections built in.</p>
+
+      <!-- Garment type -->
+      <div class="design-section">
+        <h3>Garment type</h3>
+        <div class="option-grid" id="garmentGrid"></div>
+      </div>
+
+      <!-- Silhouette (depends on garment) -->
+      <div class="design-section" id="silhouetteSection">
+        <h3>Silhouette</h3>
+        <div class="option-grid" id="silhouetteGrid"></div>
+      </div>
+
+      <!-- Neckline (only for tops/dresses, not jackets) -->
+      <div class="design-section" id="necklineSection">
+        <h3>Neckline</h3>
+        <div class="option-grid" id="necklineGrid"></div>
+      </div>
+
+      <!-- Lapels (only for jackets) -->
+      <div class="design-section" id="lapelSection">
+        <h3>Lapel</h3>
+        <div class="option-grid" id="lapelGrid"></div>
+      </div>
+
+      <!-- Sleeves (only for tops/dresses/jackets) -->
+      <div class="design-section" id="sleevesSection">
+        <h3>Sleeves</h3>
+        <div class="option-grid" id="sleevesGrid"></div>
+      </div>
+
+      <!-- Length -->
+      <div class="design-section" id="lengthSection">
+        <h3>Length</h3>
+        <div class="option-grid" id="lengthGrid"></div>
+      </div>
+
+      <!-- Ease -->
+      <div class="design-section">
+        <h3>Fit / Ease</h3>
+        <div class="slider-row" id="easeSlider"></div>
+        <p style="font-size: 12px; color: #6b5840; font-style: italic; margin-top: 8px;">How close to the body should the garment fit? Fitted hugs the body, oversized has lots of room.</p>
+      </div>
+
+      <!-- Closure -->
+      <div class="design-section" id="closureSection">
+        <h3>Closure</h3>
+        <div class="option-grid" id="closureGrid"></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
+        <button class="btn" onclick="goToStep(3)">Next: Review →</button>
+      </div>
+    </div>
+
+    <!-- ============= STEP 3: REVIEW ============= -->
+    <div class="step-panel" id="step-3">
+      <h2 class="step-title">Review your selections</h2>
+      <p class="step-lede">Make sure everything looks right before we draft the pattern.</p>
+
+      <div class="review-grid">
+        <div class="review-card">
+          <h3>Your body</h3>
+          <div id="reviewBody"></div>
+          <button class="btn-text" style="margin-top: 12px;" onclick="goToStep(1)">Edit measurements</button>
+        </div>
+        <div class="review-card">
+          <h3>Your design</h3>
+          <div id="reviewDesign"></div>
+          <button class="btn-text" style="margin-top: 12px;" onclick="goToStep(2)">Edit design</button>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <strong>Seam allowances included —</strong> a ⅝" (1.5cm) seam allowance is built into all edges of your pattern. The solid outer line is your cutting line; the dashed inner line is your sewing line. Always test fit with a muslin first before cutting fashion fabric.
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
+        <button class="btn" onclick="generatePattern()">✦ Draft my pattern</button>
+      </div>
+    </div>
+
+    <!-- ============= STEP 4: PATTERN OUTPUT ============= -->
+    <div class="step-panel" id="step-4">
+      <h2 class="step-title">Your pattern is ready</h2>
+      <p class="step-lede" id="patternSummary"></p>
+
+      <div class="output-stats" id="outputStats"></div>
+
+      <div class="actions-bar">
+        <button class="btn" onclick="openPrintView()">🖨 Print pattern</button>
+        <button class="btn btn-outline" onclick="downloadSVG()">⬇ Download SVG</button>
+        <select id="paperSize" style="padding: 12px; border: 1px solid #c9b89a; background: white;">
+          <option value="letter">Letter (8.5×11")</option>
+          <option value="a4">A4</option>
+          <option value="legal">Legal (8.5×14")</option>
+          <option value="tabloid">Tabloid (11×17")</option>
+        </select>
+      </div>
+
+      <div id="exportMessage"></div>
+
+      <div class="preview-container" id="previewContainer"></div>
+
+      <div class="info-banner">
+        <strong>Before printing —</strong> the print view will open in a new window with all tiles arranged. Set print scale to "Actual Size" or "100%" — never "Fit to Page". Verify the 1" test square measures correctly before cutting.
+      </div>
+
+      <!-- Construction Instructions -->
+      <div class="instructions-card">
+        <div class="instructions-header" onclick="toggleInstructions()">
+          <div>
+            <div class="instructions-eyebrow">Step-by-step</div>
+            <h3 class="instructions-title">Construction Guide</h3>
+            <p class="instructions-sub">Tailored to your specific design choices</p>
+          </div>
+          <button class="btn" id="instructionsToggle">Show Guide ▾</button>
+        </div>
+        <div id="instructionsContent" class="instructions-content" style="display:none;">
+          <div style="text-align:right;margin-bottom:16px;">
+            <button class="btn btn-outline btn-small" onclick="printInstructions()">🖨 Print guide</button>
+          </div>
+          <div id="instructionsContainer"></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-outline" onclick="goToStep(3)">← Back to review</button>
+        <button class="btn-text" onclick="goHome()">Start over</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="app-footer">
+  </footer>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  step: 1,
+  method: null, // 'size' | 'custom'
+  unit: 'in',
+  size: null,   // 'S' | 'M' | 'L' | 'XL'
+  measurements: {},
+  design: {
+    garment: 'dress',
+    silhouette: 'a-line',
+    neckline: 'scoop',
+    lapel: 'notch',
+    sleeves: 'short',
+    length: 'knee',
+    ease: 'standard',
+    closure: 'cb-zipper',
+  }
+};
+
+// ============================================================
+// SIZE PRESETS (in inches)
+// ============================================================
+const SIZE_PRESETS = {
+  S:  { name: 'Small',   bust: 34, underbust: 28, waist: 26, highHip: 30, hip: 36, neck: 13.5, shoulderWidth: 14, backWidth: 14.5, acrossFront: 13.5, bustSpan: 7,   bustPointHeight: 10,   waistToBust: 4,   frontShoulderToApex: 10,   backShoulderToWaist: 15.5, waistToHip: 7, waistToKnee: 21 },
+  M:  { name: 'Medium',  bust: 37, underbust: 30, waist: 29, highHip: 33, hip: 39, neck: 14,   shoulderWidth: 15, backWidth: 15.5, acrossFront: 14.5, bustSpan: 7.5, bustPointHeight: 10.5, waistToBust: 4.5, frontShoulderToApex: 10.5, backShoulderToWaist: 16,   waistToHip: 7, waistToKnee: 22 },
+  L:  { name: 'Large',   bust: 41, underbust: 33, waist: 33, highHip: 37, hip: 43, neck: 14.5, shoulderWidth: 16, backWidth: 17,   acrossFront: 16,   bustSpan: 8,   bustPointHeight: 11,   waistToBust: 5,   frontShoulderToApex: 11,   backShoulderToWaist: 16.5, waistToHip: 7.5, waistToKnee: 22.5 },
+  XL: { name: 'X-Large', bust: 45, underbust: 36, waist: 37, highHip: 41, hip: 47, neck: 15,   shoulderWidth: 17, backWidth: 18.5, acrossFront: 17.5, bustSpan: 8.5, bustPointHeight: 11.5, waistToBust: 5.5, frontShoulderToApex: 11.5, backShoulderToWaist: 17,   waistToHip: 8, waistToKnee: 23 },
+};
+
+// ============================================================
+// MEASUREMENT FIELDS
+// ============================================================
+const MEASUREMENT_GROUPS = [
+  { title: 'Torso', fields: [
+    { key: 'bust', label: 'Bust', hint: 'fullest point', required: true },
+    { key: 'underbust', label: 'Underbust', hint: 'just below bust', required: true },
+    { key: 'waist', label: 'Natural waist', hint: 'narrowest point', required: true },
+    { key: 'highHip', label: 'High hip', hint: '~3" below waist' },
+    { key: 'hip', label: 'Full hip', hint: 'fullest point', required: true },
+    { key: 'neck', label: 'Neck', hint: 'base of neck' },
+    { key: 'shoulderWidth', label: 'Shoulder width', hint: 'across back, tip to tip' },
+    { key: 'backWidth', label: 'Back width', hint: 'armscye to armscye, back' },
+    { key: 'acrossFront', label: 'Across front', hint: 'armscye to armscye, front' },
+  ]},
+  { title: 'Bust drafting points', fields: [
+    { key: 'bustSpan', label: 'Bust span', hint: 'apex to apex' },
+    { key: 'bustPointHeight', label: 'Bust point height', hint: 'shoulder to apex' },
+    { key: 'frontShoulderToApex', label: 'Shoulder→apex', hint: 'shoulder seam to bust point' },
+    { key: 'waistToBust', label: 'Waist to bust', hint: 'waist up to apex' },
+  ]},
+  { title: 'Vertical', fields: [
+    { key: 'backShoulderToWaist', label: 'Back nape→waist', hint: 'nape to natural waist', required: true },
+    { key: 'waistToHip', label: 'Waist to hip', hint: 'side seam' },
+    { key: 'waistToKnee', label: 'Waist to knee', hint: 'side seam to top of knee' },
+  ]},
+];
+
+// ============================================================
+// DESIGN OPTIONS
+// ============================================================
+// SVG icon helper — all icons use 40x40 viewBox, currentColor stroke, consistent style
+const svg = (paths, vb = '0 0 40 40', size = 36) =>
+  `<svg viewBox="${vb}" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+
+const DESIGN_OPTIONS = {
+  garment: [
+    { id: 'dress',    label: 'Dress',    icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L10 14 L13 18 L13 24"/><path d="M26 6 L30 14 L27 18 L27 24"/><path d="M13 18 L13 28 L4 52 L36 52 L27 28 L27 18"/><path d="M20 4 L20 8"/>`, '0 0 40 56', 32) },
+    { id: 'blouse',   label: 'Blouse',   icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L8 11 L4 18 L8 22 L13 19"/><path d="M26 6 L32 11 L36 18 L32 22 L27 19"/><path d="M13 19 L13 36 L27 36 L27 19"/><path d="M20 4 L18 12 L20 14 L22 12 L20 4"/>`, '0 0 40 40', 32) },
+    { id: 'skirt',    label: 'Skirt',    icon: svg(`<path d="M11 8 L29 8"/><path d="M11 8 L11 12 L29 12 L29 8"/><path d="M11 12 L4 36"/><path d="M29 12 L36 36"/><path d="M4 36 Q20 38 36 36"/>`, '0 0 40 40', 32) },
+    { id: 'jacket',   label: 'Jacket',   icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L8 12 L5 22 L8 26 L13 22"/><path d="M26 6 L32 12 L35 22 L32 26 L27 22"/><path d="M13 22 L13 40 L27 40 L27 22"/><path d="M20 4 L17 16 L20 18 L20 40"/><path d="M20 4 L23 16 L20 18"/>`, '0 0 40 44', 32) },
+    { id: 'jumpsuit', label: 'Jumpsuit', icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L10 14 L13 18 L13 24"/><path d="M26 6 L30 14 L27 18 L27 24"/><path d="M13 18 L13 28 L11 32 L13 56 L19 56 L20 32 L21 56 L27 56 L29 32 L27 28 L27 18"/><path d="M20 4 L20 8"/><path d="M11 32 L29 32"/>`, '0 0 40 60', 32) },
+    { id: 'top',      label: 'T-shirt',  icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L6 8 L3 14 L7 18 L13 16"/><path d="M26 4 L34 8 L37 14 L33 18 L27 16"/><path d="M13 16 L13 32 L27 32 L27 16"/><path d="M20 6 L18 10 L22 10 L20 6"/>`, '0 0 40 36', 32) },
+  ],
+  silhouette: {
+    dress: [
+      { id: 'a-line',         label: 'A-line',       icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L14 14"/><path d="M25 6 L26 14"/><path d="M14 14 L17 18 L17 22"/><path d="M26 14 L23 18 L23 22"/><path d="M17 18 L8 50 L32 50 L23 18"/>`, '0 0 40 56') },
+      { id: 'fit-and-flare',  label: 'Fit & flare',  icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L14 14 L17 18 L17 26"/><path d="M25 6 L26 14 L23 18 L23 26"/><path d="M17 26 L4 50 L36 50 L23 26"/>`, '0 0 40 56') },
+      { id: 'sheath',         label: 'Sheath',       icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L14 14 L17 18 L17 26"/><path d="M25 6 L26 14 L23 18 L23 26"/><path d="M17 26 L17 48 L23 48 L23 26"/>`, '0 0 40 56') },
+      { id: 'empire',         label: 'Empire',       icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L13 14 L16 18"/><path d="M25 6 L27 14 L24 18"/><path d="M16 18 L24 18"/><path d="M16 18 L8 50 L32 50 L24 18"/>`, '0 0 40 56') },
+      { id: 'bias-cut',       label: 'Bias cut',     icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L13 14 L18 18"/><path d="M25 6 L27 14 L22 18"/><path d="M18 18 L13 48"/><path d="M22 18 L27 48"/><path d="M13 48 L27 48"/>`, '0 0 40 56') },
+      { id: 'shift',          label: 'Shift',        icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L13 14"/><path d="M25 6 L27 14"/><path d="M13 14 L11 48 L29 48 L27 14"/>`, '0 0 40 56') },
+      { id: 'wrap',           label: 'Wrap',         icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L11 14 L14 18"/><path d="M25 6 L29 14 L26 18"/><path d="M14 18 L20 14 L26 18"/><path d="M14 18 L8 50 L32 50 L26 18"/><path d="M20 14 L20 50"/>`, '0 0 40 56') },
+    ],
+    blouse: [
+      { id: 'fitted',  label: 'Fitted',  icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L9 12 L6 20 L10 22"/><path d="M26 6 L31 12 L34 20 L30 22"/><path d="M14 6 L14 32 L26 32 L26 6"/><path d="M20 4 L19 10 L21 10 L20 4"/>`) },
+      { id: 'relaxed', label: 'Relaxed', icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L7 14 L4 22 L9 24"/><path d="M26 6 L33 14 L36 22 L31 24"/><path d="M14 6 L11 34 L29 34 L26 6"/><path d="M20 4 L19 10 L21 10 L20 4"/>`) },
+      { id: 'peplum',  label: 'Peplum',  icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L9 12 L6 20 L10 22"/><path d="M26 6 L31 12 L34 20 L30 22"/><path d="M14 6 L14 22 L26 22 L26 6"/><path d="M14 22 L8 32 L32 32 L26 22"/><path d="M20 4 L19 10 L21 10 L20 4"/>`) },
+      { id: 'tunic',   label: 'Tunic',   icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L9 12 L6 20 L10 22"/><path d="M26 6 L31 12 L34 20 L30 22"/><path d="M14 6 L14 36 L26 36 L26 6"/><path d="M20 4 L19 10 L21 10 L20 4"/>`) },
+    ],
+    skirt: [
+      { id: 'a-line',   label: 'A-line',   icon: svg(`<path d="M11 6 L29 6 L29 10 L11 10 Z"/><path d="M11 10 L7 36"/><path d="M29 10 L33 36"/><path d="M7 36 Q20 38 33 36"/>`) },
+      { id: 'pencil',   label: 'Pencil',   icon: svg(`<path d="M12 6 L28 6 L28 10 L12 10 Z"/><path d="M12 10 L13 36"/><path d="M28 10 L27 36"/><path d="M13 36 L27 36"/>`) },
+      { id: 'circle',   label: 'Circle',   icon: svg(`<path d="M14 6 L26 6 L26 10 L14 10 Z"/><path d="M14 10 L2 36"/><path d="M26 10 L38 36"/><path d="M2 36 Q20 40 38 36"/>`) },
+      { id: 'gathered', label: 'Gathered', icon: svg(`<path d="M11 6 L29 6 L29 10 L11 10 Z"/><path d="M13 10 L9 36"/><path d="M16 10 L14 36"/><path d="M20 10 L20 36"/><path d="M24 10 L26 36"/><path d="M27 10 L31 36"/><path d="M9 36 Q20 38 31 36"/>`) },
+      { id: 'pleated',  label: 'Pleated',  icon: svg(`<path d="M11 6 L29 6 L29 10 L11 10 Z"/><path d="M11 10 L7 36"/><path d="M16 10 L14 36"/><path d="M20 10 L20 36"/><path d="M24 10 L26 36"/><path d="M29 10 L33 36"/><path d="M7 36 L33 36"/>`) },
+    ],
+    jacket: [
+      { id: 'fitted',  label: 'Fitted',  icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L8 12 L5 22 L8 26 L13 22"/><path d="M26 6 L32 12 L35 22 L32 26 L27 22"/><path d="M13 22 L14 36 L26 36 L27 22"/><path d="M20 4 L17 14 L20 16 L20 36"/><path d="M20 4 L23 14 L20 16"/>`) },
+      { id: 'boxy',    label: 'Boxy',    icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L6 12 L4 22 L8 26 L13 22"/><path d="M26 6 L34 12 L36 22 L32 26 L27 22"/><path d="M13 22 L11 36 L29 36 L27 22"/><path d="M20 4 L17 14 L20 16 L20 36"/><path d="M20 4 L23 14 L20 16"/>`) },
+      { id: 'cropped', label: 'Cropped', icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L8 12 L5 20 L8 22 L13 20"/><path d="M26 6 L32 12 L35 20 L32 22 L27 20"/><path d="M13 20 L13 26 L27 26 L27 20"/><path d="M20 4 L17 12 L20 14 L20 26"/><path d="M20 4 L23 12 L20 14"/>`) },
+      { id: 'duster',  label: 'Duster',  icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L8 12 L5 22 L8 26 L13 22"/><path d="M26 6 L32 12 L35 22 L32 26 L27 22"/><path d="M13 22 L11 50 L29 50 L27 22"/><path d="M20 4 L17 14 L20 16 L20 50"/><path d="M20 4 L23 14 L20 16"/>`, '0 0 40 56') },
+    ],
+    jumpsuit: [
+      { id: 'fitted',   label: 'Fitted',   icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L13 14 L16 18 L16 26"/><path d="M25 6 L27 14 L24 18 L24 26"/><path d="M16 26 L15 32 L17 56 L20 32 L23 56 L25 32 L24 26"/><path d="M15 32 L25 32"/>`, '0 0 40 60') },
+      { id: 'relaxed',  label: 'Relaxed',  icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L11 14 L14 18 L14 26"/><path d="M25 6 L29 14 L26 18 L26 26"/><path d="M14 26 L12 32 L13 56 L20 32 L27 56 L28 32 L26 26"/><path d="M12 32 L28 32"/>`, '0 0 40 60') },
+      { id: 'wide-leg', label: 'Wide-leg', icon: svg(`<path d="M15 6 L20 4 L25 6"/><path d="M15 6 L13 14 L16 18 L16 26"/><path d="M25 6 L27 14 L24 18 L24 26"/><path d="M16 26 L15 32 L8 56 L20 32 L32 56 L25 32 L24 26"/><path d="M15 32 L25 32"/>`, '0 0 40 60') },
+    ],
+    top: [
+      { id: 'fitted',    label: 'Fitted',    icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L8 8 L5 16 L9 18"/><path d="M26 4 L32 8 L35 16 L31 18"/><path d="M14 4 L14 32 L26 32 L26 4"/>`) },
+      { id: 'relaxed',   label: 'Relaxed',   icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L6 8 L3 16 L7 18"/><path d="M26 4 L34 8 L37 16 L33 18"/><path d="M13 4 L11 32 L29 32 L27 4"/>`) },
+      { id: 'cropped',   label: 'Cropped',   icon: svg(`<path d="M14 6 L20 8 L26 6"/><path d="M14 6 L8 10 L5 18 L9 20"/><path d="M26 6 L32 10 L35 18 L31 20"/><path d="M14 6 L14 22 L26 22 L26 6"/>`) },
+      { id: 'oversized', label: 'Oversized', icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L4 8 L1 16 L5 20"/><path d="M26 4 L36 8 L39 16 L35 20"/><path d="M11 4 L9 34 L31 34 L29 4"/>`) },
+    ],
+  },
+  neckline: [
+    { id: 'scoop',        label: 'Scoop',        icon: svg(`<path d="M8 6 L12 12 Q20 22 28 12 L32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'v-neck',       label: 'V-neck',       icon: svg(`<path d="M8 6 L13 10 L20 22 L27 10 L32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'crew',         label: 'Crew',         icon: svg(`<path d="M8 6 L13 10 Q20 14 27 10 L32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'square',       label: 'Square',       icon: svg(`<path d="M8 6 L13 6 L13 16 L27 16 L27 6 L32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'sweetheart',   label: 'Sweetheart',   icon: svg(`<path d="M8 6 L13 8 Q16 16 20 18 Q24 16 27 8 L32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'boat',         label: 'Boat',         icon: svg(`<path d="M8 6 Q20 12 32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'cowl',         label: 'Cowl',         icon: svg(`<path d="M8 6 Q12 8 14 12 Q15 18 20 22 Q25 18 26 12 Q28 8 32 6"/><path d="M8 6 L4 28"/><path d="M32 6 L36 28"/><path d="M4 28 L36 28"/><path d="M11 14 Q20 18 29 14"/>`) },
+    { id: 'halter',       label: 'Halter',       icon: svg(`<path d="M14 4 Q20 8 26 4"/><path d="M14 4 L18 14 L20 22 L22 14 L26 4"/><path d="M18 14 L8 16 L4 28"/><path d="M22 14 L32 16 L36 28"/><path d="M4 28 L36 28"/>`) },
+    { id: 'off-shoulder', label: 'Off-shoulder', icon: svg(`<path d="M4 12 Q20 6 36 12"/><path d="M4 12 L4 28"/><path d="M36 12 L36 28"/><path d="M4 28 L36 28"/><path d="M4 12 L8 14"/><path d="M36 12 L32 14"/>`) },
+  ],
+  lapel: [
+    { id: 'notch',    label: 'Notch lapel',    icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L8 10 L5 22 L8 26 L12 24"/><path d="M26 4 L32 10 L35 22 L32 26 L28 24"/><path d="M12 24 L13 36 L27 36 L28 24"/><path d="M20 6 L17 12 L13 16 L15 22"/><path d="M20 6 L23 12 L27 16 L25 22"/><path d="M17 12 L15 18 L13 16"/><path d="M23 12 L25 18 L27 16"/>`) },
+    { id: 'peak',     label: 'Peak lapel',     icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L8 10 L5 22 L8 26 L12 24"/><path d="M26 4 L32 10 L35 22 L32 26 L28 24"/><path d="M12 24 L13 36 L27 36 L28 24"/><path d="M20 6 L16 14 L11 12 L14 20"/><path d="M20 6 L24 14 L29 12 L26 20"/>`) },
+    { id: 'shawl',    label: 'Shawl collar',   icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L8 10 L5 22 L8 26 L12 24"/><path d="M26 4 L32 10 L35 22 L32 26 L28 24"/><path d="M12 24 L13 36 L27 36 L28 24"/><path d="M20 6 Q14 10 14 18 Q15 22 17 22"/><path d="M20 6 Q26 10 26 18 Q25 22 23 22"/>`) },
+    { id: 'mandarin', label: 'Mandarin',       icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L8 10 L5 22 L8 26 L12 24"/><path d="M26 4 L32 10 L35 22 L32 26 L28 24"/><path d="M12 24 L13 36 L27 36 L28 24"/><path d="M16 6 Q20 4 24 6 L24 10 Q20 8 16 10 Z"/>`) },
+    { id: 'none',     label: 'No lapel',       icon: svg(`<path d="M14 4 L20 6 L26 4"/><path d="M14 4 L8 10 L5 22 L8 26 L12 24"/><path d="M26 4 L32 10 L35 22 L32 26 L28 24"/><path d="M12 24 L13 36 L27 36 L28 24"/><path d="M20 6 L20 12"/>`) },
+  ],
+  sleeves: [
+    { id: 'sleeveless',    label: 'Sleeveless',    icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 Q11 10 12 14"/><path d="M26 6 Q29 10 28 14"/><path d="M12 14 L14 32 L26 32 L28 14"/>`) },
+    { id: 'cap',           label: 'Cap',           icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 Q9 8 8 14 L12 16"/><path d="M26 6 Q31 8 32 14 L28 16"/><path d="M12 16 L14 32 L26 32 L28 16"/>`) },
+    { id: 'short',         label: 'Short',         icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L7 12 L7 18 L13 18"/><path d="M26 6 L33 12 L33 18 L27 18"/><path d="M13 18 L14 32 L26 32 L27 18"/>`) },
+    { id: 'three-quarter', label: '¾ length',      icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L6 14 L4 28 L9 30 L13 22"/><path d="M26 6 L34 14 L36 28 L31 30 L27 22"/><path d="M13 22 L14 36 L26 36 L27 22"/>`) },
+    { id: 'long',          label: 'Long',          icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L5 12 L2 36 L8 38 L13 22"/><path d="M26 6 L35 12 L38 36 L32 38 L27 22"/><path d="M13 22 L14 36 L26 36 L27 22"/>`) },
+    { id: 'bishop',        label: 'Bishop',        icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L5 14 Q2 28 4 34 Q8 38 12 34"/><path d="M26 6 L35 14 Q38 28 36 34 Q32 38 28 34"/><path d="M12 34 L14 38 L26 38 L28 34"/><path d="M14 22 L13 22"/>`) },
+    { id: 'puff',          label: 'Puff',          icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 Q4 10 4 18 Q8 22 13 20"/><path d="M26 6 Q36 10 36 18 Q32 22 27 20"/><path d="M13 20 L14 32 L26 32 L27 20"/>`) },
+    { id: 'bell',          label: 'Bell',          icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L11 14 L13 22"/><path d="M26 6 L29 14 L27 22"/><path d="M13 22 L4 36 L13 36"/><path d="M27 22 L36 36 L27 36"/><path d="M13 22 L14 36 L26 36 L27 22"/>`) },
+    { id: 'kimono',        label: 'Kimono',        icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L4 8 L2 24 L8 26"/><path d="M26 6 L36 8 L38 24 L32 26"/><path d="M14 6 L13 32 L27 32 L26 6"/>`) },
+  ],
+  length: {
+    dress: [
+      { id: 'mini',       label: 'Mini',       icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L14 12 L13 22 L27 22 L26 12 L24 6"/>`, '0 0 40 30') },
+      { id: 'above-knee', label: 'Above knee', icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L11 28 L29 28 L27 12 L24 6"/>`, '0 0 40 36') },
+      { id: 'knee',       label: 'Knee',       icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L9 36 L31 36 L27 12 L24 6"/>`, '0 0 40 44') },
+      { id: 'midi',       label: 'Midi',       icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L7 44 L33 44 L27 12 L24 6"/>`, '0 0 40 52') },
+      { id: 'tea',        label: 'Tea',        icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L6 50 L34 50 L27 12 L24 6"/>`, '0 0 40 58') },
+      { id: 'maxi',       label: 'Maxi',       icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L4 56 L36 56 L27 12 L24 6"/>`, '0 0 40 64') },
+      { id: 'floor',      label: 'Floor',      icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L3 60 L37 60 L27 12 L24 6"/><path d="M2 62 L38 62"/>`, '0 0 40 68') },
+    ],
+    blouse: [
+      { id: 'cropped',  label: 'Cropped',  icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 10 L13 18 L27 18 L27 10 L24 6"/>`, '0 0 40 24') },
+      { id: 'standard', label: 'Standard', icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 10 L13 30 L27 30 L27 10 L24 6"/>`, '0 0 40 36') },
+      { id: 'tunic',    label: 'Tunic',    icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 10 L12 40 L28 40 L27 10 L24 6"/>`, '0 0 40 46') },
+    ],
+    skirt: [
+      { id: 'mini',       label: 'Mini',       icon: svg(`<path d="M14 4 L26 4 L26 8 L14 8 Z"/><path d="M14 8 L11 18"/><path d="M26 8 L29 18"/><path d="M11 18 L29 18"/>`, '0 0 40 24') },
+      { id: 'above-knee', label: 'Above knee', icon: svg(`<path d="M14 4 L26 4 L26 8 L14 8 Z"/><path d="M14 8 L10 24"/><path d="M26 8 L30 24"/><path d="M10 24 L30 24"/>`, '0 0 40 30') },
+      { id: 'knee',       label: 'Knee',       icon: svg(`<path d="M14 4 L26 4 L26 8 L14 8 Z"/><path d="M14 8 L8 32"/><path d="M26 8 L32 32"/><path d="M8 32 L32 32"/>`, '0 0 40 38') },
+      { id: 'midi',       label: 'Midi',       icon: svg(`<path d="M14 4 L26 4 L26 8 L14 8 Z"/><path d="M14 8 L6 44"/><path d="M26 8 L34 44"/><path d="M6 44 L34 44"/>`, '0 0 40 50') },
+      { id: 'maxi',       label: 'Maxi',       icon: svg(`<path d="M14 4 L26 4 L26 8 L14 8 Z"/><path d="M14 8 L4 56"/><path d="M26 8 L36 56"/><path d="M4 56 L36 56"/>`, '0 0 40 62') },
+    ],
+    jacket: [
+      { id: 'cropped', label: 'Cropped', icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L13 22 L27 22 L27 12 L24 6"/><path d="M20 4 L20 22"/>`, '0 0 40 28') },
+      { id: 'hip',     label: 'Hip',     icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L13 36 L27 36 L27 12 L24 6"/><path d="M20 4 L20 36"/>`, '0 0 40 42') },
+      { id: 'long',    label: 'Long',    icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L11 50 L29 50 L27 12 L24 6"/><path d="M20 4 L20 50"/>`, '0 0 40 56') },
+      { id: 'duster',  label: 'Duster',  icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 12 L9 60 L31 60 L27 12 L24 6"/><path d="M20 4 L20 60"/>`, '0 0 40 66') },
+    ],
+    jumpsuit: [
+      { id: 'shorts', label: 'Shorts', icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L14 14 L13 22 L17 22 L20 14 L23 22 L27 22 L26 14 L24 6"/><path d="M13 22 L27 22"/>`, '0 0 40 28') },
+      { id: 'capri',  label: 'Capri',  icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L14 14 L12 38 L18 38 L20 14 L22 38 L28 38 L26 14 L24 6"/><path d="M12 22 L28 22"/>`, '0 0 40 44') },
+      { id: 'full',   label: 'Full',   icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L14 14 L10 56 L18 56 L20 14 L22 56 L30 56 L26 14 L24 6"/><path d="M11 22 L29 22"/>`, '0 0 40 62') },
+    ],
+    top: [
+      { id: 'cropped',  label: 'Cropped',  icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 10 L13 18 L27 18 L27 10 L24 6"/>`, '0 0 40 24') },
+      { id: 'standard', label: 'Standard', icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 10 L13 30 L27 30 L27 10 L24 6"/>`, '0 0 40 36') },
+      { id: 'tunic',    label: 'Tunic',    icon: svg(`<path d="M16 6 L20 4 L24 6"/><path d="M16 6 L13 10 L12 40 L28 40 L27 10 L24 6"/>`, '0 0 40 46') },
+    ],
+  },
+  ease: [
+    { id: 'fitted',    label: 'Fitted (+2")' },
+    { id: 'standard',  label: 'Standard (+4")' },
+    { id: 'relaxed',   label: 'Relaxed (+6")' },
+    { id: 'oversized', label: 'Oversized (+10")' },
+  ],
+  closure: [
+    { id: 'cb-zipper',    label: 'Center back zipper',  icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L11 12 L13 16 L13 32"/><path d="M26 6 L29 12 L27 16 L27 32"/><path d="M20 4 L20 32"/><circle cx="20" cy="8" r="1.2" fill="currentColor"/><circle cx="20" cy="14" r="1.2" fill="currentColor"/><circle cx="20" cy="20" r="1.2" fill="currentColor"/><circle cx="20" cy="26" r="1.2" fill="currentColor"/><path d="M19 30 L20 32 L21 30"/>`) },
+    { id: 'cb-invisible', label: 'CB invisible zipper', icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L11 12 L13 16 L13 32"/><path d="M26 6 L29 12 L27 16 L27 32"/><path d="M20 4 L20 32" stroke-dasharray="2,2"/>`) },
+    { id: 'side-zipper',  label: 'Side zipper',         icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L11 12 L13 16 L13 32 L27 32 L27 16 L29 12 L26 6"/><path d="M13 14 L13 28"/><circle cx="13" cy="16" r="1" fill="currentColor"/><circle cx="13" cy="20" r="1" fill="currentColor"/><circle cx="13" cy="24" r="1" fill="currentColor"/>`) },
+    { id: 'buttons',      label: 'Button front',        icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L11 12 L13 16 L13 32"/><path d="M26 6 L29 12 L27 16 L27 32"/><path d="M20 4 L20 32"/><circle cx="20" cy="10" r="1.5"/><circle cx="20" cy="16" r="1.5"/><circle cx="20" cy="22" r="1.5"/><circle cx="20" cy="28" r="1.5"/>`) },
+    { id: 'pullover',     label: 'Pullover',            icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L11 12 L13 16 L13 32 L27 32 L27 16 L29 12 L26 6"/><path d="M16 8 Q20 12 24 8"/>`) },
+    { id: 'wrap',         label: 'Wrap & tie',          icon: svg(`<path d="M14 6 L20 4 L26 6"/><path d="M14 6 L10 12 L14 16"/><path d="M26 6 L30 12 L26 16"/><path d="M14 16 L20 12 L26 16"/><path d="M14 16 L11 32 L29 32 L26 16"/><path d="M20 12 L20 32"/><path d="M11 32 L7 36"/><path d="M29 32 L33 36"/>`) },
+  ],
+};
+
+// ============================================================
+// RENDER LANDING / APP
+// ============================================================
+function startApp(method) {
+  state.method = method;
+  document.getElementById('landingPage').style.display = 'none';
+  document.getElementById('appPage').classList.add('active');
+  selectMethod(method);
+  goToStep(1);
+}
+
+function goHome() {
+  document.getElementById('landingPage').style.display = 'flex';
+  document.getElementById('appPage').classList.remove('active');
+  state.step = 1;
+  state.method = null;
+  state.size = null;
+  state.measurements = {};
+}
+
+// ============================================================
+// STEP NAVIGATION
+// ============================================================
+function goToStep(step) {
+  state.step = step;
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-' + step).classList.add('active');
+  document.querySelectorAll('.progress-step').forEach(s => {
+    const sn = parseInt(s.dataset.step);
+    s.classList.remove('active', 'complete');
+    if (sn === step) s.classList.add('active');
+    else if (sn < step) s.classList.add('complete');
+  });
+  if (step === 3) renderReview();
+  if (step === 4) renderPattern();
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// STEP 1: METHOD SELECTION
+// ============================================================
+function selectMethod(method) {
+  state.method = method;
+  document.querySelectorAll('.method-card').forEach(c => c.classList.toggle('selected', c.dataset.method === method));
+  document.getElementById('sizePickerSection').style.display = method === 'size' ? 'block' : 'none';
+  document.getElementById('customMeasurementsSection').style.display = method === 'custom' ? 'block' : 'none';
+  if (method === 'size') renderSizePicker();
+  if (method === 'custom') renderMeasurementForm();
+  validateStep1();
+}
+
+function renderSizePicker() {
+  const grid = document.getElementById('sizeGrid');
+  grid.innerHTML = Object.entries(SIZE_PRESETS).map(([id, p]) => `
+    <div class="size-card ${state.size === id ? 'selected' : ''}" onclick="pickSize('${id}')">
+      <div class="size-letter">${id}</div>
+      <div class="size-name">${p.name}</div>
+      <div class="size-measurements">
+        Bust ${p.bust}"<br>Waist ${p.waist}"<br>Hip ${p.hip}"
+      </div>
+    </div>
+  `).join('');
+}
+
+function pickSize(size) {
+  state.size = size;
+  state.measurements = { ...SIZE_PRESETS[size] };
+  renderSizePicker();
+  validateStep1();
+}
+
+function setUnit(unit) {
+  state.unit = unit;
+  document.querySelectorAll('.units-toggle button').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
+  renderMeasurementForm();
+}
+
+function renderMeasurementForm() {
+  const container = document.getElementById('measurementsForm');
+  const unitLabel = state.unit === 'in' ? '"' : 'cm';
+  container.innerHTML = MEASUREMENT_GROUPS.map(g => `
+    <div class="measure-group">
+      <h4>${g.title}</h4>
+      <div class="measure-grid">
+        ${g.fields.map(f => `
+          <label class="field">
+            <span class="field-label">${f.label}${f.required ? ' *' : ''}</span>
+            <span class="field-hint">${f.hint}</span>
+            <input type="number" step="0.25" id="m_${f.key}" value="${getDisplayValue(f.key)}" placeholder="${unitLabel}" oninput="updateMeasurement('${f.key}', this.value)">
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function getDisplayValue(key) {
+  const v = state.measurements[key];
+  if (v == null || v === '') return '';
+  return state.unit === 'in' ? v : (v * 2.54).toFixed(1);
+}
+
+function updateMeasurement(key, value) {
+  const v = parseFloat(value) || 0;
+  state.measurements[key] = state.unit === 'in' ? v : (v / 2.54);
+  validateStep1();
+}
+
+function validateStep1() {
+  let valid = false;
+  if (state.method === 'size' && state.size) valid = true;
+  if (state.method === 'custom') {
+    const required = ['bust', 'waist', 'hip', 'underbust', 'backShoulderToWaist'];
+    valid = required.every(k => state.measurements[k] && state.measurements[k] > 0);
+  }
+  document.getElementById('step1Next').disabled = !valid;
+}
+
+// ============================================================
+// STEP 2: DESIGN
+// ============================================================
+function renderOptionGrid(containerId, options, currentValue, key) {
+  document.getElementById(containerId).innerHTML = options.map(o => `
+    <div class="option-card ${currentValue === o.id ? 'selected' : ''}" onclick="setDesign('${key}','${o.id}')">
+      ${o.icon ? `<span class="option-icon">${o.icon}</span>` : ''}
+      <span class="option-label">${o.label}</span>
+    </div>
+  `).join('');
+}
+
+function renderDesign() {
+  // Garment type
+  renderOptionGrid('garmentGrid', DESIGN_OPTIONS.garment, state.design.garment, 'garment');
+
+  // Silhouette (depends on garment)
+  const silOpts = DESIGN_OPTIONS.silhouette[state.design.garment] || [];
+  if (!silOpts.find(o => o.id === state.design.silhouette)) state.design.silhouette = silOpts[0]?.id;
+  renderOptionGrid('silhouetteGrid', silOpts, state.design.silhouette, 'silhouette');
+
+  // Neckline / Lapel / Sleeve visibility
+  const isJacket = state.design.garment === 'jacket';
+  const showNeckline = ['dress','blouse','top','jumpsuit'].includes(state.design.garment);
+  const showLapel = isJacket;
+  const showSleeves = ['dress','blouse','top','jacket','jumpsuit'].includes(state.design.garment);
+  document.getElementById('necklineSection').style.display = showNeckline ? 'block' : 'none';
+  document.getElementById('lapelSection').style.display = showLapel ? 'block' : 'none';
+  document.getElementById('sleevesSection').style.display = showSleeves ? 'block' : 'none';
+
+  if (showNeckline) renderOptionGrid('necklineGrid', DESIGN_OPTIONS.neckline, state.design.neckline, 'neckline');
+  if (showLapel) renderOptionGrid('lapelGrid', DESIGN_OPTIONS.lapel, state.design.lapel, 'lapel');
+  if (showSleeves) renderOptionGrid('sleevesGrid', DESIGN_OPTIONS.sleeves, state.design.sleeves, 'sleeves');
+
+  // Length
+  const lenOpts = DESIGN_OPTIONS.length[state.design.garment] || [];
+  if (lenOpts.length && !lenOpts.find(o => o.id === state.design.length)) state.design.length = lenOpts[Math.floor(lenOpts.length/2)]?.id;
+  document.getElementById('lengthSection').style.display = lenOpts.length ? 'block' : 'none';
+  if (lenOpts.length) renderOptionGrid('lengthGrid', lenOpts, state.design.length, 'length');
+
+  // Ease (no icons — keep as slider buttons)
+  document.getElementById('easeSlider').innerHTML = DESIGN_OPTIONS.ease.map(o => `
+    <button class="slider-btn ${state.design.ease === o.id ? 'active' : ''}" onclick="setDesign('ease','${o.id}')">${o.label}</button>
+  `).join('');
+
+  // Closure
+  renderOptionGrid('closureGrid', DESIGN_OPTIONS.closure, state.design.closure, 'closure');
+}
+
+function setDesign(key, value) {
+  state.design[key] = value;
+  renderDesign();
+}
+
+// ============================================================
+// STEP 3: REVIEW
+// ============================================================
+function renderReview() {
+  const m = state.measurements;
+  const isInch = state.unit === 'in';
+  const fmt = v => v ? (isInch ? v.toFixed(1) + '"' : (v*2.54).toFixed(1) + ' cm') : '—';
+
+  let bodyHtml = '';
+  if (state.method === 'size') {
+    bodyHtml += `<div class="review-row"><span class="review-label">Method</span><span class="review-value">Size ${state.size} (${SIZE_PRESETS[state.size].name})</span></div>`;
+  } else {
+    bodyHtml += `<div class="review-row"><span class="review-label">Method</span><span class="review-value">Custom measurements</span></div>`;
+  }
+  bodyHtml += `<div class="review-row"><span class="review-label">Bust</span><span class="review-value">${fmt(m.bust)}</span></div>`;
+  bodyHtml += `<div class="review-row"><span class="review-label">Waist</span><span class="review-value">${fmt(m.waist)}</span></div>`;
+  bodyHtml += `<div class="review-row"><span class="review-label">Hip</span><span class="review-value">${fmt(m.hip)}</span></div>`;
+  bodyHtml += `<div class="review-row"><span class="review-label">Underbust</span><span class="review-value">${fmt(m.underbust)}</span></div>`;
+  bodyHtml += `<div class="review-row"><span class="review-label">Back length</span><span class="review-value">${fmt(m.backShoulderToWaist)}</span></div>`;
+
+  const cupDiff = (m.bust || 0) - (m.underbust || 0);
+  let cup = '—';
+  if (cupDiff > 0) {
+    if (cupDiff < 2) cup = 'A';
+    else if (cupDiff < 3) cup = 'B';
+    else if (cupDiff < 4) cup = 'C';
+    else if (cupDiff < 5) cup = 'D';
+    else if (cupDiff < 6) cup = 'DD';
+    else if (cupDiff < 7) cup = 'E';
+    else cup = 'F+';
+  }
+  bodyHtml += `<div class="review-row"><span class="review-label">Pattern cup</span><span class="review-value">${cup}</span></div>`;
+
+  document.getElementById('reviewBody').innerHTML = bodyHtml;
+
+  const d = state.design;
+  const isJacket = d.garment === 'jacket';
+  const neckOrLapel = isJacket
+    ? [['Lapel', d.lapel.replace(/-/g, ' ')]]
+    : (['dress','blouse','top','jumpsuit'].includes(d.garment) ? [['Neckline', d.neckline.replace(/-/g, ' ')]] : []);
+  const sleeveRow = ['dress','blouse','top','jacket','jumpsuit'].includes(d.garment)
+    ? [['Sleeves', d.sleeves.replace(/-/g, ' ')]]
+    : [];
+  const rows = [
+    ['Garment', d.garment],
+    ['Silhouette', d.silhouette.replace(/-/g, ' ')],
+    ...neckOrLapel,
+    ...sleeveRow,
+    ...(d.length ? [['Length', d.length.replace(/-/g, ' ')]] : []),
+    ['Fit', d.ease],
+    ['Closure', d.closure.replace(/-/g, ' ')],
+  ];
+  document.getElementById('reviewDesign').innerHTML = rows.map(([l,v]) => `
+    <div class="review-row"><span class="review-label">${l}</span><span class="review-value">${v}</span></div>
+  `).join('');
+}
+
+// ============================================================
+// STEP 4: PATTERN GENERATION
+// ============================================================
+function generatePattern() {
+  goToStep(4);
+}
+
+function calc() {
+  const m = state.measurements;
+  const easeMap = { fitted: 2, standard: 4, relaxed: 6, oversized: 10 };
+  const e = easeMap[state.design.ease] || 4;
+  const cupDiff = (m.bust || 0) - (m.underbust || 0);
+  const fba = cupDiff > 2 ? (cupDiff - 2) / 2 : 0;
+  return {
+    ease: e,
+    bustQ: ((m.bust || 0) + e) / 4,
+    waistQ: ((m.waist || 0) + e * 0.5) / 4,
+    hipQ: ((m.hip || 0) + e) / 4,
+    fba,
+    armholeDepth: (m.bust || 0) / 4 + 1,
+  };
+}
+
+function renderPattern() {
+  const m = state.measurements;
+  const c = calc();
+  const d = state.design;
+
+  document.getElementById('patternSummary').textContent =
+    `${d.silhouette.replace(/-/g,' ')} ${d.garment} drafted to ${state.method === 'size' ? 'size ' + state.size : 'your measurements'} with ${d.ease} ease.`;
+
+  const stats = [
+    ['Bust + ease', `${c.bustQ.toFixed(2)}" × 4`],
+    ['Waist + ease', `${c.waistQ.toFixed(2)}" × 4`],
+    ['Hip + ease', `${c.hipQ.toFixed(2)}" × 4`],
+    ['Armhole depth', `${c.armholeDepth.toFixed(2)}"`],
+    ['FBA per side', c.fba > 0 ? `+${c.fba.toFixed(2)}"` : 'None'],
+    ['Total ease', `+${c.ease}"`],
+  ];
+  document.getElementById('outputStats').innerHTML = stats.map(([l,v]) => `
+    <div class="stat-mini">
+      <div class="stat-mini-label">${l}</div>
+      <div class="stat-mini-value">${v}</div>
+    </div>
+  `).join('');
+
+  // Get all pattern pieces (each is an object with title + svg)
+  const pieces = buildBlockSVG();
+  const piecesArray = Array.isArray(pieces) ? pieces : [{ title: 'Pattern', svg: pieces }];
+
+  document.getElementById('previewContainer').innerHTML = piecesArray.map((p, i) => `
+    <div class="pattern-piece" ${i > 0 ? 'style="margin-top: 32px; padding-top: 32px; border-top: 1px dashed #c9b89a;"' : ''}>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 22px; color: #3d2f1f; margin: 0 0 12px 0;">${p.title}</h3>
+      ${p.svg}
+    </div>
+  `).join('');
+
+  // Render construction instructions
+  renderInstructions();
+}
+
+// ============================================================
+// SVG BLOCK BUILDER (bodice for tops/dresses, skirt for skirts)
+// ============================================================
+function buildBlockSVG() {
+  const m = state.measurements;
+  const d = state.design;
+  const pieces = [];
+
+  if (d.garment === 'skirt') {
+    pieces.push({ title: 'Skirt — quarter panel', svg: buildSkirtSVG() });
+    return pieces;
+  }
+
+  if (d.garment === 'jumpsuit') {
+    pieces.push({ title: 'Bodice — front & back', svg: buildBodiceSVG() });
+    pieces.push({ title: 'Trousers — front & back', svg: buildTrouserSVG() });
+    if (d.sleeves !== 'sleeveless') {
+      pieces.push({ title: 'Sleeve', svg: buildSleeveSVG() });
+    }
+    return pieces;
+  }
+
+  if (d.garment === 'jacket') {
+    // Jacket auto-bumps ease for outerwear
+    const originalEase = state.design.ease;
+    if (originalEase === 'fitted') state.design.ease = 'standard';
+    else if (originalEase === 'standard') state.design.ease = 'relaxed';
+    pieces.push({ title: 'Jacket — front & back with lapel', svg: buildBodiceSVG() });
+    state.design.ease = originalEase;
+    if (d.sleeves !== 'sleeveless') {
+      pieces.push({ title: 'Sleeve', svg: buildSleeveSVG() });
+    }
+    return pieces;
+  }
+
+  // Default: bodice (dresses, blouses, tops)
+  pieces.push({ title: 'Bodice — front & back', svg: buildBodiceSVG() });
+  if (d.sleeves !== 'sleeveless') {
+    pieces.push({ title: 'Sleeve', svg: buildSleeveSVG() });
+  }
+  return pieces;
+}
+
+function buildBodiceSVG() {
+  const m = state.measurements;
+  const d = state.design;
+  const c = calc();
+  const ease = c.ease;
+  const bust = m.bust || 0, waist = m.waist || 0, hip = m.hip || 0;
+  const backLen = m.backShoulderToWaist || 16;
+  const backWidth = m.backWidth || 17;
+  const acrossFront = m.acrossFront || 16;
+  const shoulderW = m.shoulderWidth || 15;
+  const neck = m.neck || 14.5;
+  const bustSpan = m.bustSpan || 8;
+  const apexHeight = m.frontShoulderToApex || m.bustPointHeight || 11;
+  const underbust = m.underbust || (bust - 5);
+
+  const bustQ = c.bustQ;
+  const waistQ = c.waistQ;
+  const armholeDepth = c.armholeDepth;
+  const shoulderHalf = shoulderW / 2;
+  const acrossFrontHalf = acrossFront / 2;
+  const apexFromCF = bustSpan / 2;
+  const shoulderSlope = 1.5;
+
+  // Neckline shape varies by design choice
+  // For jackets, use a shallow neck shape — the lapel covers and shapes the actual opening
+  const neckBase = neck / 5;
+  let necklineSpec;
+  if (d.garment === 'jacket') {
+    if (d.lapel === 'mandarin') {
+      necklineSpec = { width: neckBase + 0.2, depth: 0.5, type: 'curve' };
+    } else if (d.lapel === 'none') {
+      necklineSpec = { width: neckBase + 0.5, depth: 1.5, type: 'curve' };
+    } else {
+      // notch, peak, shawl: deeper opening, but the lapel closes it visually
+      necklineSpec = { width: neckBase + 0.7, depth: armholeDepth + 1, type: 'jacket-open' };
+    }
+  } else {
+    const necklineConfig = {
+      'crew':         { width: neckBase,         depth: 1.0,            type: 'curve' },
+      'scoop':        { width: neckBase + 0.5,   depth: 3,              type: 'curve' },
+      'v-neck':       { width: neckBase + 0.3,   depth: 5,              type: 'v' },
+      'square':       { width: neckBase + 0.3,   depth: 4,              type: 'square' },
+      'sweetheart':   { width: neckBase + 0.5,   depth: 3.5,            type: 'sweetheart' },
+      'boat':         { width: neckBase + 1.5,   depth: 0.75,           type: 'curve' },
+      'cowl':         { width: neckBase + 0.7,   depth: 4.5,            type: 'curve' },
+      'halter':       { width: neckBase - 0.5,   depth: 2,              type: 'halter' },
+      'off-shoulder': { width: shoulderHalf - 1, depth: 1.5,            type: 'curve' },
+    };
+    necklineSpec = necklineConfig[d.neckline] || necklineConfig['scoop'];
+  }
+  const neckWidth = necklineSpec.width;
+  const neckDepthFront = necklineSpec.depth;
+  const neckType = necklineSpec.type;
+  const neckDepthBack = d.neckline === 'cowl' ? 1.5 : 0.75;
+
+  const cupDiff = bust - underbust;
+  const fbaAmount = cupDiff > 2 ? (cupDiff - 2) / 2 : 0;
+  const frontLen = backLen + fbaAmount;
+  const totalWaistTakeUp = (bust + ease) - (waist + ease * 0.5);
+  const waistDartFront = totalWaistTakeUp / 4 + 0.5;
+  const waistDartBack = totalWaistTakeUp / 4 + 0.25;
+  const bustDartTakeUp = cupDiff > 2 ? (cupDiff - 2) * 0.75 : 0.5;
+
+  const SCALE = 22;
+  const PAD_X = 90, PAD_Y = 70, GAP = 4.5;
+  const SA = 0.625; // 5/8 inch seam allowance
+  const backX0 = bustQ + GAP;
+
+  const F = {
+    neckSide: { x: neckWidth, y: 0 },
+    neckBottom: { x: 0, y: neckDepthFront },
+    shoulderTip: { x: shoulderHalf, y: shoulderSlope },
+    acrossFrontPt: { x: acrossFrontHalf, y: armholeDepth - 3 },
+    bustSide: { x: bustQ, y: armholeDepth },
+    apex: { x: apexFromCF, y: apexHeight },
+    waistSide: { x: waistQ + waistDartFront, y: frontLen },
+    cfWaist: { x: 0, y: frontLen },
+    sideDartTop: { x: bustQ, y: armholeDepth - 1 },
+    sideDartBottom: { x: bustQ, y: armholeDepth + bustDartTakeUp - 1 },
+    waistDartCenter: { x: apexFromCF, y: frontLen },
+  };
+  const B = {
+    neckSide: { x: backX0 + neckWidth, y: neckDepthBack },
+    cbNeck: { x: backX0, y: neckDepthBack },
+    shoulderTip: { x: backX0 + shoulderHalf, y: shoulderSlope + 0.5 },
+    backWidthPt: { x: backX0 + (backWidth/2), y: armholeDepth - 2.5 },
+    bustSide: { x: backX0 + bustQ, y: armholeDepth },
+    waistSide: { x: backX0 + waistQ + waistDartBack, y: backLen },
+    cbWaist: { x: backX0, y: backLen },
+    waistDartCenter: { x: backX0 + waistQ * 0.5, y: backLen },
+  };
+
+  const totalWidthIn = backX0 + bustQ + 1.5;
+  const totalHeightIn = Math.max(frontLen, backLen) + 3;
+  const svgW = totalWidthIn * SCALE + PAD_X * 2;
+  const svgH = totalHeightIn * SCALE + PAD_Y * 2;
+  const xp = x => x * SCALE + PAD_X;
+  const yp = y => y * SCALE + PAD_Y;
+
+  const armholeFront = `M ${xp(F.shoulderTip.x)} ${yp(F.shoulderTip.y)} Q ${xp(F.shoulderTip.x + 0.3)} ${yp(F.acrossFrontPt.y - 0.5)}, ${xp(F.acrossFrontPt.x)} ${yp(F.acrossFrontPt.y)} Q ${xp(F.bustSide.x + 0.3)} ${yp(armholeDepth - 1.5)}, ${xp(F.bustSide.x)} ${yp(F.bustSide.y)}`;
+  const armholeBack = `M ${xp(B.shoulderTip.x)} ${yp(B.shoulderTip.y)} Q ${xp(B.shoulderTip.x + 0.3)} ${yp(B.backWidthPt.y - 0.3)}, ${xp(B.backWidthPt.x)} ${yp(B.backWidthPt.y)} Q ${xp(B.bustSide.x - 0.2)} ${yp(armholeDepth - 1.2)}, ${xp(B.bustSide.x)} ${yp(B.bustSide.y)}`;
+
+  // Closure-related extras
+  const isJacket = d.garment === 'jacket';
+  const isFrontButton = d.closure === 'buttons';
+  const isFrontWrap = d.closure === 'wrap';
+  const isCBZipper = d.closure === 'cb-zipper' || d.closure === 'cb-invisible';
+  const isSideZipper = d.closure === 'side-zipper';
+  const cfLabel = isJacket && d.lapel !== 'mandarin' && d.lapel !== 'none' ? 'CENTER FRONT (lapel break)'
+    : (isFrontButton || isFrontWrap) ? 'CENTER FRONT — CUT'
+    : 'CENTER FRONT — FOLD';
+  const cbLabel = isCBZipper ? 'CENTER BACK — CUT (zipper)' : 'CENTER BACK — FOLD';
+
+  // Button placket dots if buttons (skip for jackets — they get lapel buttons)
+  const buttonMarks = (isFrontButton && !isJacket) ? Array.from({length: 5}, (_, i) => {
+    const buttonY = 1.5 + i * (frontLen - 3) / 4;
+    return `<circle cx="${xp(0.75)}" cy="${yp(buttonY)}" r="3" fill="none" stroke="#a8612d" stroke-width="1.2"/>`;
+  }).join('') : '';
+
+  // Zipper teeth marks if CB zipper
+  const zipperMarks = isCBZipper ? Array.from({length: 8}, (_, i) => {
+    const zY = 1 + i * (backLen - 2) / 7;
+    return `<line x1="${xp(backX0 - 0.15)}" y1="${yp(zY)}" x2="${xp(backX0 + 0.15)}" y2="${yp(zY)}" stroke="#a8612d" stroke-width="1.2"/>`;
+  }).join('') : '';
+
+  // Side zipper indicator (left side seam of back piece)
+  const sideZipperMarks = isSideZipper ? Array.from({length: 7}, (_, i) => {
+    const zY = armholeDepth + 0.5 + i * (backLen - armholeDepth - 1) / 6;
+    return `<line x1="${xp(F.bustSide.x - 0.15)}" y1="${yp(zY)}" x2="${xp(F.bustSide.x + 0.15)}" y2="${yp(zY)}" stroke="#a8612d" stroke-width="1.2"/>`;
+  }).join('') : '';
+
+  // ---- JACKET LAPEL DRAWING ----
+  let lapelDrawing = '';
+  let jacketCFExtension = 0; // how far to extend center front past the fold line for the overlap
+  if (isJacket && d.lapel !== 'none' && d.lapel !== 'mandarin') {
+    jacketCFExtension = 1.5; // 1.5" overlap for button placket
+    const lapelType = d.lapel; // 'notch', 'peak', 'shawl'
+    // Roll line: where the lapel folds back. Goes from neck point to about waist level
+    const rollLineTop = { x: -jacketCFExtension * 0.4, y: 0.5 };
+    const rollLineBottom = { x: -jacketCFExtension * 0.5, y: armholeDepth + 1.5 };
+    // Lapel break point — typical 1-button jacket has break at upper waist; 2-button at mid-chest
+    const lapelBreak = { x: -jacketCFExtension, y: armholeDepth + 1 };
+    // Lapel point (gorge line tip)
+    const lapelWidth = 3.2;
+    const lapelPoint = { x: -lapelWidth, y: 1.5 };
+    // Gorge line: where lapel meets collar
+    const gorgePoint = { x: 0.3, y: 1.2 };
+
+    if (lapelType === 'notch') {
+      // Notch lapel: classic, has a notch where lapel meets collar
+      lapelDrawing = `
+        <!-- Roll line (where the lapel folds) -->
+        <line x1="${xp(rollLineTop.x)}" y1="${yp(rollLineTop.y)}" x2="${xp(rollLineBottom.x)}" y2="${yp(rollLineBottom.y)}" stroke="#a8612d" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Lapel outline -->
+        <path d="M ${xp(lapelBreak.x)} ${yp(lapelBreak.y)} L ${xp(lapelPoint.x)} ${yp(lapelPoint.y)} L ${xp(gorgePoint.x - 0.5)} ${yp(gorgePoint.y + 0.4)} L ${xp(gorgePoint.x + 0.3)} ${yp(gorgePoint.y - 0.4)} L ${xp(0)} ${yp(0)}" fill="none" stroke="#3d2f1f" stroke-width="1.5"/>
+        <!-- Collar shape -->
+        <path d="M ${xp(gorgePoint.x + 0.3)} ${yp(gorgePoint.y - 0.4)} L ${xp(F.shoulderTip.x * 0.5)} ${yp(-0.5)} L ${xp(0)} ${yp(0)}" fill="none" stroke="#3d2f1f" stroke-width="1.5"/>
+        <!-- Notch marker -->
+        <circle cx="${xp(gorgePoint.x - 0.1)}" cy="${yp(gorgePoint.y)}" r="2.5" fill="#a8612d"/>
+        <text x="${xp(lapelPoint.x - 0.5)}" y="${yp(lapelPoint.y + 0.2)}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#a8612d" text-anchor="end">notch lapel</text>
+        <text x="${xp(rollLineBottom.x - 0.3)}" y="${yp(armholeDepth + 0.5)}" font-family="Inter, sans-serif" font-size="9" fill="#a8612d" font-style="italic" text-anchor="end">roll line</text>
+      `;
+    } else if (lapelType === 'peak') {
+      // Peak lapel: pointed upward toward the shoulder
+      const peakPoint = { x: -lapelWidth - 0.3, y: 0.5 };
+      lapelDrawing = `
+        <line x1="${xp(rollLineTop.x)}" y1="${yp(rollLineTop.y)}" x2="${xp(rollLineBottom.x)}" y2="${yp(rollLineBottom.y)}" stroke="#a8612d" stroke-width="1" stroke-dasharray="3,3"/>
+        <path d="M ${xp(lapelBreak.x)} ${yp(lapelBreak.y)} L ${xp(peakPoint.x)} ${yp(peakPoint.y)} L ${xp(gorgePoint.x - 0.3)} ${yp(gorgePoint.y + 0.5)} L ${xp(gorgePoint.x + 0.3)} ${yp(gorgePoint.y - 0.4)} L ${xp(0)} ${yp(0)}" fill="none" stroke="#3d2f1f" stroke-width="1.5"/>
+        <path d="M ${xp(gorgePoint.x + 0.3)} ${yp(gorgePoint.y - 0.4)} L ${xp(F.shoulderTip.x * 0.5)} ${yp(-0.5)} L ${xp(0)} ${yp(0)}" fill="none" stroke="#3d2f1f" stroke-width="1.5"/>
+        <text x="${xp(peakPoint.x - 0.3)}" y="${yp(peakPoint.y + 0.2)}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#a8612d" text-anchor="end">peak lapel</text>
+        <text x="${xp(rollLineBottom.x - 0.3)}" y="${yp(armholeDepth + 0.5)}" font-family="Inter, sans-serif" font-size="9" fill="#a8612d" font-style="italic" text-anchor="end">roll line</text>
+      `;
+    } else if (lapelType === 'shawl') {
+      // Shawl collar: continuous curve, no break
+      const shawlTop = { x: -lapelWidth + 0.5, y: -0.3 };
+      lapelDrawing = `
+        <line x1="${xp(rollLineTop.x)}" y1="${yp(rollLineTop.y)}" x2="${xp(rollLineBottom.x)}" y2="${yp(rollLineBottom.y)}" stroke="#a8612d" stroke-width="1" stroke-dasharray="3,3"/>
+        <path d="M ${xp(lapelBreak.x)} ${yp(lapelBreak.y)} Q ${xp(-lapelWidth - 0.2)} ${yp((lapelBreak.y) * 0.4)}, ${xp(shawlTop.x)} ${yp(shawlTop.y)} Q ${xp(F.shoulderTip.x * 0.3)} ${yp(-0.4)}, ${xp(0)} ${yp(0)}" fill="none" stroke="#3d2f1f" stroke-width="1.5"/>
+        <text x="${xp(shawlTop.x - 0.5)}" y="${yp(shawlTop.y + 0.2)}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#a8612d" text-anchor="end">shawl collar</text>
+        <text x="${xp(rollLineBottom.x - 0.3)}" y="${yp(armholeDepth + 0.5)}" font-family="Inter, sans-serif" font-size="9" fill="#a8612d" font-style="italic" text-anchor="end">roll line</text>
+      `;
+    }
+  } else if (isJacket && d.lapel === 'mandarin') {
+    // Mandarin: small stand collar at neckline, no lapel
+    lapelDrawing = `
+      <path d="M ${xp(F.neckSide.x - 0.3)} ${yp(F.neckSide.y)} Q ${xp(F.neckSide.x * 0.5)} ${yp(-0.6)}, ${xp(0)} ${yp(0)} L ${xp(0)} ${yp(0.8)} L ${xp(F.neckSide.x * 0.5)} ${yp(0.4)} L ${xp(F.neckSide.x - 0.3)} ${yp(F.neckSide.y)} Z" fill="#fdf4e6" stroke="#3d2f1f" stroke-width="1.5"/>
+      <text x="${xp(F.neckSide.x + 0.3)}" y="${yp(0)}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#a8612d">mandarin</text>
+    `;
+  }
+
+  // Buttons for jacket: align to roll line on the front extension
+  const jacketButtons = isJacket && jacketCFExtension > 0 && d.lapel !== 'mandarin' && d.lapel !== 'none' ? Array.from({length: 3}, (_, i) => {
+    const buttonY = armholeDepth + 1 + i * 2;
+    return `<circle cx="${xp(-jacketCFExtension * 0.5)}" cy="${yp(buttonY)}" r="3" fill="none" stroke="#a8612d" stroke-width="1.2"/>`;
+  }).join('') : '';
+
+  // Build front neckline based on type
+  let neckFront;
+  if (neckType === 'v') {
+    neckFront = `M ${xp(F.neckSide.x)} ${yp(F.neckSide.y)} L ${xp(0)} ${yp(neckDepthFront)}`;
+  } else if (neckType === 'square') {
+    neckFront = `M ${xp(F.neckSide.x)} ${yp(F.neckSide.y)} L ${xp(F.neckSide.x)} ${yp(neckDepthFront)} L ${xp(0)} ${yp(neckDepthFront)}`;
+  } else if (neckType === 'sweetheart') {
+    neckFront = `M ${xp(F.neckSide.x)} ${yp(F.neckSide.y)} Q ${xp(F.neckSide.x - 0.5)} ${yp(neckDepthFront - 1)}, ${xp(F.neckSide.x - 1.5)} ${yp(neckDepthFront)} Q ${xp(0.7)} ${yp(neckDepthFront - 0.3)}, ${xp(0)} ${yp(neckDepthFront - 0.5)}`;
+  } else if (neckType === 'halter') {
+    neckFront = `M ${xp(F.neckSide.x)} ${yp(F.neckSide.y - 0.5)} L ${xp(0.7)} ${yp(neckDepthFront)} L ${xp(0)} ${yp(neckDepthFront + 0.3)}`;
+  } else if (neckType === 'jacket-open') {
+    // Deep V opening for jacket — the lapel will be drawn separately on top
+    neckFront = `M ${xp(F.neckSide.x)} ${yp(F.neckSide.y)} L ${xp(0)} ${yp(neckDepthFront)}`;
+  } else {
+    // curve (scoop, crew, boat, cowl, off-shoulder)
+    neckFront = `M ${xp(F.neckSide.x)} ${yp(F.neckSide.y)} Q ${xp(F.neckSide.x - 0.4)} ${yp(neckDepthFront - 0.3)}, ${xp(0)} ${yp(neckDepthFront)}`;
+  }
+  const neckBack = `M ${xp(B.neckSide.x)} ${yp(B.neckSide.y)} Q ${xp(B.neckSide.x - 0.5)} ${yp(B.cbNeck.y + 0.1)}, ${xp(B.cbNeck.x)} ${yp(B.cbNeck.y)}`;
+
+  const fbaLines = fbaAmount > 0 ? `
+    <line x1="${xp(0)}" y1="${yp(F.apex.y)}" x2="${xp(bustQ + 1)}" y2="${yp(F.apex.y)}" stroke="#c46545" stroke-width="1.2" stroke-dasharray="6,3" opacity="0.7"/>
+    <line x1="${xp(F.apex.x)}" y1="${yp(F.apex.y)}" x2="${xp(F.apex.x)}" y2="${yp(frontLen)}" stroke="#c46545" stroke-width="1.2" stroke-dasharray="6,3" opacity="0.7"/>
+    <text x="${xp(bustQ/2 + 1)}" y="${yp(F.apex.y) - 4}" font-family="Inter, sans-serif" font-size="9" fill="#c46545" font-style="italic">FBA · spread +${fbaAmount.toFixed(2)}"</text>
+  ` : '';
+
+  // ---- SEAM ALLOWANCE OUTLINES ----
+  // Front piece SA outline (5/8" outside main lines, except CF which is on the fold)
+  // Path: from CF top, out to neck SA, around shoulder SA, around armhole SA, down side seam SA,
+  // along waist SA, back to CF bottom — closing on the CF fold line itself.
+  const frontSAPath = `
+    M ${xp(0)} ${yp(0 - SA)}
+    L ${xp(F.neckSide.x)} ${yp(0 - SA)}
+    Q ${xp(F.neckSide.x + SA - 0.4)} ${yp(F.neckBottom.y - 0.3 - SA)}, ${xp(F.shoulderTip.x + SA*0.7)} ${yp(F.shoulderTip.y - SA*0.7)}
+    Q ${xp(F.shoulderTip.x + 0.3 + SA)} ${yp(F.acrossFrontPt.y - 0.5)}, ${xp(F.acrossFrontPt.x + SA)} ${yp(F.acrossFrontPt.y)}
+    Q ${xp(F.bustSide.x + 0.3 + SA)} ${yp(armholeDepth - 1.5)}, ${xp(F.bustSide.x + SA)} ${yp(F.bustSide.y)}
+    L ${xp(F.bustSide.x + SA)} ${yp(F.sideDartTop.y)}
+    L ${xp(F.sideDartBottom.x + SA)} ${yp(F.sideDartBottom.y)}
+    L ${xp(F.waistSide.x + SA)} ${yp(F.waistSide.y + SA)}
+    L ${xp(0)} ${yp(F.cfWaist.y + SA)}
+    Z
+  `;
+
+  // Back piece SA outline
+  const backSAPath = `
+    M ${xp(backX0)} ${yp(0 - SA)}
+    L ${xp(B.neckSide.x)} ${yp(0 - SA)}
+    Q ${xp(B.neckSide.x + SA - 0.5)} ${yp(B.cbNeck.y + 0.1 - SA)}, ${xp(B.shoulderTip.x + SA*0.7)} ${yp(B.shoulderTip.y - SA*0.7)}
+    Q ${xp(B.shoulderTip.x + 0.3 + SA)} ${yp(B.backWidthPt.y - 0.3)}, ${xp(B.backWidthPt.x + SA)} ${yp(B.backWidthPt.y)}
+    Q ${xp(B.bustSide.x - 0.2 + SA)} ${yp(armholeDepth - 1.2)}, ${xp(B.bustSide.x + SA)} ${yp(B.bustSide.y)}
+    L ${xp(B.waistSide.x + SA)} ${yp(B.waistSide.y + SA)}
+    L ${xp(backX0)} ${yp(B.cbWaist.y + SA)}
+    Z
+  `;
+
+  // SA fill — light tint inside the SA region (between sewing line and cutting line)
+  const saFill = `
+    <path d="${frontSAPath}" fill="#fdf4e6" stroke="none" opacity="0.7"/>
+    <path d="${backSAPath}" fill="#fdf4e6" stroke="none" opacity="0.7"/>
+  `;
+  const saLines = `
+    <path d="${frontSAPath}" fill="none" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+    <path d="${backSAPath}" fill="none" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+  `;
+
+  // Legend at bottom of SVG
+  const legend = `
+    <g transform="translate(${PAD_X}, ${svgH - 30})">
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#3d2f1f" stroke-width="2"/>
+      <text x="26" y="3" font-family="Inter, sans-serif" font-size="10" fill="#3d2f1f">sewing line</text>
+      <line x1="120" y1="0" x2="140" y2="0" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+      <text x="146" y="3" font-family="Inter, sans-serif" font-size="10" fill="#a8612d">cutting line (5/8" SA included)</text>
+      <line x1="340" y1="0" x2="360" y2="0" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="366" y="3" font-family="Inter, sans-serif" font-size="10" fill="#a8612d">dart line</text>
+    </g>
+  `;
+
+  return `<svg id="patternSvg" xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block; min-width:${svgW}px;">
+    <defs>
+      <pattern id="grid" width="${SCALE}" height="${SCALE}" patternUnits="userSpaceOnUse">
+        <path d="M ${SCALE} 0 L 0 0 0 ${SCALE}" fill="none" stroke="#ebe0c8" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="gridMajor" width="${SCALE * 4}" height="${SCALE * 4}" patternUnits="userSpaceOnUse">
+        <path d="M ${SCALE * 4} 0 L 0 0 0 ${SCALE * 4}" fill="none" stroke="#d4c5a0" stroke-width="0.8"/>
+      </pattern>
+    </defs>
+    <rect width="${svgW}" height="${svgH}" fill="#fdfbf6"/>
+    <rect width="${svgW}" height="${svgH}" fill="url(#grid)"/>
+    <rect width="${svgW}" height="${svgH}" fill="url(#gridMajor)"/>
+    ${saFill}
+    ${saLines}
+    <rect x="${svgW - PAD_X - SCALE}" y="20" width="${SCALE}" height="${SCALE}" fill="none" stroke="#a8612d" stroke-width="1.5"/>
+    <text x="${svgW - PAD_X - SCALE/2}" y="${20 + SCALE + 14}" font-family="Inter, sans-serif" font-size="9" fill="#a8612d" text-anchor="middle">1" test square</text>
+    <text x="${xp(bustQ/2)}" y="${yp(-1.5)}" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-size="20" fill="#3d2f1f" text-anchor="middle">Front</text>
+    <text x="${xp(backX0 + bustQ/2)}" y="${yp(-1.5)}" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-size="20" fill="#3d2f1f" text-anchor="middle">Back</text>
+    <line x1="${xp(0)}" y1="${yp(0)}" x2="${xp(0)}" y2="${yp(frontLen)}" stroke="#3d2f1f" stroke-width="2"/>
+    <text x="${xp(-0.5)}" y="${yp(frontLen/2)}" font-family="Inter, sans-serif" font-size="9" fill="#8b6f47" text-anchor="middle" transform="rotate(-90 ${xp(-0.5)} ${yp(frontLen/2)})" letter-spacing="2">${cfLabel}</text>
+    <line x1="${xp(0)}" y1="${yp(0)}" x2="${xp(F.neckSide.x)}" y2="${yp(0)}" stroke="#3d2f1f" stroke-width="1" stroke-dasharray="3,2"/>
+    <path d="${neckFront}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.neckSide.x)}" y1="${yp(F.neckSide.y)}" x2="${xp(F.shoulderTip.x)}" y2="${yp(F.shoulderTip.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <path d="${armholeFront}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.bustSide.x)}" y1="${yp(F.bustSide.y)}" x2="${xp(F.sideDartTop.x)}" y2="${yp(F.sideDartTop.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.sideDartTop.x)}" y1="${yp(F.sideDartTop.y)}" x2="${xp(F.apex.x + 0.5)}" y2="${yp(F.apex.y)}" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="${xp(F.sideDartBottom.x)}" y1="${yp(F.sideDartBottom.y)}" x2="${xp(F.apex.x + 0.5)}" y2="${yp(F.apex.y)}" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="${xp(F.sideDartTop.x)}" y1="${yp(F.sideDartTop.y)}" x2="${xp(F.sideDartBottom.x)}" y2="${yp(F.sideDartBottom.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.sideDartBottom.x)}" y1="${yp(F.sideDartBottom.y)}" x2="${xp(F.waistSide.x)}" y2="${yp(F.waistSide.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.waistSide.x)}" y1="${yp(F.waistSide.y)}" x2="${xp(F.cfWaist.x)}" y2="${yp(F.cfWaist.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <circle cx="${xp(F.apex.x)}" cy="${yp(F.apex.y)}" r="4" fill="#a8612d"/>
+    <circle cx="${xp(F.apex.x)}" cy="${yp(F.apex.y)}" r="8" fill="none" stroke="#a8612d" stroke-width="1"/>
+    <text x="${xp(F.apex.x) + 12}" y="${yp(F.apex.y) + 3}" font-family="Cormorant Garamond, serif" font-size="11" font-style="italic" fill="#a8612d">apex</text>
+    <line x1="${xp(F.waistDartCenter.x - 0.5)}" y1="${yp(frontLen)}" x2="${xp(F.apex.x)}" y2="${yp(F.apex.y + 0.5)}" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="${xp(F.waistDartCenter.x + 0.5)}" y1="${yp(frontLen)}" x2="${xp(F.apex.x)}" y2="${yp(F.apex.y + 0.5)}" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+    ${fbaLines}
+    <line x1="${xp(backX0)}" y1="${yp(0)}" x2="${xp(backX0)}" y2="${yp(backLen)}" stroke="#3d2f1f" stroke-width="2"/>
+    <text x="${xp(backX0 - 0.5)}" y="${yp(backLen/2)}" font-family="Inter, sans-serif" font-size="9" fill="#8b6f47" text-anchor="middle" transform="rotate(-90 ${xp(backX0 - 0.5)} ${yp(backLen/2)})" letter-spacing="2">${cbLabel}</text>
+    <line x1="${xp(backX0)}" y1="${yp(0)}" x2="${xp(B.neckSide.x)}" y2="${yp(0)}" stroke="#3d2f1f" stroke-width="1" stroke-dasharray="3,2"/>
+    <path d="${neckBack}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(B.neckSide.x)}" y1="${yp(B.neckSide.y)}" x2="${xp(B.shoulderTip.x)}" y2="${yp(B.shoulderTip.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <path d="${armholeBack}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(B.bustSide.x)}" y1="${yp(B.bustSide.y)}" x2="${xp(B.waistSide.x)}" y2="${yp(B.waistSide.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(B.waistSide.x)}" y1="${yp(B.waistSide.y)}" x2="${xp(B.cbWaist.x)}" y2="${yp(B.cbWaist.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(B.waistDartCenter.x - 0.4)}" y1="${yp(backLen)}" x2="${xp(B.waistDartCenter.x)}" y2="${yp(armholeDepth + 1)}" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="${xp(B.waistDartCenter.x + 0.4)}" y1="${yp(backLen)}" x2="${xp(B.waistDartCenter.x)}" y2="${yp(armholeDepth + 1)}" stroke="#a8612d" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="${xp(bustQ + 0.3)}" y="${yp(armholeDepth) + 4}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f">${bustQ.toFixed(2)}"</text>
+    <text x="${xp(backX0 + bustQ/2)}" y="${yp(armholeDepth) + 4}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f" text-anchor="middle">${bustQ.toFixed(2)}"</text>
+    ${buttonMarks}
+    ${zipperMarks}
+    ${sideZipperMarks}
+    ${lapelDrawing}
+    ${jacketButtons}
+    ${legend}
+  </svg>`;
+}
+
+function buildSkirtSVG() {
+  const m = state.measurements;
+  const c = calc();
+  const waist = m.waist || 30;
+  const hip = m.hip || 38;
+  const waistToHip = m.waistToHip || 7;
+  const waistToKnee = m.waistToKnee || 22;
+
+  const lengthMap = { mini: waistToKnee - 4, 'above-knee': waistToKnee - 2, knee: waistToKnee, midi: waistToKnee + 6, maxi: waistToKnee + 16 };
+  const skirtLen = lengthMap[state.design.length] || waistToKnee;
+  const flareMap = { pencil: 0, 'a-line': 4, circle: 12, gathered: 0, pleated: 6 };
+  const flarePerQuarter = flareMap[state.design.silhouette] !== undefined ? flareMap[state.design.silhouette] : 4;
+
+  const waistQ = (waist + 1) / 4;
+  const hipQ = (hip + c.ease) / 4;
+
+  const SCALE = 18;
+  const PAD = 70;
+  const SA = 0.625;
+  const HEM_SA = 1.25; // wider hem allowance for skirts
+  const totalWidth = waistQ + flarePerQuarter + 2.5;
+  const totalHeight = skirtLen + 3;
+  const svgW = totalWidth * SCALE + PAD * 2;
+  const svgH = totalHeight * SCALE + PAD * 2;
+  const xp = x => x * SCALE + PAD;
+  const yp = y => y * SCALE + PAD;
+
+  // Skirt SA outline: top adds SA above waistline, side adds SA to right of side seam, hem adds 1.25" below hem
+  // Center fold has no SA (it's on the fold)
+  const skirtSAPath = `
+    M ${xp(0)} ${yp(0 - SA)}
+    Q ${xp(waistQ/2)} ${yp(0.3 - SA)}, ${xp(waistQ + SA*0.7)} ${yp(0.5 - SA*0.7)}
+    L ${xp(waistQ + flarePerQuarter + SA)} ${yp(skirtLen + HEM_SA*0.3)}
+    Q ${xp((waistQ + flarePerQuarter)/2)} ${yp(skirtLen + 0.4 + HEM_SA)}, ${xp(0)} ${yp(skirtLen + HEM_SA)}
+    Z
+  `;
+
+  return `<svg id="patternSvg" xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block; min-width:${svgW}px;">
+    <defs>
+      <pattern id="sgrid" width="${SCALE}" height="${SCALE}" patternUnits="userSpaceOnUse">
+        <path d="M ${SCALE} 0 L 0 0 0 ${SCALE}" fill="none" stroke="#ebe0c8" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="${svgW}" height="${svgH}" fill="#fdfbf6"/>
+    <rect width="${svgW}" height="${svgH}" fill="url(#sgrid)"/>
+
+    <!-- Seam allowance fill + outline -->
+    <path d="${skirtSAPath}" fill="#fdf4e6" stroke="none" opacity="0.7"/>
+    <path d="${skirtSAPath}" fill="none" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+
+    <rect x="${svgW - PAD - SCALE}" y="20" width="${SCALE}" height="${SCALE}" fill="none" stroke="#a8612d" stroke-width="1.5"/>
+    <text x="${svgW - PAD - SCALE/2}" y="${20 + SCALE + 14}" font-family="Inter, sans-serif" font-size="9" fill="#a8612d" text-anchor="middle">1" test</text>
+    <text x="${xp(totalWidth/2)}" y="${yp(-1.5)}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="20" fill="#3d2f1f" text-anchor="middle">Skirt — Quarter Panel</text>
+
+    <!-- Center fold -->
+    <line x1="${xp(0)}" y1="${yp(0)}" x2="${xp(0)}" y2="${yp(skirtLen)}" stroke="#3d2f1f" stroke-width="2"/>
+    <text x="${xp(-0.5)}" y="${yp(skirtLen/2)}" font-family="Inter, sans-serif" font-size="9" fill="#8b6f47" text-anchor="middle" transform="rotate(-90 ${xp(-0.5)} ${yp(skirtLen/2)})" letter-spacing="2">CENTER — FOLD</text>
+
+    <!-- Waist (curved) -->
+    <path d="M ${xp(0)} ${yp(0)} Q ${xp(waistQ/2)} ${yp(0.3)}, ${xp(waistQ)} ${yp(0.5)}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Side seam -->
+    <line x1="${xp(waistQ)}" y1="${yp(0.5)}" x2="${xp(waistQ + flarePerQuarter)}" y2="${yp(skirtLen)}" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Hem (curved) -->
+    <path d="M ${xp(waistQ + flarePerQuarter)} ${yp(skirtLen)} Q ${xp((waistQ + flarePerQuarter)/2)} ${yp(skirtLen + 0.4)}, ${xp(0)} ${yp(skirtLen)}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Hip line reference -->
+    <line x1="${xp(0)}" y1="${yp(waistToHip)}" x2="${xp(waistQ + flarePerQuarter * (waistToHip/skirtLen))}" y2="${yp(waistToHip)}" stroke="#a89478" stroke-width="1" stroke-dasharray="2,3"/>
+    <text x="${xp(waistQ + 1)}" y="${yp(waistToHip) + 3}" font-family="Inter, sans-serif" font-size="9" fill="#a89478" font-style="italic">hip line</text>
+
+    <!-- Labels -->
+    <text x="${xp(waistQ/2)}" y="${yp(-0.5)}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f" text-anchor="middle">waist ¼ + ease: ${waistQ.toFixed(2)}"</text>
+    <text x="${xp(waistQ + flarePerQuarter/2)}" y="${yp(skirtLen + 1.7)}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f" text-anchor="middle">hem ¼: ${(waistQ + flarePerQuarter).toFixed(2)}"</text>
+    <text x="${xp(-2)}" y="${yp(skirtLen) + 3}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f" text-anchor="end">${skirtLen.toFixed(1)}"</text>
+
+    <!-- Legend -->
+    <g transform="translate(${PAD}, ${svgH - 30})">
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#3d2f1f" stroke-width="2"/>
+      <text x="26" y="3" font-family="Inter, sans-serif" font-size="10" fill="#3d2f1f">sewing line</text>
+      <line x1="120" y1="0" x2="140" y2="0" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+      <text x="146" y="3" font-family="Inter, sans-serif" font-size="10" fill="#a8612d">cutting line (5/8" SA, 1¼" hem)</text>
+    </g>
+  </svg>`;
+}
+
+// ============================================================
+// SLEEVE PATTERN
+// ============================================================
+function buildSleeveSVG() {
+  const m = state.measurements;
+  const d = state.design;
+  const c = calc();
+  const armLength = m.armLength || 23;
+  const bicep = m.bicep || (m.bust ? m.bust * 0.32 : 13);
+  const wristCirc = m.wristCirc || 6.5;
+  const armholeDepth = c.armholeDepth;
+
+  // Sleeve length depends on style
+  const lengthMap = {
+    sleeveless: 0,
+    cap: 3,
+    short: armLength * 0.3,
+    'three-quarter': armLength * 0.65,
+    long: armLength,
+    bishop: armLength,
+    puff: armLength * 0.3,
+    bell: armLength * 0.85,
+    kimono: armLength * 0.5,
+  };
+  const sleeveLen = lengthMap[d.sleeves] || armLength * 0.3;
+
+  // Sleeve cap height (typical: 1/3 of armhole depth)
+  const capHeight = armholeDepth * 0.6;
+  // Sleeve width at top (bicep + ease)
+  const sleeveTopWidth = bicep + c.ease * 0.5;
+  // Width at hem depends on style
+  let hemWidth;
+  if (d.sleeves === 'bell' || d.sleeves === 'bishop') hemWidth = sleeveTopWidth * 1.4;
+  else if (d.sleeves === 'puff') hemWidth = sleeveTopWidth * 1.3;
+  else if (d.sleeves === 'long') hemWidth = wristCirc + 1.5;
+  else if (d.sleeves === 'three-quarter') hemWidth = sleeveTopWidth * 0.8;
+  else hemWidth = sleeveTopWidth * 0.95;
+
+  const SCALE = 22;
+  const PAD = 70;
+  const SA = 0.625;
+  const halfTop = sleeveTopWidth / 2;
+  const halfHem = hemWidth / 2;
+  const totalWidth = Math.max(halfTop, halfHem) * 2 + 2;
+  const totalHeight = capHeight + sleeveLen + 2;
+  const svgW = totalWidth * SCALE + PAD * 2;
+  const svgH = totalHeight * SCALE + PAD * 2;
+  const cx = svgW / 2;
+  const xp = x => cx + x * SCALE;
+  const yp = y => y * SCALE + PAD;
+
+  // Sleeve outline points
+  const capCenter = { x: 0, y: 0 };
+  const capLeft = { x: -halfTop, y: capHeight };
+  const capRight = { x: halfTop, y: capHeight };
+  const hemLeft = { x: -halfHem, y: capHeight + sleeveLen };
+  const hemRight = { x: halfHem, y: capHeight + sleeveLen };
+
+  // Sleeve cap curve — eased from center top down to underarm at sides
+  const capCurveLeft = `M ${xp(capCenter.x)} ${yp(capCenter.y)}
+    C ${xp(-halfTop * 0.4)} ${yp(0)}, ${xp(-halfTop * 0.85)} ${yp(capHeight * 0.4)}, ${xp(capLeft.x)} ${yp(capLeft.y)}`;
+  const capCurveRight = `M ${xp(capCenter.x)} ${yp(capCenter.y)}
+    C ${xp(halfTop * 0.4)} ${yp(0)}, ${xp(halfTop * 0.85)} ${yp(capHeight * 0.4)}, ${xp(capRight.x)} ${yp(capRight.y)}`;
+
+  // SA outline
+  const saPath = `
+    M ${xp(0)} ${yp(0 - SA)}
+    C ${xp(-halfTop * 0.4)} ${yp(0 - SA)}, ${xp(-halfTop * 0.85 - SA*0.5)} ${yp(capHeight * 0.4)}, ${xp(capLeft.x - SA)} ${yp(capLeft.y)}
+    L ${xp(hemLeft.x - SA)} ${yp(hemLeft.y + SA)}
+    L ${xp(hemRight.x + SA)} ${yp(hemRight.y + SA)}
+    L ${xp(capRight.x + SA)} ${yp(capRight.y)}
+    C ${xp(halfTop * 0.85 + SA*0.5)} ${yp(capHeight * 0.4)}, ${xp(halfTop * 0.4)} ${yp(0 - SA)}, ${xp(0)} ${yp(0 - SA)}
+    Z
+  `;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block; min-width:${svgW}px;">
+    <defs>
+      <pattern id="sleeveGrid" width="${SCALE}" height="${SCALE}" patternUnits="userSpaceOnUse">
+        <path d="M ${SCALE} 0 L 0 0 0 ${SCALE}" fill="none" stroke="#ebe0c8" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="${svgW}" height="${svgH}" fill="#fdfbf6"/>
+    <rect width="${svgW}" height="${svgH}" fill="url(#sleeveGrid)"/>
+
+    <path d="${saPath}" fill="#fdf4e6" stroke="none" opacity="0.7"/>
+    <path d="${saPath}" fill="none" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+
+    <text x="${svgW/2}" y="${PAD - 25}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="20" fill="#3d2f1f" text-anchor="middle">${d.sleeves.replace(/-/g,' ')} sleeve</text>
+
+    <!-- Cap curves -->
+    <path d="${capCurveLeft}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+    <path d="${capCurveRight}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Side seams -->
+    <line x1="${xp(capLeft.x)}" y1="${yp(capLeft.y)}" x2="${xp(hemLeft.x)}" y2="${yp(hemLeft.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(capRight.x)}" y1="${yp(capRight.y)}" x2="${xp(hemRight.x)}" y2="${yp(hemRight.y)}" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Hem -->
+    <line x1="${xp(hemLeft.x)}" y1="${yp(hemLeft.y)}" x2="${xp(hemRight.x)}" y2="${yp(hemRight.y)}" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Grainline (vertical center) -->
+    <line x1="${xp(0)}" y1="${yp(0.3)}" x2="${xp(0)}" y2="${yp(capHeight + sleeveLen - 0.3)}" stroke="#a89478" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="${xp(0)}" y="${yp(capHeight + sleeveLen / 2)}" font-family="Inter, sans-serif" font-size="9" fill="#8b6f47" text-anchor="middle" transform="rotate(-90 ${xp(0)} ${yp(capHeight + sleeveLen / 2)})" letter-spacing="2">GRAINLINE</text>
+
+    <!-- Notches: front (single) and back (double) -->
+    <line x1="${xp(-halfTop * 0.6)}" y1="${yp(capHeight * 0.35) - 4}" x2="${xp(-halfTop * 0.6)}" y2="${yp(capHeight * 0.35) + 4}" stroke="#3d2f1f" stroke-width="1.5"/>
+    <line x1="${xp(halfTop * 0.6) - 2}" y1="${yp(capHeight * 0.35) - 4}" x2="${xp(halfTop * 0.6) - 2}" y2="${yp(capHeight * 0.35) + 4}" stroke="#3d2f1f" stroke-width="1.5"/>
+    <line x1="${xp(halfTop * 0.6) + 2}" y1="${yp(capHeight * 0.35) - 4}" x2="${xp(halfTop * 0.6) + 2}" y2="${yp(capHeight * 0.35) + 4}" stroke="#3d2f1f" stroke-width="1.5"/>
+
+    <!-- Labels -->
+    <text x="${xp(0)}" y="${yp(-0.4)}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f" text-anchor="middle">cap top</text>
+    <text x="${xp(-halfTop * 0.6) - 8}" y="${yp(capHeight * 0.35) + 3}" font-family="Inter, sans-serif" font-size="8" fill="#3d2f1f" text-anchor="end" font-style="italic">front</text>
+    <text x="${xp(halfTop * 0.6) + 8}" y="${yp(capHeight * 0.35) + 3}" font-family="Inter, sans-serif" font-size="8" fill="#3d2f1f" text-anchor="start" font-style="italic">back</text>
+    <text x="${xp(halfTop + 0.3)}" y="${yp(capHeight) + 3}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f">${sleeveTopWidth.toFixed(2)}"</text>
+    <text x="${xp(halfHem + 0.3)}" y="${yp(capHeight + sleeveLen) + 3}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f">${hemWidth.toFixed(2)}"</text>
+
+    <g transform="translate(${PAD}, ${svgH - 20})">
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#3d2f1f" stroke-width="2"/>
+      <text x="26" y="3" font-family="Inter, sans-serif" font-size="10" fill="#3d2f1f">sewing line</text>
+      <line x1="120" y1="0" x2="140" y2="0" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+      <text x="146" y="3" font-family="Inter, sans-serif" font-size="10" fill="#a8612d">cutting line (5/8" SA)</text>
+    </g>
+  </svg>`;
+}
+
+// ============================================================
+// TROUSER PATTERN
+// ============================================================
+function buildTrouserSVG() {
+  const m = state.measurements;
+  const d = state.design;
+  const c = calc();
+  const waist = m.waist || 30;
+  const hip = m.hip || 38;
+  const inseam = m.inseam || 30;
+  const thigh = m.thigh || (hip * 0.5);
+  const knee = m.knee || (thigh * 0.85);
+  const waistToHip = m.waistToHip || 7;
+
+  // Length adjustments based on design.length for jumpsuits
+  const lengthMap = { shorts: 6, capri: inseam * 0.7, full: inseam };
+  const trouserLen = lengthMap[d.length] || inseam;
+
+  const SCALE = 14; // smaller scale because trouser is taller
+  const PAD = 70;
+  const SA = 0.625;
+
+  const waistQ = (waist + 1) / 4;
+  const hipQ = (hip + c.ease) / 4;
+  const thighHalf = thigh / 2 + 0.5;
+  const kneeHalf = knee / 2 + 0.25;
+  const hemHalf = (d.silhouette === 'wide-leg' ? thighHalf * 1.1 : kneeHalf * 0.95);
+
+  // Crotch depth: standard formula = 1/4 hip + 1
+  const crotchDepth = hip / 4 + 1;
+  // Crotch extension (outward at the crotch) front = 1/16 hip, back = 1/8 hip
+  const crotchExtFront = hip / 16;
+  const crotchExtBack = hip / 8;
+
+  const totalWidth = thighHalf + crotchExtBack + 2;
+  const totalHeight = waistToHip + (trouserLen) + 2;
+  const svgW = totalWidth * SCALE + PAD * 2;
+  const svgH = totalHeight * SCALE + PAD * 2;
+
+  // Origin at top-left, with center fold at left edge
+  const xp = x => x * SCALE + PAD;
+  const yp = y => y * SCALE + PAD;
+
+  // Front trouser piece (drawn with center front on left, side seam on right)
+  const F = {
+    cfWaist: { x: 0, y: 0 },
+    sideWaist: { x: waistQ, y: 0 },
+    sideHip: { x: hipQ, y: waistToHip },
+    crotch: { x: -crotchExtFront, y: crotchDepth + waistToHip - waistToHip },
+    sideThigh: { x: thighHalf, y: crotchDepth + waistToHip },
+    sideKnee: { x: kneeHalf, y: trouserLen * 0.55 + waistToHip },
+    sideHem: { x: hemHalf, y: trouserLen + waistToHip },
+    cfHem: { x: -hemHalf * 0.4, y: trouserLen + waistToHip },
+    cfKnee: { x: -kneeHalf * 0.4, y: trouserLen * 0.55 + waistToHip },
+    cfThigh: { x: -crotchExtFront, y: crotchDepth + waistToHip },
+  };
+
+  // SA for trouser front
+  const trouserSA = `
+    M ${xp(0)} ${yp(0 - SA)}
+    L ${xp(F.sideWaist.x + SA)} ${yp(0 - SA)}
+    L ${xp(F.sideHip.x + SA)} ${yp(F.sideHip.y)}
+    L ${xp(F.sideThigh.x + SA)} ${yp(F.sideThigh.y)}
+    L ${xp(F.sideKnee.x + SA)} ${yp(F.sideKnee.y)}
+    L ${xp(F.sideHem.x + SA)} ${yp(F.sideHem.y + SA*1.5)}
+    L ${xp(F.cfHem.x - SA*0.5)} ${yp(F.cfHem.y + SA*1.5)}
+    L ${xp(F.cfKnee.x - SA*0.5)} ${yp(F.cfKnee.y)}
+    L ${xp(F.cfThigh.x - SA*0.5)} ${yp(F.cfThigh.y)}
+    Q ${xp(F.cfThigh.x - SA*1.2)} ${yp(F.cfThigh.y * 0.5 + waistToHip * 0.5)}, ${xp(0)} ${yp(0 - SA)}
+    Z
+  `;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block; min-width:${svgW}px;">
+    <defs>
+      <pattern id="trouserGrid" width="${SCALE}" height="${SCALE}" patternUnits="userSpaceOnUse">
+        <path d="M ${SCALE} 0 L 0 0 0 ${SCALE}" fill="none" stroke="#ebe0c8" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="${svgW}" height="${svgH}" fill="#fdfbf6"/>
+    <rect width="${svgW}" height="${svgH}" fill="url(#trouserGrid)"/>
+
+    <path d="${trouserSA}" fill="#fdf4e6" stroke="none" opacity="0.7"/>
+    <path d="${trouserSA}" fill="none" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+
+    <text x="${svgW/2}" y="${PAD - 25}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="20" fill="#3d2f1f" text-anchor="middle">Trouser front (cut 2)</text>
+
+    <!-- Waist -->
+    <line x1="${xp(0)}" y1="${yp(0)}" x2="${xp(F.sideWaist.x)}" y2="${yp(0)}" stroke="#3d2f1f" stroke-width="2"/>
+    <!-- Side seam: waist to hip to thigh -->
+    <line x1="${xp(F.sideWaist.x)}" y1="${yp(F.sideWaist.y)}" x2="${xp(F.sideHip.x)}" y2="${yp(F.sideHip.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.sideHip.x)}" y1="${yp(F.sideHip.y)}" x2="${xp(F.sideThigh.x)}" y2="${yp(F.sideThigh.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <!-- Side seam: thigh through knee to hem -->
+    <line x1="${xp(F.sideThigh.x)}" y1="${yp(F.sideThigh.y)}" x2="${xp(F.sideKnee.x)}" y2="${yp(F.sideKnee.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.sideKnee.x)}" y1="${yp(F.sideKnee.y)}" x2="${xp(F.sideHem.x)}" y2="${yp(F.sideHem.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <!-- Hem -->
+    <line x1="${xp(F.sideHem.x)}" y1="${yp(F.sideHem.y)}" x2="${xp(F.cfHem.x)}" y2="${yp(F.cfHem.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <!-- Inseam: hem to knee to crotch -->
+    <line x1="${xp(F.cfHem.x)}" y1="${yp(F.cfHem.y)}" x2="${xp(F.cfKnee.x)}" y2="${yp(F.cfKnee.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <line x1="${xp(F.cfKnee.x)}" y1="${yp(F.cfKnee.y)}" x2="${xp(F.cfThigh.x)}" y2="${yp(F.cfThigh.y)}" stroke="#3d2f1f" stroke-width="2"/>
+    <!-- Crotch curve -->
+    <path d="M ${xp(F.cfThigh.x)} ${yp(F.cfThigh.y)} Q ${xp(F.cfThigh.x - 0.5)} ${yp(F.cfThigh.y * 0.5 + waistToHip * 0.5)}, ${xp(0)} ${yp(0)}" fill="none" stroke="#3d2f1f" stroke-width="2"/>
+
+    <!-- Hip line reference -->
+    <line x1="${xp(F.cfThigh.x - 0.3)}" y1="${yp(waistToHip)}" x2="${xp(F.sideHip.x)}" y2="${yp(F.sideHip.y)}" stroke="#a89478" stroke-width="1" stroke-dasharray="2,3"/>
+    <text x="${xp(F.sideHip.x + 0.3)}" y="${yp(F.sideHip.y) + 3}" font-family="Inter, sans-serif" font-size="9" fill="#a89478" font-style="italic">hip</text>
+
+    <!-- Knee line reference -->
+    <line x1="${xp(F.cfKnee.x - 0.3)}" y1="${yp(F.cfKnee.y)}" x2="${xp(F.sideKnee.x + 0.3)}" y2="${yp(F.sideKnee.y)}" stroke="#a89478" stroke-width="1" stroke-dasharray="2,3"/>
+    <text x="${xp(F.sideKnee.x + 0.5)}" y="${yp(F.sideKnee.y) + 3}" font-family="Inter, sans-serif" font-size="9" fill="#a89478" font-style="italic">knee</text>
+
+    <!-- Grainline -->
+    <line x1="${xp(F.sideThigh.x * 0.3 + F.cfThigh.x * 0.7)}" y1="${yp(waistToHip + 0.5)}" x2="${xp(F.sideHem.x * 0.3 + F.cfHem.x * 0.7)}" y2="${yp(F.cfHem.y - 0.3)}" stroke="#a89478" stroke-width="1" stroke-dasharray="4,3"/>
+
+    <text x="${xp(F.sideWaist.x / 2)}" y="${yp(-0.3)}" font-family="Inter, sans-serif" font-size="9" fill="#3d2f1f" text-anchor="middle">${waistQ.toFixed(2)}"</text>
+
+    <g transform="translate(${PAD}, ${svgH - 20})">
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#3d2f1f" stroke-width="2"/>
+      <text x="26" y="3" font-family="Inter, sans-serif" font-size="10" fill="#3d2f1f">sewing line</text>
+      <line x1="120" y1="0" x2="140" y2="0" stroke="#a8612d" stroke-width="1.3" stroke-dasharray="8,4"/>
+      <text x="146" y="3" font-family="Inter, sans-serif" font-size="10" fill="#a8612d">cutting line (5/8" SA, 1¼" hem)</text>
+    </g>
+  </svg>`;
+}
+
+// ============================================================
+// JACKET PATTERN (with lapels, wider for outerwear)
+// ============================================================
+// ============================================================
+// CONSTRUCTION INSTRUCTIONS
+// ============================================================
+function renderInstructions() {
+  const d = state.design;
+  const m = state.measurements;
+  const c = calc();
+
+  const container = document.getElementById('instructionsContainer');
+  if (!container) return;
+
+  const sections = [];
+
+  // Materials
+  sections.push({
+    title: 'Materials',
+    content: getMaterialsContent(d, m, c)
+  });
+
+  // Cutting
+  sections.push({
+    title: 'Cutting',
+    content: getCuttingContent(d)
+  });
+
+  // Construction by garment type
+  if (d.garment === 'skirt') {
+    sections.push({ title: 'Skirt construction', content: getSkirtConstruction(d) });
+  } else if (d.garment === 'jumpsuit') {
+    sections.push({ title: 'Bodice', content: getBodiceConstruction(d) });
+    sections.push({ title: 'Trousers', content: getTrouserConstruction(d) });
+    sections.push({ title: 'Joining bodice and trousers', content: getJumpsuitJoinContent(d) });
+  } else {
+    sections.push({ title: 'Bodice darts', content: getDartsContent(d) });
+    sections.push({ title: 'Bodice assembly', content: getBodiceConstruction(d) });
+    if (d.sleeves !== 'sleeveless') {
+      sections.push({ title: 'Sleeves', content: getSleeveContent(d) });
+    }
+    if (d.garment === 'dress') {
+      sections.push({ title: 'Skirt and attaching', content: getSkirtConstruction(d) + getAttachContent(d) });
+    }
+  }
+
+  // Closure
+  sections.push({ title: 'Closure', content: getClosureContent(d) });
+
+  // Hemming
+  sections.push({ title: 'Hemming and finishing', content: getHemContent(d) });
+
+  // Fitting
+  sections.push({ title: 'Final fitting', content: getFittingContent(d) });
+
+  container.innerHTML = sections.map((s, i) => `
+    <section class="instruction-section">
+      <span class="section-num">§ ${romanize(i + 1)}</span>
+      <h3>${s.title}</h3>
+      ${s.content}
+    </section>
+  `).join('');
+}
+
+function romanize(n) {
+  const r = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+  return r[n] || n;
+}
+
+function toggleInstructions() {
+  const content = document.getElementById('instructionsContent');
+  const button = document.getElementById('instructionsToggle');
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    button.textContent = 'Hide Guide ▴';
+  } else {
+    content.style.display = 'none';
+    button.textContent = 'Show Guide ▾';
+  }
+}
+
+function printInstructions() {
+  // Make sure the guide is open before printing
+  const content = document.getElementById('instructionsContent');
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    document.getElementById('instructionsToggle').textContent = 'Hide Guide ▴';
+  }
+  setTimeout(() => window.print(), 100);
+}
+
+function step(n, text) {
+  return `<div class="step"><div class="step-num">${n}.</div><div class="step-body">${text}</div></div>`;
+}
+
+function tip(label, text) {
+  return `<div class="tip"><strong>${label}</strong> ${text}</div>`;
+}
+
+function getMaterialsContent(d, m, c) {
+  // Estimate fabric yardage
+  const bust = m.bust || 38;
+  let yards = 2;
+  if (d.garment === 'dress') yards = 3 + (c.fba > 0 ? 0.5 : 0);
+  if (d.garment === 'skirt') yards = 2;
+  if (d.garment === 'blouse' || d.garment === 'top') yards = 1.75;
+  if (d.garment === 'jacket') yards = 2.5;
+  if (d.garment === 'jumpsuit') yards = 3.5;
+  if (d.silhouette === 'circle') yards += 1.5;
+  if (d.silhouette === 'gathered' || d.silhouette === 'pleated') yards += 0.5;
+  if (d.length === 'maxi' || d.length === 'floor') yards += 1;
+  const metres = (yards * 0.9144).toFixed(1);
+
+  const closureNote = d.closure === 'buttons' ? `${5 + (d.length === 'maxi' || d.length === 'long' ? 3 : 0)} buttons` :
+    d.closure === 'cb-zipper' ? `${d.garment === 'dress' ? '22' : '14'}" all-purpose dress zipper` :
+    d.closure === 'cb-invisible' ? `${d.garment === 'dress' ? '22' : '14'}" invisible zipper` :
+    d.closure === 'side-zipper' ? '7-9" invisible zipper' :
+    d.closure === 'wrap' ? 'No closures needed' :
+    'No closures needed';
+
+  return `
+    <div class="materials-list">
+      <strong>Fabric:</strong>
+      <ul>
+        <li><strong>Fashion fabric:</strong> approximately ${yards.toFixed(1)} yards (${metres}m) of 45"/115cm wide fabric</li>
+        ${d.garment === 'dress' || d.garment === 'jacket' ? '<li><strong>Lining (optional but recommended):</strong> 1 yard / 0.9m</li>' : ''}
+        <li><strong>Interfacing:</strong> ¼ yard fusible lightweight</li>
+      </ul>
+      <strong style="display:block;margin-top:12px;">Notions:</strong>
+      <ul>
+        <li><strong>Closure:</strong> ${closureNote}</li>
+        <li>Thread (color-matched, polyester all-purpose)</li>
+        <li>Pins, fabric shears, seam ripper, tailor's chalk, ruler</li>
+      </ul>
+    </div>
+    ${tip('Pre-wash everything.', 'Wash and iron your fabric and lining before cutting. Fabric shrinks, and a garment that fits before washing won\'t after.')}
+  `;
+}
+
+function getCuttingContent(d) {
+  const isOnFold = !['buttons', 'wrap'].includes(d.closure);
+  const cfNote = isOnFold ? 'on the fold (no center front seam)' : 'with center front seam allowance + facing';
+  const cbNote = ['cb-zipper', 'cb-invisible'].includes(d.closure) ? 'with center back seam allowance for zipper' : 'on the fold';
+  const sleeveNote = d.sleeves !== 'sleeveless' ? `<li><strong>Sleeve × 2</strong> (mirrored)</li>` : '';
+  const skirtNote = d.garment === 'dress' ? `<li><strong>Skirt front × 1</strong>, on fold</li><li><strong>Skirt back × 2</strong>, mirrored, ${cbNote.includes('zipper') ? 'with CB seam' : 'on the fold'}</li>` : '';
+
+  return `
+    <p>Pieces to cut from fashion fabric:</p>
+    <div class="materials-list">
+      <ul>
+        ${d.garment !== 'skirt' ? `<li><strong>Bodice front × 1</strong>, ${cfNote}</li><li><strong>Bodice back × 2</strong>, mirrored, ${cbNote}</li>` : ''}
+        ${skirtNote}
+        ${d.garment === 'skirt' ? `<li><strong>Skirt front × 1</strong>, on fold</li><li><strong>Skirt back × 2</strong>, mirrored, with CB seam</li>` : ''}
+        ${d.garment === 'jumpsuit' ? '<li><strong>Trouser front × 2</strong> (mirrored)</li><li><strong>Trouser back × 2</strong> (mirrored)</li>' : ''}
+        ${sleeveNote}
+      </ul>
+    </div>
+    ${step(1, '<strong>Lay fabric flat</strong> on a large surface. Pre-washed and ironed.')}
+    ${step(2, '<strong>Pin pattern pieces</strong> with grainline parallel to the selvage. Trace around each piece — your pattern already includes ⅝" seam allowance, so just cut along the dashed orange line.')}
+    ${step(3, '<strong>Transfer all marks</strong> to the fabric using tailor\'s chalk: dart points, notches, apex, seam line if needed.')}
+  `;
+}
+
+function getDartsContent(d) {
+  return `
+    <p>Bust and waist darts shape the flat fabric to your body curves. This is the most fitting-critical step.</p>
+    <h4 style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;margin:16px 0 8px;color:#5e4731;">Side bust dart (front)</h4>
+    ${step(1, 'With wrong side up, fold the dart along its center line, matching the dart legs. Pin from the wide opening (at side seam) toward the point (toward apex).')}
+    ${step(2, 'Sew from the wide opening toward the point. <strong>Stop ¼"–½" before the point</strong> — do NOT sew all the way through. This prevents puckering at the bust.')}
+    ${step(3, 'At the point, <strong>do not backstitch</strong>. Leave 4" thread tails, hand-tie a small knot at the point, snip ends to ½".')}
+    ${step(4, 'Press the dart <strong>downward</strong> over a tailor\'s ham. Never press flat — it destroys the bust shaping.')}
+    <h4 style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;margin:16px 0 8px;color:#5e4731;">Waist darts (front and back)</h4>
+    ${step(5, 'Sew from waist edge toward dart point. Stop short and tie off, never backstitch.')}
+    ${step(6, 'Press front waist darts toward center front; back waist darts toward center back.')}
+    ${tip('The tailor\'s ham trick:', 'A tailor\'s ham lets you press curved seams without flattening them. No ham? Roll up a thick towel tightly and tie it.')}
+  `;
+}
+
+function getBodiceConstruction(d) {
+  const isLined = d.garment === 'dress' || d.garment === 'jacket';
+  return `
+    ${step(1, 'Place bodice front and back <strong>right sides together</strong>, matching shoulder seams. Pin.')}
+    ${step(2, 'Sew shoulder seams at ⅝", backstitching at start and end. Press open.')}
+    ${step(3, 'Pin side seams right sides together, matching underarm and waist. Sew at ⅝" from underarm to waist. Press open.')}
+    ${isLined ? step(4, 'Repeat steps 1-3 with the lining pieces. You now have two identical bodice shapes — one in fashion fabric, one in lining.') : ''}
+    ${isLined ? step(5, 'Place the lining inside the shell, right sides together. Match the neckline and pin. Sew the neckline at ⅝".') : ''}
+    ${isLined ? step(6, 'Match and pin armhole edges. Sew each armhole at ⅝".') : ''}
+    ${isLined ? step(7, 'Clip and notch the curves at neckline and armholes. Turn right side out. Press flat, rolling the seam slightly toward the lining side.') : ''}
+    ${isLined ? step(8, 'Understitch the neckline: sew the lining to the seam allowances ⅛" from the seam, all around. This stops the lining from rolling out and is the secret to a clean finish.') : ''}
+    ${!isLined ? tip('Finishing raw edges:', 'Since this isn\'t lined, finish the inside seam allowances with a zigzag stitch or serger to prevent fraying.') : ''}
+  `;
+}
+
+function getSleeveContent(d) {
+  return `
+    ${step(1, 'Sew the sleeve underarm seam (right sides together) at ⅝". Press open.')}
+    ${step(2, '<strong>Ease the sleeve cap:</strong> sew two rows of long basting stitches around the cap (between the notches), one ⅜" from edge and one ½" from edge. Pull bobbin threads gently to gather slightly.')}
+    ${step(3, 'With bodice inside out and sleeve right side out, slip the sleeve into the armhole. Match the underarm seam to the side seam, the cap top to the shoulder seam, and the front notch (single) to the front, back notches (double) to the back.')}
+    ${step(4, 'Pin all the way around, distributing the cap ease evenly — no tucks or gathers should be visible on the right side.')}
+    ${step(5, 'Sew at ⅝" with the sleeve side up so you can control any easing. Backstitch start and end.')}
+    ${step(6, 'Hem the sleeve: turn under ¾" and press, then ¾" again and press. Topstitch or hand-stitch.')}
+    ${tip('Sleeve cap easing:', 'A well-eased cap has no tucks but a slight roundness when worn. If you see puckers, the cap was eased too much — release and re-distribute.')}
+  `;
+}
+
+function getSkirtConstruction(d) {
+  const hasCB = ['cb-zipper', 'cb-invisible'].includes(d.closure);
+  return `
+    ${step(1, 'Pin front and back skirt panels right sides together at the <strong>side seams only</strong>.')}
+    ${step(2, 'Sew side seams at ⅝" from waist to hem, backstitching both ends. Press open.')}
+    ${hasCB ? step(3, 'Center back stays open for zipper installation. Finish the CB raw edges with zigzag or serger.') : step(3, 'Center back is on the fold — already a closed seam.')}
+    ${d.silhouette === 'circle' || d.silhouette === 'a-line' ? tip('Let it drop:', 'A flared skirt cut on the bias at the side seams will stretch and "drop" over 24 hours. Hang the skirt overnight before measuring or marking the hem.') : ''}
+  `;
+}
+
+function getAttachContent(d) {
+  return `
+    ${step(1, 'With bodice <strong>shell side out</strong>, align the skirt waist with the bodice waist, right sides together.')}
+    ${step(2, 'Match center fronts and side seams (skirt to bodice). Pin all around the waist.')}
+    ${step(3, 'Sew the waist seam at ⅝", catching all layers (shell + lining + skirt).')}
+    ${step(4, 'Press the waist seam upward toward the bodice.')}
+    ${tip('Try it on now:', 'Before installing the closure, baste the back temporarily and try the dress on. This is your last easy chance to make adjustments.')}
+  `;
+}
+
+function getTrouserConstruction(d) {
+  return `
+    ${step(1, '<strong>Sew the front and back inseams</strong> first. Pin each leg\'s inseam right sides together. Sew at ⅝" from crotch to hem. Press open.')}
+    ${step(2, '<strong>Sew the outer side seams.</strong> Sew at ⅝" from waist to hem. Press open.')}
+    ${step(3, '<strong>Sew the crotch seam.</strong> Turn one leg right side out, slip it inside the other (which stays inside out). Match crotch curves and inseam intersections. Sew the crotch from front waist around to back waist. Reinforce by sewing again.')}
+    ${tip('Crotch curve precision:', 'The crotch curve is the highest-stress seam in trousers. Sew slowly, keep the curve smooth, and reinforce with a second pass of stitching.')}
+  `;
+}
+
+function getJumpsuitJoinContent(d) {
+  return `
+    ${step(1, 'Construct the bodice and trousers separately following the sections above.')}
+    ${step(2, 'With bodice shell side out, align the trouser waist with the bodice waist, right sides together. Match center fronts, side seams, and center backs.')}
+    ${step(3, 'Sew the waist seam at ⅝".')}
+    ${step(4, 'Press the waist seam toward the bodice.')}
+  `;
+}
+
+function getClosureContent(d) {
+  if (d.closure === 'cb-zipper') {
+    return `
+      <p>Centered (regular) zipper at center back.</p>
+      ${step(1, 'Press both center back edges under by ⅝" (the seam allowance). The two folded edges should meet at the center.')}
+      ${step(2, 'Baste the center back closed: from the hem up to where the zipper bottom will sit, sew a regular ⅝" seam. From there to the neckline, use the longest basting stitch (no backstitch).')}
+      ${step(3, 'Press the entire center back seam open.')}
+      ${step(4, 'With dress wrong side up, place the closed zipper face-down over the basted seam. Top zipper stop ½" below the neckline edge. Pin only through seam allowances.')}
+      ${step(5, 'Switch to a zipper foot. Sew down one side of the zipper tape, ⅜" from the teeth, then up the other side.')}
+      ${step(6, 'Remove the basting stitches with a seam ripper to reveal the zipper.')}
+      ${step(7, 'Hand-stitch the lining edges to the zipper tape on the inside, covering the raw edges.')}
+      ${step(8, 'Sew a hook and eye at the very top of the zipper.')}
+      ${tip('Match across the waist:', 'Before sewing, make sure the bodice waist seam aligns perfectly across the zipper opening. Even ¼" misalignment looks sloppy.')}
+    `;
+  }
+  if (d.closure === 'cb-invisible') {
+    return `
+      <p>Invisible zipper at center back. Cleaner finish than a regular zipper but slightly trickier to install.</p>
+      ${step(1, 'Do NOT sew the center back seam yet. Press both CB edges flat.')}
+      ${step(2, '<strong>Open the zipper fully.</strong> Place the right side of one zipper tape against the right side of one CB edge, with the zipper teeth facing inward and the zipper tape against the seam line.')}
+      ${step(3, 'Switch to an invisible zipper foot. Sew right next to the zipper teeth, rolling them out of the way as you go.')}
+      ${step(4, 'Repeat on the other side. Close the zipper to check.')}
+      ${step(5, 'Now sew the rest of the center back seam below the zipper, using a regular zipper foot to get as close as possible to the zipper bottom stop.')}
+      ${tip('Roll the teeth:', 'The trick to a truly invisible zipper is keeping the teeth rolled outward as you sew, so the stitching sits right at the base of the teeth.')}
+    `;
+  }
+  if (d.closure === 'side-zipper') {
+    return `
+      <p>Invisible zipper at the left side seam.</p>
+      ${step(1, 'Do not sew the left side seam yet (sew the right one as normal).')}
+      ${step(2, 'Install the invisible zipper on the left side seam following invisible zipper instructions: place tape against fabric edges right sides together, sew next to teeth with invisible zipper foot.')}
+      ${step(3, 'Sew the rest of the side seam below the zipper.')}
+    `;
+  }
+  if (d.closure === 'buttons') {
+    return `
+      <p>Button placket down the center front.</p>
+      ${step(1, 'Reinforce both center front edges with fusible interfacing strips (1.5" wide).')}
+      ${step(2, 'On each CF edge, fold under ⅝" toward wrong side and press. Then fold again by 1" to create a placket. Press well.')}
+      ${step(3, 'Topstitch ⅛" from the inner fold and again ⅛" from the outer fold. This creates a finished placket.')}
+      ${step(4, '<strong>Mark buttonhole positions</strong> on the right side (for women\'s wear). Buttonholes should be vertically oriented on a placket, horizontally on bodices that pull stress.')}
+      ${step(5, 'Make buttonholes on your sewing machine using the buttonhole foot. Test on a scrap first to find the right size for your buttons.')}
+      ${step(6, 'Sew buttons on the left side, aligning with the buttonholes.')}
+      ${tip('Buttonhole stress test:', 'A buttonhole at the bust is under stress. Place one exactly at the apex level to prevent gaping.')}
+    `;
+  }
+  if (d.closure === 'wrap') {
+    return `
+      <p>Wrap closure with ties.</p>
+      ${step(1, 'Cut two long fabric ties: about 30" × 2" each.')}
+      ${step(2, 'Fold each tie lengthwise right sides together, sew along the long edge and one short end. Turn right side out, press.')}
+      ${step(3, 'Sew one tie to each side seam at the natural waist, on the right side of the dress.')}
+      ${step(4, 'On the side that wraps over (top layer), make a small buttonhole or eyelet at the side seam where the tie from the underneath layer can come through.')}
+    `;
+  }
+  return `
+    <p>No closure needed — pullover construction.</p>
+    ${step(1, 'Make sure the neckline opening is wide enough to fit over the head. The neckline plus stretch should be at least 22-23".')}
+  `;
+}
+
+function getHemContent(d) {
+  return `
+    ${step(1, '<strong>Let the garment hang for 24 hours</strong> on a hanger before hemming, especially for bias or flared cuts.')}
+    ${step(2, 'Try the garment on with the shoes you\'ll wear. Mark hem position with pins, measuring up from the floor.')}
+    ${step(3, 'Take it off, trim the hem allowance: ¾" for narrow hem, 1¼" for standard hem.')}
+    ${step(4, 'Finish the raw edge with zigzag, serger, or rolled hem. For curved hems, never fold a wide hem allowance twice — it puckers.')}
+    ${step(5, 'Fold up by your hem allowance and press. Pin in place.')}
+    ${step(6, '<strong>Hand-stitch with a blind hem stitch.</strong> Visible machine stitching cheapens a fitted garment.')}
+    ${tip('Couture finish:', 'Cover the raw edge with rayon hem tape (seam binding) before folding up. The binding adds weight and helps the hem hang smoothly.')}
+  `;
+}
+
+function getFittingContent(d) {
+  return `
+    <p>Before declaring it finished, try the garment on and check:</p>
+    <ul style="font-size:13px;line-height:1.8;">
+      ${d.garment !== 'skirt' ? '<li><strong>Neckline:</strong> Lies flat against the chest with no gaping.</li>' : ''}
+      ${d.garment !== 'skirt' ? '<li><strong>Bust apex:</strong> Dart points to your apex.</li>' : ''}
+      <li><strong>Waist seam:</strong> Sits at your natural waist, horizontal all around.</li>
+      ${d.sleeves && d.sleeves !== 'sleeveless' ? '<li><strong>Armhole:</strong> No pulling, no gaping. You can raise your arms moderately.</li>' : ''}
+      <li><strong>Side seams:</strong> Fall straight down vertically. If they swing forward, the back is too short.</li>
+      <li><strong>Hem:</strong> Even all the way around when standing on a flat surface.</li>
+      ${d.closure !== 'pullover' && d.closure !== 'wrap' ? '<li><strong>Closure:</strong> Lies flat, doesn\'t pull or pucker.</li>' : ''}
+    </ul>
+    ${tip('Document your fit notes.', 'Whatever needed adjustment this time, write it down. Next garment, you\'ll start with that knowledge already built in.')}
+    <p style="text-align:center;margin:32px 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:#8b6f47;">✦ ✦ ✦</p>
+  `;
+}
+
+// ============================================================
+// EXPORT FUNCTIONS
+// ============================================================
+function downloadSVG() {
+  const svgEl = document.getElementById('patternSvg');
+  if (!svgEl) return;
+  const clone = svgEl.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  const svgStr = '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
+  const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `pattern-${state.design.garment}-${Date.now()}.svg`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function openPrintView() {
+  const svgEl = document.getElementById('patternSvg');
+  if (!svgEl) return;
+  const paperSize = document.getElementById('paperSize').value;
+  const paperSizes = {
+    letter: { w: 8.5, h: 11, name: 'Letter' },
+    a4: { w: 8.27, h: 11.69, name: 'A4' },
+    legal: { w: 8.5, h: 14, name: 'Legal' },
+    tabloid: { w: 11, h: 17, name: 'Tabloid' },
+  };
+  const paper = paperSizes[paperSize];
+  const margin = 0.5, overlap = 0.5;
+  const usableW = paper.w - margin * 2;
+  const usableH = paper.h - margin * 2;
+  const tileW = usableW - overlap;
+  const tileH = usableH - overlap;
+  const PRINT_DPI = 96;
+
+  const svgW = parseFloat(svgEl.getAttribute('width'));
+  const svgH = parseFloat(svgEl.getAttribute('height'));
+  const SCALE = state.design.garment === 'skirt' ? 18 : 22;
+  const printScale = PRINT_DPI / SCALE;
+  const patternPxW = svgW * printScale;
+  const patternPxH = svgH * printScale;
+  const totalInchesW = svgW / SCALE;
+  const totalInchesH = svgH / SCALE;
+  const realCols = Math.ceil(totalInchesW / tileW);
+  const realRows = Math.ceil(totalInchesH / tileH);
+
+  const innerSvg = svgEl.outerHTML;
+
+  let tilesHtml = '';
+  for (let r = 0; r < realRows; r++) {
+    for (let c = 0; c < realCols; c++) {
+      const tileNum = r * realCols + c + 1;
+      const offsetXpx = -(c * tileW) * PRINT_DPI;
+      const offsetYpx = -(r * tileH) * PRINT_DPI;
+      const showRightTrim = c < realCols - 1;
+      const showBottomTrim = r < realRows - 1;
+      const showLeftTape = c > 0;
+      const showTopTape = r > 0;
+      tilesHtml += `
+        <div class="tile-page">
+          <div class="tile-header">
+            <span class="tile-id">R${r+1} · C${c+1}</span>
+            <span class="tile-num">Tile ${tileNum} of ${realCols * realRows}</span>
+          </div>
+          <div class="tile-content">
+            <div class="pattern-window">
+              <div class="svg-positioner" style="left:${offsetXpx}px;top:${offsetYpx}px;width:${patternPxW}px;height:${patternPxH}px;">
+                ${innerSvg}
+              </div>
+            </div>
+            ${showRightTrim ? '<div class="trim-right"><span>trim &rarr;</span></div>' : ''}
+            ${showBottomTrim ? '<div class="trim-bottom"><span>trim &darr;</span></div>' : ''}
+            ${showLeftTape ? `<div class="neighbor neighbor-left">&larr; tape to R${r+1}C${c}</div>` : ''}
+            ${showTopTape ? `<div class="neighbor neighbor-top">&uarr; tape to R${r}C${c+1}</div>` : ''}
+          </div>
+        </div>`;
+    }
+  }
+
+  const w = window.open('', '_blank');
+  if (!w) {
+    document.getElementById('exportMessage').innerHTML = '<div class="info-banner"><strong>Pop-up blocked.</strong> Please allow pop-ups for this site, then click Print again.</div>';
+    return;
+  }
+  w.document.write(`<!DOCTYPE html><html><head><title>Pattern — Print Tiles</title>
+<style>
+@page { size: ${paper.w}in ${paper.h}in; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0; font-family: Georgia, serif; background: #f5f1ea; }
+.screen-only { padding: 30px; max-width: 700px; margin: 0 auto; }
+.screen-only h1 { font-style: italic; font-size: 28pt; margin: 0 0 10px 0; color: #3d2f1f; }
+.screen-only h2 { font-size: 14pt; margin: 25px 0 10px 0; color: #5e4731; font-style: italic; font-weight: normal; }
+.screen-only p, .screen-only li { font-size: 11pt; line-height: 1.6; color: #3d2f1f; }
+.print-btn { background: #3d2f1f; color: #f5f1ea; border: none; padding: 14px 30px; font-size: 12pt; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin: 10px 5px; font-family: Arial, sans-serif; }
+.info-box { background: #ede5d6; border-left: 4px solid #a8612d; padding: 15px 20px; margin: 20px 0; }
+.tile-page { width: ${paper.w}in; height: ${paper.h}in; page-break-after: always; position: relative; background: white; overflow: hidden; margin: 20px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.tile-page:last-child { page-break-after: auto; }
+.tile-header { position: absolute; top: 0.15in; left: ${margin}in; right: ${margin}in; display: flex; justify-content: space-between; font-family: Arial, sans-serif; font-size: 10pt; color: #3d2f1f; z-index: 10; }
+.tile-id { font-weight: bold; letter-spacing: 1px; }
+.tile-num { color: #8b6f47; font-style: italic; }
+.tile-content { position: absolute; top: ${margin}in; left: ${margin}in; width: ${usableW}in; height: ${usableH}in; overflow: hidden; }
+.pattern-window { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+.svg-positioner { position: absolute; }
+.svg-positioner svg { width: 100% !important; height: 100% !important; display: block; }
+.trim-right { position: absolute; top: 0; right: ${overlap}in; width: 1px; height: 100%; background-image: linear-gradient(to bottom, #a8612d 50%, transparent 50%); background-size: 1px 6px; }
+.trim-right span { position: absolute; top: 50%; right: 4px; transform: rotate(-90deg); transform-origin: right center; font-family: Arial, sans-serif; font-size: 7pt; color: #a8612d; background: white; padding: 1px 4px; }
+.trim-bottom { position: absolute; left: 0; bottom: ${overlap}in; width: 100%; height: 1px; background-image: linear-gradient(to right, #a8612d 50%, transparent 50%); background-size: 6px 1px; }
+.trim-bottom span { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); font-family: Arial, sans-serif; font-size: 7pt; color: #a8612d; background: white; padding: 1px 4px; }
+.neighbor { position: absolute; font-family: Arial, sans-serif; font-size: 7pt; color: #a89478; font-style: italic; }
+.neighbor-left { left: 4px; top: 50%; transform: rotate(-90deg) translateX(50%); transform-origin: left center; white-space: nowrap; }
+.neighbor-top { top: 4px; left: 50%; transform: translateX(-50%); }
+@media print { .screen-only { display: none !important; } body { background: white; } .tile-page { margin: 0; box-shadow: none; } }
+</style></head><body>
+<div class="screen-only">
+  <h1>Your Pattern</h1>
+  <p style="color: #8b6f47; font-style: italic;">Tiled for ${paper.name} · ${realCols} × ${realRows} = ${realCols * realRows} pages</p>
+  <button class="print-btn" onclick="window.print()">🖨 Print Now</button>
+  <div class="info-box"><strong>Important:</strong> Set print scale to "Actual Size" or "100%" — never "Fit to Page". To save as PDF, choose "Save as PDF" as the destination.</div>
+  <h2>Verifying scale</h2>
+  <p>One page has a 1-inch test square. Measure it with a ruler after printing. Should be exactly 1".</p>
+  <h2>Assembly</h2>
+  <ol>
+    <li>Lay pages out: ${realCols} across, ${realRows} down. Each is labeled R·C at the top.</li>
+    <li>Trim along the dashed orange line on the right and bottom edges of each tile.</li>
+    <li>Place trimmed edges over neighboring pages, line up the pattern lines, tape from the front.</li>
+  </ol>
+  <hr style="margin: 30px 0; border: none; border-top: 1px solid #d4c5b0;">
+  <p style="color: #8b6f47; font-size: 9pt;">Tiles below ↓</p>
+</div>
+${tilesHtml}
+</body></html>`);
+  w.document.close();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderDesign();
+</script>
+
+</body>
+</html>
