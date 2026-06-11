@@ -1117,6 +1117,23 @@
     color: var(--craft-deep);
     font-weight: 600;
   }
+  .payment-note {
+    background: var(--craft-pale);
+    border: 1px solid var(--craft-soft);
+    border-left: 4px solid var(--craft);
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .payment-note strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--craft-deep);
+    display: block;
+    margin-bottom: 4px;
+  }
   .booking-disclaimer {
     background: var(--cream-soft);
     border-left: 3px solid var(--craft);
@@ -1598,7 +1615,7 @@
         <button class="btn">Launch Pattern Generator →</button>
       </a>
       <p style="font-size: 11px; color: #8b6f47; margin-top: 16px; text-transform: uppercase; letter-spacing: 1.5px;">
-        First download free · Every pattern after $1.50
+        Free to use · Custom patterns made for your measurements
       </p>
     </div>
 
@@ -1689,9 +1706,6 @@
 
         <button class="btn" style="width: 100%; margin-top: 16px;" onclick="printLayout()">🖨 Print Layout</button>
         <button class="btn btn-outline" style="width: 100%; margin-top: 8px;" onclick="downloadSVG()">⬇ Download SVG</button>
-        <p style="font-size: 10px; color: var(--ink-muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1.5px; text-align: center;">
-          First download free · $1.50 each after
-        </p>
       </div>
 
       <!-- Preview -->
@@ -2233,9 +2247,6 @@
         </div>
 
         <button class="btn" style="width: 100%; margin-top: 16px;" onclick="printCard()">🖨 Print Template</button>
-        <p style="font-size: 10px; color: var(--ink-muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1.5px; text-align: center;">
-          First download free · $1.50 each after
-        </p>
       </div>
 
       <!-- Preview -->
@@ -2572,7 +2583,7 @@
 
 <footer class="brand-footer">
   <div class="container">
-    <div class="footer-pricing">First download free · Every pattern, template, or layout after $1.50</div>
+    <div class="footer-pricing">Free tools · Lessons available by booking</div>
     <div style="margin-top: 24px; font-family: 'Cormorant Garamond', serif; font-style: italic; color: #8b6f47;">
       ✦ Made Anew ✦
     </div>
@@ -2675,21 +2686,11 @@ function openBooking(name, price, duration, category) {
       </div>
 
       <div class="form-row">
-        <label>How will you pay?</label>
-        <div class="payment-options">
-          <div class="payment-option">
-            <input type="radio" name="payment" id="pay-venmo" value="Venmo" checked>
-            <label for="pay-venmo">Venmo</label>
-          </div>
-          <div class="payment-option">
-            <input type="radio" name="payment" id="pay-zelle" value="Zelle">
-            <label for="pay-zelle">Zelle</label>
-          </div>
-          <div class="payment-option">
-            <input type="radio" name="payment" id="pay-cash" value="Cash">
-            <label for="pay-cash">Cash</label>
-          </div>
+        <label>Payment</label>
+        <div class="payment-note">
+          <strong>Interac e-Transfer</strong> — once your booking is confirmed, I'll send you my email for the transfer. Payment is due before the lesson begins.
         </div>
+        <input type="hidden" name="payment" value="Interac e-Transfer">
       </div>
 
       <div class="booking-disclaimer">
@@ -3448,7 +3449,7 @@ function openLetteringStyle(styleId) {
         A printable PDF with the full alphabet (uppercase, lowercase, numbers), guide lines, sample words, and blank ruled rows for tracing practice.
       </p>
       <button class="btn" onclick="purchaseLetteringSheet('${styleId}')">Download practice sheet</button>
-      <div class="price-line">First download free · $1.50 each after</div>
+      <div class="price-line">Free practice sheet</div>
     </div>
   `;
 
@@ -3469,7 +3470,7 @@ function closeLetteringIfBackdrop(event) {
 
 function purchaseLetteringSheet(styleId) {
   const style = LETTERING_DATA[styleId];
-  alert(`To download the "${style.name}" practice sheet, email i20200289@gmail.com with the style name. (When the site is live, this will be a real download flow with payment.)`);
+  alert(`To request the "${style.name}" practice sheet, email i20200289@gmail.com with the style name. I'll send it to you!`);
 }
 
 // Close modal on ESC key
