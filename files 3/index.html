@@ -1,0 +1,3640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Made Anew — Crafts, Patterns & Lessons</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  /* ============= TUSCAN DUSK COLOR SYSTEM =============
+     Palette pulled from the hillside photo: warm peach sunset,
+     soft dusty blue evening sky, cream stucco, terracotta roofs,
+     sage cypress, deep mountain blue.
+  */
+  :root {
+    /* Base (always present) */
+    --cream:        #f7f1e6;  /* warm cream stucco */
+    --cream-soft:   #ede2d0;  /* sun-warmed wall */
+    --cream-deeper: #ddc9ad;  /* aged sandstone */
+    --ink:          #2d3a4d;  /* mountain dusk blue */
+    --ink-soft:     #4a5a70;  /* sky at twilight */
+    --ink-muted:    #7a8b9c;  /* distant haze */
+    --line:         #cdb89a;  /* warm beige line */
+
+    /* Default theme — overridden per-craft below */
+    --craft:        #c8755e;
+    --craft-soft:   #f0d4c6;
+    --craft-pale:   #faeae0;
+    --craft-deep:   #94503d;
+  }
+
+  /* Per-craft themes */
+  body.theme-home {
+    --craft: #c8755e;       /* terracotta sunset */
+    --craft-soft: #f0d4c6;
+    --craft-pale: #faeae0;
+    --craft-deep: #94503d;
+  }
+  body.theme-sewing {
+    --craft: #b85563;       /* dusty rose */
+    --craft-soft: #f4d8dc;
+    --craft-pale: #fbeef0;
+    --craft-deep: #8a3d49;
+  }
+  body.theme-scrapbooking {
+    --craft: #6a86b8;       /* cornflower blue */
+    --craft-soft: #d8e2f0;
+    --craft-pale: #eef2fa;
+    --craft-deep: #4a608a;
+  }
+  body.theme-calligraphy {
+    --craft: #c49e3b;       /* mustard */
+    --craft-soft: #f0e2b8;
+    --craft-pale: #faf2d5;
+    --craft-deep: #8a6e1f;
+  }
+  body.theme-card {
+    --craft: #7d9462;       /* sage cypress */
+    --craft-soft: #dde5d0;
+    --craft-pale: #eef2e7;
+    --craft-deep: #556b40;
+  }
+  body.theme-pressed {
+    --craft: #9d7fad;       /* dusty lavender */
+    --craft-soft: #e2d6e8;
+    --craft-pale: #f1e9f4;
+    --craft-deep: #6e5478;
+  }
+  body.theme-lessons {
+    --craft: #c8755e;
+    --craft-soft: #f0d4c6;
+    --craft-pale: #faeae0;
+    --craft-deep: #94503d;
+  }
+  body.theme-about {
+    --craft: #c8755e;
+    --craft-soft: #f0d4c6;
+    --craft-pale: #faeae0;
+    --craft-deep: #94503d;
+  }
+
+  /* smooth color transitions when changing tabs */
+  body, header.brand-header, .hero, .craft-card,
+  .lesson-card, .info-banner, button.btn, .nav-tab,
+  .builder-controls, .layout-preview {
+    transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background-image:
+      linear-gradient(180deg,
+        rgba(247, 241, 230, 0.50) 0%,
+        rgba(247, 241, 230, 0.62) 100%),
+      url('background.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .display { font-family: 'Cormorant Garamond', Georgia, serif; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============= HEADER ============= */
+  header.brand-header {
+    background: rgba(247, 241, 230, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .brand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand-mark {
+    cursor: pointer;
+    line-height: 1;
+  }
+  .brand-mark .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 36px;
+    color: var(--ink);
+  }
+  .brand-mark .brand-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--craft);
+    margin-top: 2px;
+  }
+  nav.main-nav {
+    display: flex;
+    gap: 4px;
+  }
+  .nav-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--ink); }
+  .nav-tab.active {
+    color: var(--craft-deep);
+    border-bottom-color: var(--craft);
+    font-weight: 600;
+  }
+
+  /* ============= LANDING / HERO ============= */
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.4s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hero {
+    text-align: center;
+    padding: 120px 24px 100px;
+    background: linear-gradient(180deg,
+      rgba(247, 241, 230, 0.0) 0%,
+      rgba(247, 241, 230, 0.05) 50%,
+      rgba(247, 241, 230, 0.25) 100%);
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 90%, rgba(247, 241, 230, 0.25) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 100px;
+    line-height: 0.95;
+    margin: 0 0 16px 0;
+    color: var(--ink);
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(247, 241, 230, 0.6);
+  }
+  @media (max-width: 700px) { .hero h1 { font-size: 60px; } }
+
+  /* Bible verse styling */
+  .hero .verse {
+    max-width: 620px;
+    margin: 32px auto 0;
+    padding: 32px 40px;
+    border: none;
+    position: relative;
+    z-index: 1;
+    background: rgba(247, 241, 230, 0.78);
+    border-radius: 2px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .hero .verse::before {
+    content: '✦';
+    display: block;
+    color: var(--craft);
+    opacity: 0.6;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .hero .verse-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0 0 16px 0;
+  }
+  @media (max-width: 700px) {
+    .hero .verse { padding: 24px 24px; }
+    .hero .verse-text { font-size: 17px; }
+  }
+  .hero .verse-cite {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--craft-deep);
+    font-weight: 500;
+  }
+  .hero .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--craft);
+    margin: 0 0 32px 0;
+  }
+  .hero .tagline::before, .hero .tagline::after {
+    content: '✦'; opacity: 0.5; margin: 0 16px; font-size: 14px;
+  }
+
+  /* ============= CRAFT CARDS ============= */
+  .craft-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  /* Each craft card gets its OWN color (overrides the page theme) */
+  .craft-card {
+    background: var(--card-pale, white);
+    border: 1.5px solid var(--card-color, var(--line));
+    padding: 32px 28px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.5s ease, border-color 0.5s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .craft-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--card-color, var(--craft));
+    opacity: 0.85;
+  }
+  .craft-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(94, 71, 49, 0.18);
+    background: var(--card-soft, white);
+  }
+  .craft-card .craft-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    color: var(--card-color, var(--craft));
+  }
+  .craft-card:hover .craft-icon { color: var(--card-deep, var(--craft-deep)); }
+  .craft-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    color: var(--card-deep, var(--ink));
+  }
+  .craft-card p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 12px 0;
+    line-height: 1.6;
+  }
+  .craft-card .badge {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--card-color, var(--craft));
+    padding-top: 8px;
+    border-top: 1px solid var(--card-soft, var(--cream-deeper));
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .craft-card .coming-soon {
+    color: var(--card-color, var(--ink-muted));
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  /* Per-craft card colors (set via inline style data attributes) */
+  .craft-card[data-craft="sewing"] {
+    --card-color: #b85563;
+    --card-soft: #f4d8dc;
+    --card-pale: #fbeef0;
+    --card-deep: #8a3d49;
+  }
+  .craft-card[data-craft="scrapbooking"] {
+    --card-color: #6a86b8;
+    --card-soft: #d8e2f0;
+    --card-pale: #eef2fa;
+    --card-deep: #4a608a;
+  }
+  .craft-card[data-craft="calligraphy"] {
+    --card-color: #c49e3b;
+    --card-soft: #f0e2b8;
+    --card-pale: #faf2d5;
+    --card-deep: #8a6e1f;
+  }
+  .craft-card[data-craft="card"] {
+    --card-color: #7d9462;
+    --card-soft: #dde5d0;
+    --card-pale: #eef2e7;
+    --card-deep: #556b40;
+  }
+  .craft-card[data-craft="pressed"] {
+    --card-color: #9d7fad;
+    --card-soft: #e2d6e8;
+    --card-pale: #f1e9f4;
+    --card-deep: #6e5478;
+  }
+
+  /* ============= GENERIC PAGE STYLES ============= */
+  .page-section { padding: 60px 0 80px; }
+  h2.page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 48px;
+    margin: 0 0 8px 0;
+    color: var(--craft-deep);
+    text-shadow: 0 1px 2px rgba(247, 241, 230, 0.7);
+  }
+  .page-lede {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 0 40px 0;
+    max-width: 600px;
+    text-shadow: 0 1px 1px rgba(247, 241, 230, 0.6);
+  }
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 24px;
+    margin: 32px 0 16px 0;
+    color: var(--craft-deep);
+    text-shadow: 0 1px 1px rgba(247, 241, 230, 0.6);
+  }
+
+  /* ============= LESSONS LIST ============= */
+  .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .lesson-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--lesson-color, var(--craft));
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .lesson-card .lesson-category {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--lesson-color, var(--craft));
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .lesson-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    margin: 0 0 8px 0;
+    color: var(--ink);
+  }
+  .lesson-card .lesson-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    flex: 1;
+  }
+  .lesson-card .lesson-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--cream-deeper);
+  }
+  .lesson-card .lesson-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--lesson-color, var(--craft-deep));
+  }
+  .lesson-card .lesson-duration {
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .book-btn {
+    background: var(--lesson-color, var(--craft));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    margin-top: 12px;
+    width: 100%;
+    transition: background-color 0.2s;
+  }
+  .book-btn:hover { background: var(--lesson-deep, var(--craft-deep)); }
+
+  /* lesson-section colors */
+  .lesson-section[data-craft="sewing"] { --lesson-color: #b85563; --lesson-deep: #8a3d49; }
+  .lesson-section[data-craft="scrapbooking"] { --lesson-color: #6a86b8; --lesson-deep: #4a608a; }
+  .lesson-section[data-craft="calligraphy"] { --lesson-color: #c49e3b; --lesson-deep: #8a6e1f; }
+  .lesson-section[data-craft="card"] { --lesson-color: #7d9462; --lesson-deep: #556b40; }
+  .lesson-section[data-craft="pressed"] { --lesson-color: #9d7fad; --lesson-deep: #6e5478; }
+  .lesson-section[data-craft="mending"] { --lesson-color: #b8825a; --lesson-deep: #8a5e3c; }
+  .lesson-section { margin-bottom: 40px; }
+  .lesson-section > h3 {
+    color: var(--lesson-deep);
+    display: inline-block;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--lesson-color);
+    margin-bottom: 24px;
+  }
+
+  /* ============= SCRAPBOOKING TOOL ============= */
+  .layout-builder {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    margin-top: 24px;
+  }
+  @media (max-width: 800px) { .layout-builder { grid-template-columns: 1fr; } }
+  .builder-controls {
+    background: var(--craft-pale);
+    border: 1px solid var(--craft-soft);
+    border-left: 3px solid var(--craft);
+    padding: 24px;
+    height: fit-content;
+  }
+  .builder-controls h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    margin: 0 0 16px 0;
+    color: var(--craft-deep);
+  }
+  .control-group { margin-bottom: 20px; }
+  .control-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .control-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .control-btn {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .control-btn:hover { border-color: var(--craft); color: var(--craft-deep); }
+  .control-btn.active {
+    background: var(--craft);
+    color: white;
+    border-color: var(--craft);
+  }
+  select.control-select {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    border: 1px solid var(--line);
+    background: white;
+    color: var(--ink);
+  }
+  select.control-select:focus {
+    outline: none;
+    border-color: var(--craft);
+  }
+  .layout-preview {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 24px;
+    text-align: center;
+  }
+  .page-canvas {
+    margin: 0 auto;
+    background: #fff;
+    border: 2px solid var(--craft-deep);
+    position: relative;
+    box-shadow: 0 8px 24px rgba(94, 71, 49, 0.1);
+  }
+  .canvas-element {
+    position: absolute;
+    border: 1.5px solid var(--craft);
+    background: var(--craft-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--craft-deep);
+    font-size: 12px;
+  }
+  .canvas-element.photo { background: var(--craft-soft); }
+  .canvas-element.title { background: var(--craft-pale); border-style: dashed; }
+  .canvas-element.text { background: white; border-style: dotted; }
+  .canvas-element.embellishment {
+    background: transparent;
+    border-radius: 50%;
+    border: 1.5px dashed var(--craft);
+  }
+  .preview-info {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  /* ============= CALLIGRAPHY LETTERING EXPLORER ============= */
+  .lettering-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .lettering-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--craft);
+    padding: 24px;
+  }
+  .lettering-card .lettering-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--craft-deep);
+    margin: 0 0 4px 0;
+  }
+  .lettering-card .lettering-tool {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+  .lettering-card .sample {
+    text-align: center;
+    padding: 24px 12px;
+    background: var(--craft-pale);
+    border: 1px dashed var(--craft-soft);
+    margin: 14px 0;
+    color: var(--craft-deep);
+    word-break: break-word;
+  }
+  .lettering-card .lettering-tips {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0;
+    padding-left: 18px;
+  }
+  .lettering-card .lettering-tips li { margin-bottom: 4px; }
+
+  /* Specific lettering style fonts/treatments */
+  .style-bouncy {
+    font-family: 'Cormorant Garamond', cursive;
+    font-style: italic;
+    font-size: 42px;
+    letter-spacing: 1px;
+  }
+  .style-bouncy span:nth-child(odd) { display: inline-block; transform: translateY(-3px); }
+  .style-bouncy span:nth-child(even) { display: inline-block; transform: translateY(3px); }
+
+  .style-faux-calligraphy {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 44px;
+    letter-spacing: 2px;
+  }
+
+  .style-blocky {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 38px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .style-tall-skinny {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 42px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    transform: scaleY(1.4);
+    transform-origin: center;
+  }
+
+  .style-bubble {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 44px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    -webkit-text-stroke: 2px var(--craft-deep);
+    color: var(--craft-pale);
+  }
+
+  .style-vintage {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 38px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .style-serif-italic {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 44px;
+  }
+
+  .style-monoline {
+    font-family: 'Cormorant Garamond', cursive;
+    font-style: italic;
+    font-size: 40px;
+    font-weight: 300;
+  }
+
+  .style-decorated {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--craft);
+    text-underline-offset: 8px;
+  }
+
+  /* New lettering styles */
+  .style-arched {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 38px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+  .style-arched span { display: inline-block; }
+  .style-arched span:nth-child(1) { transform: translateY(6px) rotate(-12deg); }
+  .style-arched span:nth-child(2) { transform: translateY(2px) rotate(-6deg); }
+  .style-arched span:nth-child(3) { transform: translateY(0) rotate(0deg); }
+  .style-arched span:nth-child(4) { transform: translateY(2px) rotate(6deg); }
+  .style-arched span:nth-child(5) { transform: translateY(6px) rotate(12deg); }
+
+  .style-double-line {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--craft-deep);
+    text-shadow: 3px 3px 0 var(--craft-soft);
+  }
+
+  .style-shaded {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 44px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--craft-deep);
+    text-shadow: 3px 3px 0 var(--craft-soft);
+  }
+
+  .style-flourish {
+    font-family: 'Cormorant Garamond', cursive;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 48px;
+    letter-spacing: 0;
+  }
+
+  .style-art-deco {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 38px;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    color: var(--craft-deep);
+  }
+
+  .style-vintage-script {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 42px;
+    letter-spacing: 1px;
+    text-decoration: underline;
+    text-decoration-color: var(--craft);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+  }
+
+  .style-dots {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 40px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--craft-deep);
+    text-shadow:
+      0 -4px 0 var(--craft),
+      0 4px 0 var(--craft);
+  }
+
+  .style-handprint {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 36px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--craft-deep);
+    font-style: italic;
+  }
+
+  .style-romantic {
+    font-family: 'Cormorant Garamond', cursive;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 50px;
+    letter-spacing: 1px;
+    color: var(--craft-deep);
+  }
+
+  /* ============= LETTERING DETAIL MODAL ============= */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 58, 77, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 40px 16px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-content {
+    background: var(--cream);
+    max-width: 800px;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--craft);
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  @media (max-width: 600px) {
+    .modal-content { padding: 24px; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: 1px solid var(--line);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-close:hover { background: var(--cream-soft); color: var(--ink); }
+  .modal-header {
+    border-bottom: 1px solid var(--cream-deeper);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+  }
+  .modal-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 36px;
+    color: var(--craft-deep);
+    margin: 0 0 4px 0;
+  }
+  .modal-difficulty {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--craft);
+    font-weight: 600;
+  }
+  .modal-sample {
+    background: white;
+    border: 1px dashed var(--craft);
+    padding: 40px 20px;
+    margin: 20px 0;
+    text-align: center;
+    color: var(--craft-deep);
+  }
+  .modal-section { margin: 24px 0; }
+  .modal-section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink);
+    margin: 0 0 12px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--cream-deeper);
+  }
+  .modal-section p, .modal-section li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .modal-section ul, .modal-section ol {
+    margin: 8px 0;
+    padding-left: 24px;
+  }
+  .modal-section li { margin-bottom: 6px; }
+  .modal-step {
+    display: flex;
+    gap: 14px;
+    margin: 12px 0;
+    padding: 14px;
+    background: var(--craft-pale);
+    border-left: 3px solid var(--craft);
+  }
+  .modal-step .step-circle {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: var(--craft);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+  }
+  .modal-mistakes {
+    background: rgba(248, 220, 220, 0.4);
+    border-left: 3px solid #b85563;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .modal-mistakes strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: #8a3d49;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .modal-tools {
+    background: var(--craft-soft);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .modal-tools strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--craft-deep);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .modal-purchase {
+    background: var(--cream-soft);
+    border: 1px solid var(--craft);
+    padding: 20px;
+    margin-top: 28px;
+    text-align: center;
+  }
+  .modal-purchase-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--craft-deep);
+    margin: 0 0 6px 0;
+  }
+  .modal-purchase-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 16px 0;
+  }
+  .modal-purchase .price-line {
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 10px;
+  }
+  .lettering-card.clickable { cursor: pointer; transition: transform 0.15s; }
+  .lettering-card.clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(94, 71, 49, 0.12);
+  }
+  .lettering-card .view-more {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--craft);
+    font-weight: 600;
+  }
+
+  /* ============= BOOKING FORM ============= */
+  .booking-header {
+    border-bottom: 1px solid var(--cream-deeper);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+  }
+  .booking-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--craft);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .booking-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 32px;
+    color: var(--craft-deep);
+    margin: 0 0 8px 0;
+  }
+  .booking-summary {
+    background: var(--craft-pale);
+    border: 1px solid var(--craft-soft);
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .booking-summary-item .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-muted);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .booking-summary-item .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--craft-deep);
+  }
+  .form-row {
+    margin-bottom: 18px;
+  }
+  .form-row label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .form-row label .required {
+    color: var(--craft);
+    margin-left: 2px;
+  }
+  .form-row input[type="text"],
+  .form-row input[type="email"],
+  .form-row input[type="tel"],
+  .form-row textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    border: 1px solid var(--line);
+    background: white;
+    color: var(--ink);
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .form-row input:focus,
+  .form-row textarea:focus {
+    outline: none;
+    border-color: var(--craft);
+    box-shadow: 0 0 0 1px var(--craft);
+  }
+  .form-row textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: 'Inter', sans-serif;
+  }
+  .form-row .hint {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 500px) { .form-row-2col { grid-template-columns: 1fr; } }
+  .payment-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .payment-option {
+    flex: 1;
+    min-width: 90px;
+    position: relative;
+  }
+  .payment-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .payment-option label {
+    display: block;
+    text-align: center;
+    padding: 10px 12px;
+    background: white;
+    border: 1.5px solid var(--line);
+    cursor: pointer;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+    margin: 0;
+  }
+  .payment-option label:hover { border-color: var(--craft); }
+  .payment-option input:checked + label {
+    background: var(--craft-pale);
+    border-color: var(--craft);
+    color: var(--craft-deep);
+    font-weight: 600;
+  }
+  .booking-disclaimer {
+    background: var(--cream-soft);
+    border-left: 3px solid var(--craft);
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .booking-disclaimer strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .booking-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .booking-actions button { flex: 1; min-width: 140px; }
+  .booking-success {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .booking-success-icon {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 60px;
+    color: var(--craft);
+    margin-bottom: 16px;
+  }
+  .booking-success h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 28px;
+    color: var(--craft-deep);
+    margin: 0 0 12px 0;
+  }
+  .booking-success p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 8px 0;
+  }
+
+  /* ============= TUTORIAL CARDS ============= */
+  .tutorial-strip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 16px 0;
+    margin: 24px 0;
+  }
+  .tutorial-step {
+    flex: 0 0 200px;
+    background: var(--craft-pale);
+    border: 1px solid var(--craft-soft);
+    padding: 16px;
+    border-radius: 2px;
+  }
+  .tutorial-step .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 32px;
+    color: var(--craft);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .tutorial-step .step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--craft-deep);
+    margin-bottom: 6px;
+  }
+  .tutorial-step .step-text {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ============= CARD MAKING DESIGNER ============= */
+  .card-designer {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    margin-top: 24px;
+  }
+  @media (max-width: 800px) { .card-designer { grid-template-columns: 1fr; } }
+  .card-preview-wrap {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .card-faces {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .card-face {
+    background: white;
+    border: 2px solid var(--craft-deep);
+    box-shadow: 0 8px 20px rgba(94, 71, 49, 0.08);
+    position: relative;
+  }
+  .card-face-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-muted);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* ============= PRESSED FLOWER GUIDE ============= */
+  .flower-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  @media (max-width: 800px) { .flower-section { grid-template-columns: 1fr; } }
+
+  .flower-list {
+    background: white;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--craft);
+    padding: 24px;
+  }
+  .flower-list h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--craft-deep);
+    margin: 0 0 16px 0;
+  }
+  .flower-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cream-deeper);
+  }
+  .flower-item:last-child { border-bottom: none; }
+  .flower-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    color: var(--craft);
+  }
+  .flower-info { flex: 1; }
+  .flower-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    margin: 0 0 2px 0;
+  }
+  .flower-note {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .flower-rating {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--craft-deep);
+    padding: 2px 8px;
+    background: var(--craft-pale);
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+
+  .method-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--craft);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .method-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .method-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--craft-deep);
+    margin: 0;
+  }
+  .method-time {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--craft);
+    font-weight: 600;
+  }
+  .method-card ol {
+    padding-left: 24px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0;
+  }
+  .method-card ol li { margin-bottom: 6px; }
+  .method-card .pros-cons {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--cream-deeper);
+    font-size: 12px;
+  }
+  .method-card .pros, .method-card .cons {
+    flex: 1;
+  }
+  .method-card .pros strong { color: var(--craft-deep); font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 14px; }
+  .method-card .cons strong { color: var(--ink-soft); font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 14px; }
+
+  /* ============= BUTTONS ============= */
+  button.btn {
+    background: var(--craft);
+    color: white;
+    border: 1px solid var(--craft);
+    padding: 12px 24px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  button.btn:hover { background: var(--craft-deep); border-color: var(--craft-deep); }
+  button.btn-outline {
+    background: transparent;
+    color: var(--craft-deep);
+  }
+  button.btn-outline:hover { background: var(--craft-pale); color: var(--craft-deep); }
+
+  /* ============= BANNERS ============= */
+  .info-banner {
+    background: var(--craft-pale);
+    border-left: 4px solid var(--craft);
+    padding: 14px 18px;
+    margin: 24px 0;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .info-banner strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--craft-deep);
+  }
+
+  /* About page verse */
+  .about-verse {
+    margin: 40px 0;
+    padding: 32px 36px;
+    background: rgba(247, 241, 230, 0.7);
+    border-left: 4px solid var(--craft);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    position: relative;
+  }
+  @media (max-width: 600px) {
+    .about-verse { padding: 24px; }
+  }
+  .about-verse-ornament {
+    color: var(--craft);
+    opacity: 0.5;
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .about-verse-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px 0;
+  }
+  .about-verse-text em {
+    color: var(--craft-deep);
+    font-weight: 500;
+  }
+  .about-verse-cite {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--craft);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  /* ============= FOOTER ============= */
+  footer.brand-footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 0;
+    text-align: center;
+    margin-top: 60px;
+    background: rgba(247, 241, 230, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  footer .footer-pricing {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  @media (max-width: 700px) {
+    nav.main-nav { width: 100%; overflow-x: auto; padding-bottom: 4px; }
+    .brand-row { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============= HEADER ============= -->
+<header class="brand-header">
+  <div class="container brand-row">
+    <div class="brand-mark" onclick="goTo('home')">
+      <div class="brand-name">Made Anew</div>
+    </div>
+    <nav class="main-nav">
+      <button class="nav-tab active" data-page="home" onclick="goTo('home')">Home</button>
+      <button class="nav-tab" data-page="sewing" onclick="goTo('sewing')">Sewing</button>
+      <button class="nav-tab" data-page="scrapbooking" onclick="goTo('scrapbooking')">Scrapbooking</button>
+      <button class="nav-tab" data-page="calligraphy" onclick="goTo('calligraphy')">Calligraphy</button>
+      <button class="nav-tab" data-page="card" onclick="goTo('card')">Cards</button>
+      <button class="nav-tab" data-page="pressed" onclick="goTo('pressed')">Flowers</button>
+      <button class="nav-tab" data-page="lessons" onclick="goTo('lessons')">Lessons</button>
+      <button class="nav-tab" data-page="about" onclick="goTo('about')">About</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ============= HOME ============= -->
+<div class="panel active" id="page-home">
+  <section class="hero">
+    <h1>Made Anew</h1>
+    <blockquote class="verse">
+      <p class="verse-text">
+        "I have said these things to you, that in me you may have peace. In the world
+        you will have tribulation. But take heart; I have overcome the world."
+      </p>
+      <cite class="verse-cite">— John 16:33</cite>
+    </blockquote>
+  </section>
+
+  <section class="craft-grid">
+    <!-- Sewing -->
+    <div class="craft-card" data-craft="sewing" onclick="goTo('sewing')">
+      <svg class="craft-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 8 L32 4 L42 8"/>
+        <path d="M22 8 L16 18 L20 24 L20 30"/>
+        <path d="M42 8 L48 18 L44 24 L44 30"/>
+        <path d="M20 24 L20 38 L8 60 L56 60 L44 38 L44 24"/>
+        <path d="M32 4 L32 10"/>
+      </svg>
+      <h3>Sewing</h3>
+      <p>Custom-drafted patterns sized to your measurements. Dresses, blouses, skirts, jackets, and more. Seam allowances built in.</p>
+      <div class="badge">Open the pattern generator →</div>
+    </div>
+
+    <!-- Scrapbooking -->
+    <div class="craft-card" data-craft="scrapbooking" onclick="goTo('scrapbooking')">
+      <svg class="craft-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="10" width="48" height="44" rx="2"/>
+        <rect x="14" y="16" width="20" height="14"/>
+        <rect x="38" y="16" width="12" height="8"/>
+        <rect x="38" y="28" width="12" height="6"/>
+        <line x1="14" y1="38" x2="50" y2="38"/>
+        <line x1="14" y1="44" x2="50" y2="44"/>
+        <line x1="14" y1="50" x2="38" y2="50"/>
+        <circle cx="46" cy="50" r="2"/>
+      </svg>
+      <h3>Scrapbooking</h3>
+      <p>Design page layouts for your album. Choose page size, photo arrangement, and journaling space — print the template and start crafting.</p>
+      <div class="badge">Open the layout designer →</div>
+    </div>
+
+    <!-- Calligraphy -->
+    <div class="craft-card" data-craft="calligraphy" onclick="goTo('calligraphy')">
+      <svg class="craft-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M44 8 L52 16 L24 44 L14 50 L20 40 L48 12 Z"/>
+        <line x1="42" y1="14" x2="48" y2="20"/>
+        <path d="M14 50 L12 52"/>
+        <path d="M8 58 Q20 54 30 56 Q42 58 56 56" stroke-width="1.2"/>
+      </svg>
+      <h3>Calligraphy</h3>
+      <p>Fun lettering styles you can do with regular pens and markers. No special nibs required — just play with the alphabet.</p>
+      <div class="badge">Explore lettering styles →</div>
+    </div>
+
+    <!-- Card Making -->
+    <div class="craft-card" data-craft="card" onclick="goTo('card')">
+      <svg class="craft-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 14 L48 14 L48 54 L16 54 Z"/>
+        <path d="M16 14 L32 8 L48 14"/>
+        <path d="M22 26 L42 26"/>
+        <path d="M22 32 L42 32"/>
+        <path d="M22 38 L36 38"/>
+        <circle cx="32" cy="46" r="3"/>
+      </svg>
+      <h3>Card Making</h3>
+      <p>Design greeting card layouts with fold lines, panels, and composition guides. Print and use as templates.</p>
+      <div class="badge">Open the card designer →</div>
+    </div>
+
+    <!-- Pressed Flower Art -->
+    <div class="craft-card" data-craft="pressed" onclick="goTo('pressed')">
+      <svg class="craft-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="10" y="14" width="44" height="40" rx="1"/>
+        <circle cx="22" cy="28" r="4"/>
+        <path d="M22 24 L22 18 M22 32 L22 38 M18 28 L12 28 M26 28 L32 28"/>
+        <path d="M19 25 L15 21 M25 25 L29 21 M19 31 L15 35 M25 31 L29 35"/>
+        <circle cx="42" cy="40" r="3"/>
+        <path d="M42 37 L42 32 M42 43 L42 48 M39 40 L34 40 M45 40 L50 40"/>
+        <path d="M14 46 Q20 44 26 46" stroke-width="1.2"/>
+      </svg>
+      <h3>Pressed Flower Art</h3>
+      <p>Learn which flowers press best and the techniques for preserving them — from quick microwave methods to traditional books.</p>
+      <div class="badge">See the flower guide →</div>
+    </div>
+  </section>
+
+  <section style="padding: 60px 24px; text-align: center;">
+    <h3 style="font-size: 28px; margin-bottom: 12px;">Or take a lesson</h3>
+    <p style="max-width: 500px; margin: 0 auto 24px; color: #6b5840;">
+      One-on-one and small-group lessons from beginner stitching to garment construction.
+    </p>
+    <button class="btn" onclick="goTo('lessons')">Browse lessons →</button>
+  </section>
+</div>
+
+<!-- ============= SEWING ============= -->
+<div class="panel" id="page-sewing">
+  <section class="page-section container">
+    <h2 class="page-title">Sewing patterns</h2>
+    <p class="page-lede">Custom-drafted patterns sized to you. Pick from dresses, blouses, skirts, jackets, jumpsuits, and tops — choose silhouette, neckline, sleeves, length, and closure.</p>
+
+    <div class="info-banner">
+      <strong>The pattern generator opens in a new tab.</strong> Once you're done, come back here for scrapbooking or lessons.
+    </div>
+
+    <div style="margin: 32px 0; padding: 32px; background: white; border: 1px solid #c9b89a; text-align: center;">
+      <svg style="width: 80px; height: 80px; color: #8b6f47; margin-bottom: 16px;" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 8 L32 4 L42 8"/>
+        <path d="M22 8 L16 18 L20 24 L20 30"/>
+        <path d="M42 8 L48 18 L44 24 L44 30"/>
+        <path d="M20 24 L20 38 L8 60 L56 60 L44 38 L44 24"/>
+      </svg>
+      <h3 style="margin-top: 0;">Open the Sewing Pattern Generator</h3>
+      <p style="color: #6b5840; max-width: 460px; margin: 0 auto 24px;">
+        Enter your measurements or pick a size, design your garment, and print a tiled pattern ready for paper assembly.
+      </p>
+      <a href="sewing.html" target="_blank" style="display: inline-block;">
+        <button class="btn">Launch Pattern Generator →</button>
+      </a>
+      <p style="font-size: 11px; color: #8b6f47; margin-top: 16px; text-transform: uppercase; letter-spacing: 1.5px;">
+        First download free · Every pattern after $1.50
+      </p>
+    </div>
+
+    <h3>What you can make</h3>
+    <div class="craft-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 0;">
+      <div class="lesson-card" style="text-align: center; padding: 16px;">
+        <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px;">Dresses</strong>
+        <p class="lesson-desc" style="margin-top: 8px;">A-line, sheath, wrap, bias, empire, fit-and-flare, shift</p>
+      </div>
+      <div class="lesson-card" style="text-align: center; padding: 16px;">
+        <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px;">Blouses & Tops</strong>
+        <p class="lesson-desc" style="margin-top: 8px;">Fitted, relaxed, peplum, tunic, cropped, oversized</p>
+      </div>
+      <div class="lesson-card" style="text-align: center; padding: 16px;">
+        <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px;">Skirts</strong>
+        <p class="lesson-desc" style="margin-top: 8px;">A-line, pencil, circle, gathered, pleated</p>
+      </div>
+      <div class="lesson-card" style="text-align: center; padding: 16px;">
+        <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px;">Jackets</strong>
+        <p class="lesson-desc" style="margin-top: 8px;">Fitted, boxy, cropped, duster — with lapels</p>
+      </div>
+      <div class="lesson-card" style="text-align: center; padding: 16px;">
+        <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px;">Jumpsuits</strong>
+        <p class="lesson-desc" style="margin-top: 8px;">Fitted, relaxed, wide-leg, with multiple lengths</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============= SCRAPBOOKING ============= -->
+<div class="panel" id="page-scrapbooking">
+  <section class="page-section container">
+    <h2 class="page-title">Scrapbook layout designer</h2>
+    <p class="page-lede">Design a page layout, see it laid out at scale, then print the template to use as a guide while you craft your real page.</p>
+
+    <div class="layout-builder">
+      <!-- Controls -->
+      <div class="builder-controls">
+        <h4>Page setup</h4>
+
+        <div class="control-group">
+          <label class="control-label">Page size</label>
+          <div class="control-buttons">
+            <button class="control-btn active" data-size="12x12" onclick="setPageSize('12x12')">12×12"</button>
+            <button class="control-btn" data-size="8.5x11" onclick="setPageSize('8.5x11')">8.5×11"</button>
+            <button class="control-btn" data-size="6x6" onclick="setPageSize('6x6')">6×6"</button>
+            <button class="control-btn" data-size="8x8" onclick="setPageSize('8x8')">8×8"</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Layout style</label>
+          <select class="control-select" id="layoutStyle" onchange="setLayoutStyle(this.value)">
+            <option value="single">Single focal photo</option>
+            <option value="grid-4">Grid of 4 photos</option>
+            <option value="grid-6">Grid of 6 photos</option>
+            <option value="featured-three">1 featured + 3 small</option>
+            <option value="strip">Photo strip (3 across)</option>
+            <option value="cluster">Cluster (5 photos)</option>
+            <option value="journal-left">Photo right, journaling left</option>
+            <option value="journal-top">Photo bottom, journaling top</option>
+            <option value="pocket">Pocket page (4 slots)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Theme</label>
+          <select class="control-select" id="theme" onchange="setTheme(this.value)">
+            <option value="travel">Travel</option>
+            <option value="family">Family</option>
+            <option value="wedding">Wedding</option>
+            <option value="baby">Baby</option>
+            <option value="holiday">Holiday</option>
+            <option value="birthday">Birthday</option>
+            <option value="everyday">Everyday</option>
+            <option value="school">School / Graduation</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Include</label>
+          <div class="control-buttons">
+            <button class="control-btn active" id="titleToggle" onclick="toggle('title')">Title</button>
+            <button class="control-btn active" id="journalToggle" onclick="toggle('journal')">Journaling</button>
+            <button class="control-btn active" id="embToggle" onclick="toggle('emb')">Embellishments</button>
+          </div>
+        </div>
+
+        <button class="btn" style="width: 100%; margin-top: 16px;" onclick="printLayout()">🖨 Print Layout</button>
+        <button class="btn btn-outline" style="width: 100%; margin-top: 8px;" onclick="downloadSVG()">⬇ Download SVG</button>
+        <p style="font-size: 10px; color: var(--ink-muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1.5px; text-align: center;">
+          First download free · $1.50 each after
+        </p>
+      </div>
+
+      <!-- Preview -->
+      <div class="layout-preview">
+        <div id="canvasContainer"></div>
+        <div class="preview-info" id="previewInfo"></div>
+
+        <div style="margin-top: 32px; padding: 16px; background: #ede5d6; text-align: left; font-size: 12px; color: #6b5840;">
+          <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; color: #3d2f1f;">How to use:</strong>
+          <ul style="margin: 8px 0 0 0; padding-left: 20px; line-height: 1.7;">
+            <li>Photo boxes (orange) — print and use as templates for cropping your photos</li>
+            <li>Title box (tan, dashed) — where to place your page title or main lettering</li>
+            <li>Journaling box (cream, dotted) — for written memories, captions, or quotes</li>
+            <li>Embellishment circles — suggested spots for stickers, die-cuts, or buttons</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============= LESSONS ============= -->
+<div class="panel" id="page-lessons">
+  <section class="page-section container">
+    <h2 class="page-title">Lessons</h2>
+    <p class="page-lede">One-on-one and small-group lessons. All lessons include materials list, follow-along guidance, and personalized feedback.</p>
+
+    <div class="lesson-section" data-craft="sewing">
+    <h3>Sewing</h3>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-category">Beginner</div>
+        <h4>Sewing Machine Basics</h4>
+        <p class="lesson-desc">Learn to thread, wind a bobbin, sew straight lines, and finish a simple pillow project. Best for total beginners.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$55</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Sewing Machine Basics')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Beginner</div>
+        <h4>Hand-Sewing & Mending</h4>
+        <p class="lesson-desc">Master 5 essential hand stitches, hem a pair of pants, and repair a torn seam. No machine needed.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$50</span>
+          <span class="lesson-duration">75 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Hand-Sewing & Mending')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Intermediate</div>
+        <h4>Reading & Adjusting Patterns</h4>
+        <p class="lesson-desc">Learn how to read commercial patterns and adjust them for your body — full bust adjustments, length changes, ease modifications.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$80</span>
+          <span class="lesson-duration">2 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Reading & Adjusting Patterns')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Intermediate</div>
+        <h4>Zipper Installation</h4>
+        <p class="lesson-desc">Centered, lapped, and invisible zippers. Each one with hands-on practice. Bring fabric scraps and a zipper.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$60</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Zipper Installation')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Advanced</div>
+        <h4>Bodice Fitting & FBA</h4>
+        <p class="lesson-desc">Full bust adjustment, dart manipulation, and muslin fitting. For sewers ready to draft custom-fit garments.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$95</span>
+          <span class="lesson-duration">2 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Bodice Fitting & FBA')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Project-Based</div>
+        <h4>Make Your First Dress</h4>
+        <p class="lesson-desc">4-session course. We pick your pattern, you cut and sew with guided steps. Take home a finished dress.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$280</span>
+          <span class="lesson-duration">4 × 2 hrs</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Make Your First Dress')">Book this lesson</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="lesson-section" data-craft="scrapbooking">
+    <h3>Scrapbooking</h3>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-category">Beginner</div>
+        <h4>Scrapbook Basics</h4>
+        <p class="lesson-desc">Tools, paper types, adhesives, page composition. Make your first complete page in one session.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$50</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Scrapbook Basics')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Intermediate</div>
+        <h4>Hand Lettering for Titles</h4>
+        <p class="lesson-desc">Three lettering styles for headlines and titles. Bring practice paper and a fine-tip pen.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$55</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Hand Lettering for Titles')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Project-Based</div>
+        <h4>Travel Album Workshop</h4>
+        <p class="lesson-desc">Build a complete travel album from your photos across multiple sessions. Bring 80-150 prints, mementos, ticket stubs. Walk away with a finished 20+ page album you'll keep forever.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$220</span>
+          <span class="lesson-duration">4 × 2 hrs</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Travel Album Workshop')">Book this lesson</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="lesson-section" data-craft="calligraphy">
+    <h3>Calligraphy & Hand Lettering</h3>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-category">Beginner</div>
+        <h4>Fun Lettering Styles</h4>
+        <p class="lesson-desc">Learn 5 simple lettering styles you can use on cards, journals, posters, and gifts — using regular pens and markers you probably already own. No special nibs, no fancy techniques.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$55</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Fun Lettering Styles')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Project-Based</div>
+        <h4>Wedding & Event Lettering</h4>
+        <p class="lesson-desc">Letter envelopes, place cards, table numbers, welcome signs, and menus for weddings, showers, and parties. Bring your event details — leave with finished pieces you can use.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$85</span>
+          <span class="lesson-duration">2 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Wedding & Event Lettering')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Themed</div>
+        <h4>Quote & Wall Art Workshop</h4>
+        <p class="lesson-desc">Pick a favorite quote, Bible verse, or saying and turn it into framed wall art. Learn layout, lettering combinations, and decorative touches like florals or banners. Take home a finished, frame-ready piece.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$70</span>
+          <span class="lesson-duration">2 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Quote & Wall Art Workshop')">Book this lesson</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="lesson-section" data-craft="card">
+    <h3>Card Making</h3>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-category">Beginner</div>
+        <h4>Handmade Card Basics</h4>
+        <p class="lesson-desc">Card construction, paper folding, layering, and simple embellishments. Make 4 cards to take home.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$50</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Handmade Card Basics')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Themed</div>
+        <h4>Holiday Card Workshop</h4>
+        <p class="lesson-desc">Design a holiday card collection ready to send. Christmas, Hanukkah, or seasonal — your choice. 8 cards finished.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$95</span>
+          <span class="lesson-duration">3 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Holiday Card Workshop')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Project-Based</div>
+        <h4>Wedding Suite Design</h4>
+        <p class="lesson-desc">Design and produce a coordinated wedding suite: save-the-date, invitation, RSVP, and thank-you. 3-session course.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$240</span>
+          <span class="lesson-duration">3 × 2 hrs</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Wedding Suite Design')">Book this lesson</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="lesson-section" data-craft="pressed">
+    <h3>Pressed Flower Art</h3>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-category">Beginner</div>
+        <h4>Flower Pressing & Preservation</h4>
+        <p class="lesson-desc">Learn which flowers press well, traditional and microwave methods, and how to store them. Take home a press kit.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$55</span>
+          <span class="lesson-duration">90 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Flower Pressing & Preservation')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Themed</div>
+        <h4>Pressed Flower Frames</h4>
+        <p class="lesson-desc">Compose and assemble a framed pressed flower piece. Includes float glass frame and curated flowers for one finished piece.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$90</span>
+          <span class="lesson-duration">2 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Pressed Flower Frames')">Book this lesson</button>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-category">Themed</div>
+        <h4>Bookmarks & Greeting Cards</h4>
+        <p class="lesson-desc">Use pressed flowers to make a set of giftable bookmarks and laminated cards. Make 6+ pieces to keep or gift.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$75</span>
+          <span class="lesson-duration">2 hours</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Bookmarks & Greeting Cards')">Book this lesson</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="lesson-section" data-craft="mending">
+    <h3>Mending & Alterations</h3>
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <div class="lesson-category">Practical</div>
+        <h4>Hemming Pants & Skirts</h4>
+        <p class="lesson-desc">Three hemming methods: blind hem, double-fold, and original-hem preservation. Bring a pair of pants to hem.</p>
+        <div class="lesson-meta">
+          <span class="lesson-price">$45</span>
+          <span class="lesson-duration">60 min</span>
+        </div>
+        <button class="book-btn" onclick="bookLesson('Hemming Pants & Skirts')">Book this lesson</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="info-banner" style="margin-top: 40px;">
+      <strong>Lessons are taught in person.</strong> When you book, you'll receive an email confirming the date, location, and materials to bring. Group lessons (3–5 people) available at a 20% discount per person.
+    </div>
+  </section>
+</div>
+
+<!-- ============= CALLIGRAPHY ============= -->
+<div class="panel" id="page-calligraphy">
+  <section class="page-section container">
+    <h2 class="page-title">Calligraphy</h2>
+    <p class="page-lede">Beautiful lettering doesn't need fancy nibs or expensive pens. These styles work with the markers and pens you already have — Sharpies, fineliners, brush pens, gel pens, ballpoints. Just pick a style and play.</p>
+
+    <div class="info-banner">
+      <strong>What you need —</strong> a regular black marker or pen (Sharpie, Crayola, or any fineliner), paper, and a few minutes to practice. That's it.
+    </div>
+
+    <h3>Quick tutorial</h3>
+    <div class="tutorial-strip">
+      <div class="tutorial-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Sketch lightly first</div>
+        <p class="step-text">Use pencil to plan the word — spacing, height, where each letter goes. Easier to erase than restart.</p>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">2</div>
+        <div class="step-title">Pick one style</div>
+        <p class="step-text">Don't mix styles in one word. Choose blocky OR bouncy, not both. Browse the styles below.</p>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Trace with your pen</div>
+        <p class="step-text">Go over the pencil with marker. Slow down for curves. Lift the pen between strokes if you need to.</p>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">4</div>
+        <div class="step-title">Let dry, then erase</div>
+        <p class="step-text">Wait 30 seconds for ink to fully dry, then gently erase any visible pencil marks.</p>
+      </div>
+      <div class="tutorial-step">
+        <div class="step-num">5</div>
+        <div class="step-title">Add decoration</div>
+        <p class="step-text">Little dots, dashes, hearts, stars next to letters add personality. Less is more.</p>
+      </div>
+    </div>
+
+    <h3>Lettering styles to try</h3>
+    <p style="font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; max-width: 600px;">
+      Click any style to see the full alphabet, step-by-step technique, common mistakes, and grab a printable practice sheet.
+    </p>
+    <div class="lettering-grid">
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('bouncy')">
+        <div class="lettering-name">Bouncy Script</div>
+        <div class="lettering-tool">Fineliner or gel pen</div>
+        <div class="sample"><div class="style-bouncy"><span>h</span><span>e</span><span>l</span><span>l</span><span>o</span></div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('faux-calligraphy')">
+        <div class="lettering-name">Faux Calligraphy</div>
+        <div class="lettering-tool">Any pen or marker</div>
+        <div class="sample"><div class="style-faux-calligraphy">love</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('blocky')">
+        <div class="lettering-name">Blocky Sans</div>
+        <div class="lettering-tool">Thick marker</div>
+        <div class="sample"><div class="style-blocky">BOLD</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('tall-skinny')">
+        <div class="lettering-name">Tall &amp; Skinny</div>
+        <div class="lettering-tool">Fineliner</div>
+        <div class="sample" style="padding: 36px 12px;"><div class="style-tall-skinny">slim</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('bubble')">
+        <div class="lettering-name">Bubble Letters</div>
+        <div class="lettering-tool">Black + color marker</div>
+        <div class="sample"><div class="style-bubble">FUN</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('vintage')">
+        <div class="lettering-name">Vintage Roman</div>
+        <div class="lettering-tool">Fine + thick marker</div>
+        <div class="sample"><div class="style-vintage">CLASSIC</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('serif-italic')">
+        <div class="lettering-name">Serif Italic</div>
+        <div class="lettering-tool">Any pen</div>
+        <div class="sample"><div class="style-serif-italic">grace</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('monoline')">
+        <div class="lettering-name">Monoline Script</div>
+        <div class="lettering-tool">Fineliner</div>
+        <div class="sample"><div class="style-monoline">flowing</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('decorated')">
+        <div class="lettering-name">Decorated Caps</div>
+        <div class="lettering-tool">Marker + colored pen</div>
+        <div class="sample"><div class="style-decorated">HELLO</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('arched')">
+        <div class="lettering-name">Arched Letters</div>
+        <div class="lettering-tool">Marker</div>
+        <div class="sample"><div class="style-arched"><span>S</span><span>M</span><span>I</span><span>L</span><span>E</span></div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('double-line')">
+        <div class="lettering-name">Outline + Shadow</div>
+        <div class="lettering-tool">Thick + thin marker</div>
+        <div class="sample"><div class="style-double-line">POP</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('shaded')">
+        <div class="lettering-name">Shaded Serif</div>
+        <div class="lettering-tool">Marker</div>
+        <div class="sample"><div class="style-shaded">BOLD</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('flourish')">
+        <div class="lettering-name">Flourish Script</div>
+        <div class="lettering-tool">Brush pen or marker</div>
+        <div class="sample"><div class="style-flourish">amore</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('art-deco')">
+        <div class="lettering-name">Art Deco</div>
+        <div class="lettering-tool">Fineliner</div>
+        <div class="sample"><div class="style-art-deco">CHIC</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('vintage-script')">
+        <div class="lettering-name">Underlined Script</div>
+        <div class="lettering-tool">Two pens</div>
+        <div class="sample"><div class="style-vintage-script">elegant</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('dots')">
+        <div class="lettering-name">Banner Letters</div>
+        <div class="lettering-tool">Marker</div>
+        <div class="sample"><div class="style-dots">JOY</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('handprint')">
+        <div class="lettering-name">Casual Print</div>
+        <div class="lettering-tool">Any pen</div>
+        <div class="sample"><div class="style-handprint">hello</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+      <div class="lettering-card clickable" onclick="openLetteringStyle('romantic')">
+        <div class="lettering-name">Romantic Cursive</div>
+        <div class="lettering-tool">Brush pen</div>
+        <div class="sample"><div class="style-romantic">forever</div></div>
+        <span class="view-more">See full tutorial →</span>
+      </div>
+
+    </div>
+
+    <div class="info-banner" style="margin-top: 40px;">
+      <strong>Practice tip —</strong> write the same word in 5 different styles on one page. You'll find the styles that feel natural to your hand. Those are the ones to keep practicing.
+    </div>
+  </section>
+</div>
+
+<!-- ============= LETTERING STYLE MODAL ============= -->
+<div class="modal-overlay" id="letteringModal" onclick="closeLetteringIfBackdrop(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeLettering()">×</button>
+    <div id="letteringModalBody"></div>
+  </div>
+</div>
+
+<!-- ============= BOOKING FORM MODAL ============= -->
+<div class="modal-overlay" id="bookingModal" onclick="closeBookingIfBackdrop(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBooking()">×</button>
+    <div id="bookingModalBody"></div>
+  </div>
+</div>
+
+<!-- ============= CARD MAKING ============= -->
+<div class="panel" id="page-card">
+  <section class="page-section container">
+    <h2 class="page-title">Card making</h2>
+    <p class="page-lede">Design a greeting card layout — set the size, fold style, and what goes on the front and inside. Print it as a guide, then make your card by hand.</p>
+
+    <div class="card-designer">
+      <!-- Controls -->
+      <div class="builder-controls">
+        <h4>Card setup</h4>
+
+        <div class="control-group">
+          <label class="control-label">Card size (flat)</label>
+          <div class="control-buttons">
+            <button class="control-btn active" data-cardsize="a2" onclick="setCardSize('a2')">A2 (4.25×5.5")</button>
+            <button class="control-btn" data-cardsize="a7" onclick="setCardSize('a7')">A7 (5×7")</button>
+            <button class="control-btn" data-cardsize="square" onclick="setCardSize('square')">Square (5×5")</button>
+            <button class="control-btn" data-cardsize="mini" onclick="setCardSize('mini')">Mini (3×3")</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Fold style</label>
+          <div class="control-buttons">
+            <button class="control-btn active" data-cardfold="single" onclick="setCardFold('single')">Single fold</button>
+            <button class="control-btn" data-cardfold="gatefold" onclick="setCardFold('gatefold')">Gatefold</button>
+            <button class="control-btn" data-cardfold="trifold" onclick="setCardFold('trifold')">Trifold</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Front layout</label>
+          <select class="control-select" id="frontLayout" onchange="setCardLayout(this.value)">
+            <option value="centered-greeting">Centered greeting</option>
+            <option value="title-top">Title top, image below</option>
+            <option value="image-frame">Photo/image frame</option>
+            <option value="banner">Banner across middle</option>
+            <option value="quad">Four-square grid</option>
+            <option value="corner-flowers">Corner decorations</option>
+            <option value="minimal">Minimal (just title)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Occasion</label>
+          <select class="control-select" id="cardOccasion" onchange="setCardOccasion(this.value)">
+            <option value="birthday">Birthday</option>
+            <option value="wedding">Wedding</option>
+            <option value="thanks">Thank you</option>
+            <option value="holiday">Holiday</option>
+            <option value="anniversary">Anniversary</option>
+            <option value="sympathy">Sympathy</option>
+            <option value="welcome">New baby / welcome</option>
+            <option value="encouragement">Encouragement</option>
+            <option value="blank">Blank / any</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Inside layout</label>
+          <div class="control-buttons">
+            <button class="control-btn active" data-cardinside="message" onclick="setCardInside('message')">Message</button>
+            <button class="control-btn" data-cardinside="message-decoration" onclick="setCardInside('message-decoration')">Message + decoration</button>
+            <button class="control-btn" data-cardinside="blank" onclick="setCardInside('blank')">Blank</button>
+          </div>
+        </div>
+
+        <button class="btn" style="width: 100%; margin-top: 16px;" onclick="printCard()">🖨 Print Template</button>
+        <p style="font-size: 10px; color: var(--ink-muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1.5px; text-align: center;">
+          First download free · $1.50 each after
+        </p>
+      </div>
+
+      <!-- Preview -->
+      <div class="card-preview-wrap">
+        <div class="card-faces" id="cardFaces"></div>
+        <div class="preview-info" id="cardInfo"></div>
+
+        <div style="margin-top: 32px; padding: 16px; background: var(--craft-pale); text-align: left; font-size: 12px; color: var(--ink);">
+          <strong style="font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--craft-deep);">How to use:</strong>
+          <ul style="margin: 8px 0 0 0; padding-left: 20px; line-height: 1.7;">
+            <li>The dotted line is your fold line — score it lightly first, then fold</li>
+            <li>Boxes are placement guides for your hand-lettered words, photos, or embellishments</li>
+            <li>Suggested copy for the occasion is shown in italics — replace with your own words</li>
+            <li>Print at "Actual Size" so the dimensions print correctly</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============= PRESSED FLOWER ART ============= -->
+<div class="panel" id="page-pressed">
+  <section class="page-section container">
+    <h2 class="page-title">Pressed flower guide</h2>
+    <p class="page-lede">Pressing flowers preserves their color, shape, and delicate detail so you can use them in cards, frames, bookmarks, journals, and resin art. Here's what to press, when, and how.</p>
+
+    <div class="info-banner">
+      <strong>The golden rule —</strong> pick flowers in mid-morning after the dew has dried but before midday heat. They should be at peak bloom but not overripe. Never press flowers that are damp.
+    </div>
+
+    <div class="flower-section">
+      <!-- Easy flowers -->
+      <div class="flower-list">
+        <h4>★ Best for beginners</h4>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="3"/>
+            <path d="M16 13 L16 6 M16 19 L16 26 M13 16 L6 16 M19 16 L26 16 M14 14 L9 9 M18 14 L23 9 M14 18 L9 23 M18 18 L23 23"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Pansies &amp; Violas</p>
+            <p class="flower-note">Naturally flat-faced flowers that press almost perfectly. Hold their color for years.</p>
+            <span class="flower-rating">Easiest · Best color</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="2"/>
+            <ellipse cx="16" cy="9" rx="2" ry="4"/>
+            <ellipse cx="16" cy="23" rx="2" ry="4"/>
+            <ellipse cx="9" cy="16" rx="4" ry="2"/>
+            <ellipse cx="23" cy="16" rx="4" ry="2"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Cosmos</p>
+            <p class="flower-note">Thin, flat petals press flat in a few days. Pink, white, magenta varieties hold up best.</p>
+            <span class="flower-rating">Easy · Fast drying</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="2"/>
+            <circle cx="11" cy="11" r="3"/>
+            <circle cx="21" cy="11" r="3"/>
+            <circle cx="11" cy="21" r="3"/>
+            <circle cx="21" cy="21" r="3"/>
+            <circle cx="8" cy="16" r="2.5"/>
+            <circle cx="24" cy="16" r="2.5"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Queen Anne's Lace</p>
+            <p class="flower-note">Lacy white clusters look stunning pressed. Common roadside flower — just confirm before picking.</p>
+            <span class="flower-rating">Easy · Dramatic</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 6 Q12 12 12 16 Q12 20 16 26 Q20 20 20 16 Q20 12 16 6"/>
+            <path d="M16 6 L16 26"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Ferns &amp; Leaves</p>
+            <p class="flower-note">Maidenhair fern, eucalyptus, autumn leaves. Press very fast and add greenery to any composition.</p>
+            <span class="flower-rating">Foolproof · Year-round</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="2.5"/>
+            <ellipse cx="16" cy="9" rx="2.5" ry="5"/>
+            <ellipse cx="16" cy="23" rx="2.5" ry="5"/>
+            <ellipse cx="9" cy="16" rx="5" ry="2.5"/>
+            <ellipse cx="23" cy="16" rx="5" ry="2.5"/>
+            <ellipse cx="11" cy="11" rx="3" ry="3" transform="rotate(45 11 11)"/>
+            <ellipse cx="21" cy="11" rx="3" ry="3" transform="rotate(-45 21 11)"/>
+            <ellipse cx="11" cy="21" rx="3" ry="3" transform="rotate(-45 11 21)"/>
+            <ellipse cx="21" cy="21" rx="3" ry="3" transform="rotate(45 21 21)"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Daisies (small)</p>
+            <p class="flower-note">Small daisies and chamomile press beautifully flat. Larger varieties need extra weight.</p>
+            <span class="flower-rating">Easy · Classic look</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 16 L16 6"/>
+            <circle cx="14" cy="9" r="1.5"/>
+            <circle cx="18" cy="11" r="1.5"/>
+            <circle cx="13" cy="13" r="1.5"/>
+            <circle cx="19" cy="15" r="1.5"/>
+            <circle cx="14" cy="17" r="1.5"/>
+            <circle cx="18" cy="19" r="1.5"/>
+            <circle cx="13" cy="21" r="1.5"/>
+            <path d="M16 26 L16 16"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Lavender</p>
+            <p class="flower-note">Stems with buds press beautifully and keep their gentle purple. Bonus: lasting scent.</p>
+            <span class="flower-rating">Easy · Aromatic</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trickier -->
+      <div class="flower-list" style="border-top-color: var(--ink-muted);">
+        <h4 style="color: var(--ink-soft);">⚠ Trickier — worth the effort</h4>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="2"/>
+            <path d="M16 14 Q12 10 12 14 Q12 16 16 16"/>
+            <path d="M16 14 Q20 10 20 14 Q20 16 16 16"/>
+            <path d="M16 18 Q12 22 12 18 Q12 16 16 16"/>
+            <path d="M16 18 Q20 22 20 18 Q20 16 16 16"/>
+            <path d="M14 14 Q10 14 10 18 Q10 20 14 18"/>
+            <path d="M18 14 Q22 14 22 18 Q22 20 18 18"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Roses</p>
+            <p class="flower-note">Take petals apart and press individually, or press whole small buds. Whole open roses are difficult — they're too thick.</p>
+            <span class="flower-rating">Press petals separately</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="20" r="4"/>
+            <circle cx="16" cy="20" r="1.5" fill="currentColor"/>
+            <path d="M16 16 L13 8 L19 8 L16 16"/>
+            <path d="M12 19 L6 16 L8 22 L12 19"/>
+            <path d="M20 19 L26 16 L24 22 L20 19"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Tulips</p>
+            <p class="flower-note">Cut the bloom in half lengthwise before pressing — they're too rounded to press whole. The half-blossom shape is beautiful.</p>
+            <span class="flower-rating">Halve before pressing</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="3"/>
+            <circle cx="11" cy="11" r="2"/>
+            <circle cx="21" cy="11" r="2"/>
+            <circle cx="11" cy="21" r="2"/>
+            <circle cx="21" cy="21" r="2"/>
+            <circle cx="8" cy="16" r="2"/>
+            <circle cx="24" cy="16" r="2"/>
+            <circle cx="16" cy="8" r="2"/>
+            <circle cx="16" cy="24" r="2"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Hydrangea</p>
+            <p class="flower-note">Press individual florets, not the whole cluster. They're thin but you need lots for full effect.</p>
+            <span class="flower-rating">Press florets separately</span>
+          </div>
+        </div>
+
+        <div class="flower-item">
+          <svg class="flower-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="3"/>
+            <path d="M16 13 Q11 8 16 6 Q21 8 16 13"/>
+            <path d="M16 19 Q11 24 16 26 Q21 24 16 19"/>
+            <path d="M13 16 Q8 11 6 16 Q8 21 13 16"/>
+            <path d="M19 16 Q24 11 26 16 Q24 21 19 16"/>
+          </svg>
+          <div class="flower-info">
+            <p class="flower-name">Sunflowers (small)</p>
+            <p class="flower-note">Small/dwarf varieties only. Center of bloom is thick — use the microwave method for best results.</p>
+            <span class="flower-rating">Small varieties only</span>
+          </div>
+        </div>
+
+        <p style="font-size: 12px; color: var(--ink-soft); font-style: italic; padding: 12px 0 4px;">
+          <strong style="font-family: 'Cormorant Garamond', serif; color: var(--ink); font-style: italic;">Avoid pressing:</strong> succulents, lilies, daffodils, dahlias (too thick or fleshy — they'll mold instead of dry).
+        </p>
+      </div>
+    </div>
+
+    <h3>How to press</h3>
+
+    <div class="method-card">
+      <div class="method-header">
+        <h4>Heavy Book Method</h4>
+        <span class="method-time">2–4 weeks · Traditional</span>
+      </div>
+      <ol>
+        <li>Place each flower face-down between two pieces of plain printer paper or coffee filters (NOT directly on book pages — the moisture damages books).</li>
+        <li>Open a thick heavy book (encyclopedias, hardcover dictionaries, old textbooks).</li>
+        <li>Slide the paper-flower-paper sandwich between the pages.</li>
+        <li>Close the book. Stack 2–3 more heavy books on top for extra weight.</li>
+        <li>Check after 1 week. Replace the paper if it feels damp.</li>
+        <li>Most flowers are done in 2–4 weeks. They should feel papery and dry.</li>
+      </ol>
+      <div class="pros-cons">
+        <div class="pros"><strong>Pros:</strong> Best color preservation, simple, no equipment needed.</div>
+        <div class="cons"><strong>Cons:</strong> Takes weeks, can damage books if you skip the paper layer.</div>
+      </div>
+    </div>
+
+    <div class="method-card">
+      <div class="method-header">
+        <h4>Microwave Method</h4>
+        <span class="method-time">2–3 minutes · Quick</span>
+      </div>
+      <ol>
+        <li>Place a flower between two layers of plain paper, then between two ceramic tiles (or two heavy plates).</li>
+        <li>Use rubber bands to hold everything tightly together.</li>
+        <li>Microwave in 30-second bursts on medium power. Check between each burst.</li>
+        <li>Most flowers need 2–3 bursts total. They should feel completely dry, not just warm.</li>
+        <li>Let cool completely before opening — about 10 minutes.</li>
+      </ol>
+      <div class="pros-cons">
+        <div class="pros"><strong>Pros:</strong> Fast — finished in minutes. Great for last-minute projects.</div>
+        <div class="cons"><strong>Cons:</strong> Colors fade slightly more than slow pressing. Easy to burn if microwaved too long.</div>
+      </div>
+    </div>
+
+    <div class="method-card">
+      <div class="method-header">
+        <h4>Flower Press</h4>
+        <span class="method-time">2–3 weeks · Best results</span>
+      </div>
+      <ol>
+        <li>A flower press is two wooden boards with screws at the corners. You can buy one or make your own.</li>
+        <li>Layer in this order: bottom board → cardboard → paper → flowers → paper → cardboard → repeat → top board.</li>
+        <li>Tighten screws evenly — firm but don't over-crank or you'll crush thin flowers.</li>
+        <li>Re-tighten after 2 days as moisture leaves and stack compresses.</li>
+        <li>Open after 2–3 weeks. Flowers should be papery dry.</li>
+      </ol>
+      <div class="pros-cons">
+        <div class="pros"><strong>Pros:</strong> Even pressure, multiple flowers at once, won't damage books.</div>
+        <div class="cons"><strong>Cons:</strong> Need to buy or build a press.</div>
+      </div>
+    </div>
+
+    <div class="method-card">
+      <div class="method-header">
+        <h4>Iron Method</h4>
+        <span class="method-time">5 minutes · Fastest</span>
+      </div>
+      <ol>
+        <li>Place the flower between two sheets of parchment paper (NOT wax paper — it'll melt).</li>
+        <li>Place a thin towel or pillowcase on top.</li>
+        <li>Set iron to low heat with NO steam.</li>
+        <li>Press iron down firmly for 15 seconds, lift, let cool 15 seconds, press again. Repeat 4–5 times.</li>
+        <li>Check by carefully peeling back parchment. If still moist, repeat.</li>
+      </ol>
+      <div class="pros-cons">
+        <div class="pros"><strong>Pros:</strong> Done in 5 minutes, works on most thin flowers.</div>
+        <div class="cons"><strong>Cons:</strong> Easy to scorch delicate flowers. Colors fade more than slow methods.</div>
+      </div>
+    </div>
+
+    <div class="info-banner" style="margin-top: 24px;">
+      <strong>Storing pressed flowers —</strong> once dry, keep them between sheets of acid-free paper in a closed box, away from sunlight and humidity. They'll last for years. To use, peel up gently with tweezers — never your fingers, the oils dull the colors.
+    </div>
+
+    <h3>What to make with them</h3>
+    <ul style="font-size: 14px; line-height: 1.8; color: var(--ink); padding-left: 20px;">
+      <li><strong>Framed botanical art —</strong> arrange on cardstock, frame with float glass (clear glass on both sides) so light shines through.</li>
+      <li><strong>Bookmarks —</strong> sandwich between two layers of clear contact paper or laminating sheets. Punch a hole at the top, add a ribbon.</li>
+      <li><strong>Greeting cards —</strong> glue flat pieces to cardstock with a tiny drop of clear-drying craft glue. Cover with vellum for protection.</li>
+      <li><strong>Candles —</strong> press flowers into the side of a candle and brush over with melted wax to seal.</li>
+      <li><strong>Resin jewelry —</strong> embed dried flowers in clear resin pendants and earrings.</li>
+      <li><strong>Wedding invites &amp; place cards —</strong> a single small pressed flower glued to handmade paper is unforgettable.</li>
+    </ul>
+  </section>
+</div>
+
+<!-- ============= ABOUT ============= -->
+<div class="panel" id="page-about">
+  <section class="page-section container" style="max-width: 700px;">
+    <h2 class="page-title">About Made Anew</h2>
+    <p style="font-size: 17px; line-height: 1.8; color: var(--ink); margin-top: 20px;">
+      Made Anew is a place to explore all those random hobbies you've always wanted to try.
+    </p>
+    <p style="font-size: 16px; line-height: 1.8; color: var(--ink-soft);">
+      My name is Isabella, and I've always loved crafting and starting (and often never finishing)
+      random projects and being creative. I wanted to create a place where people could easily
+      access tutorials, patterns, and different resources for any project, big or small.
+    </p>
+    <p style="font-size: 16px; line-height: 1.8; color: var(--ink-soft);">
+      Thank you so much for being here!
+    </p>
+
+    <!-- Exodus 31:3-5 -->
+    <blockquote class="about-verse">
+      <div class="about-verse-ornament">✦</div>
+      <p class="about-verse-text">
+        "And I have filled him with the Spirit of God, with ability and intelligence,
+        with knowledge and all craftsmanship, to devise artistic designs, to work in gold,
+        silver, and bronze, in cutting stones for setting, and in carving wood,
+        <em>to work in every craft.</em>"
+      </p>
+      <cite class="about-verse-cite">— Exodus 31:3–5</cite>
+    </blockquote>
+
+    <h3 style="margin-top: 48px;">Contact</h3>
+    <p style="font-size: 15px; line-height: 1.8; color: var(--ink-soft);">
+      For lesson bookings, custom pattern requests, or general questions: <br>
+      <em style="color: var(--craft-deep);">i20200289@gmail.com</em>
+    </p>
+  </section>
+</div>
+
+<footer class="brand-footer">
+  <div class="container">
+    <div class="footer-pricing">First download free · Every pattern, template, or layout after $1.50</div>
+    <div style="margin-top: 24px; font-family: 'Cormorant Garamond', serif; font-style: italic; color: #8b6f47;">
+      ✦ Made Anew ✦
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// NAVIGATION
+// ============================================================
+const PAGE_THEMES = {
+  home: 'theme-home',
+  sewing: 'theme-sewing',
+  scrapbooking: 'theme-scrapbooking',
+  calligraphy: 'theme-calligraphy',
+  card: 'theme-card',
+  pressed: 'theme-pressed',
+  lessons: 'theme-lessons',
+  about: 'theme-about',
+};
+
+function goTo(page) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.page === page));
+
+  // Swap body theme class
+  document.body.className = '';
+  document.body.classList.add(PAGE_THEMES[page] || 'theme-home');
+
+  window.scrollTo(0, 0);
+}
+
+function comingSoon(craft) {
+  alert(craft + ' is coming soon! Sign up for updates at i20200289@gmail.com');
+}
+
+function bookLesson(name) {
+  // Find the lesson card that triggered this — read its price and duration from the DOM
+  // We look for the .lesson-card containing an h4 matching the name
+  let price = '', duration = '', category = '';
+  document.querySelectorAll('.lesson-card').forEach(card => {
+    const h4 = card.querySelector('h4');
+    if (h4 && h4.textContent.trim() === name) {
+      const priceEl = card.querySelector('.lesson-price');
+      const durEl = card.querySelector('.lesson-duration');
+      const catEl = card.querySelector('.lesson-category');
+      if (priceEl) price = priceEl.textContent.trim();
+      if (durEl) duration = durEl.textContent.trim();
+      if (catEl) category = catEl.textContent.trim();
+    }
+  });
+  openBooking(name, price, duration, category);
+}
+
+function openBooking(name, price, duration, category) {
+  const safeName = name.replace(/"/g, '&quot;');
+  const body = `
+    <div class="booking-header">
+      <div class="booking-eyebrow">Lesson Booking Request</div>
+      <h2 class="booking-title">${name}</h2>
+    </div>
+
+    <div class="booking-summary">
+      ${category ? `<div class="booking-summary-item"><span class="label">Level</span><span class="value">${category}</span></div>` : ''}
+      ${duration ? `<div class="booking-summary-item"><span class="label">Length</span><span class="value">${duration}</span></div>` : ''}
+      ${price ? `<div class="booking-summary-item"><span class="label">Cost</span><span class="value">${price}</span></div>` : ''}
+    </div>
+
+    <form id="bookingForm" onsubmit="submitBooking(event)">
+      <input type="hidden" name="lesson" value="${safeName}">
+      <input type="hidden" name="price" value="${price}">
+      <input type="hidden" name="duration" value="${duration}">
+
+      <div class="form-row-2col">
+        <div class="form-row">
+          <label>Your name <span class="required">*</span></label>
+          <input type="text" name="name" required placeholder="First and last name">
+        </div>
+        <div class="form-row">
+          <label>Phone <span class="hint" style="display:inline">(optional)</span></label>
+          <input type="tel" name="phone" placeholder="(555) 555-5555">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Email address <span class="required">*</span></label>
+        <input type="email" name="email" required placeholder="you@example.com">
+      </div>
+
+      <div class="form-row">
+        <label>What dates and times work for you? <span class="required">*</span></label>
+        <textarea name="availability" required placeholder="e.g. weekday evenings after 5pm, or Saturday mornings, or specific dates like June 15 or 16"></textarea>
+        <span class="hint">Give 2-3 options so we can find a time that works for both of us</span>
+      </div>
+
+      <div class="form-row">
+        <label>Anything you'd like me to know? <span class="hint" style="display:inline">(optional)</span></label>
+        <textarea name="notes" placeholder="Your skill level, what you want to learn or make, allergies, etc."></textarea>
+      </div>
+
+      <div class="form-row">
+        <label>How will you pay?</label>
+        <div class="payment-options">
+          <div class="payment-option">
+            <input type="radio" name="payment" id="pay-venmo" value="Venmo" checked>
+            <label for="pay-venmo">Venmo</label>
+          </div>
+          <div class="payment-option">
+            <input type="radio" name="payment" id="pay-zelle" value="Zelle">
+            <label for="pay-zelle">Zelle</label>
+          </div>
+          <div class="payment-option">
+            <input type="radio" name="payment" id="pay-cash" value="Cash">
+            <label for="pay-cash">Cash</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-disclaimer">
+        <strong>How this works:</strong> When you click "Send Request" below, your email app will open with all the details filled in. Just hit send. I'll reply within 24-48 hours to confirm a time and send payment instructions. Payment is due when you arrive (or before, if you prefer).
+      </div>
+
+      <div class="booking-actions">
+        <button type="button" class="btn btn-outline" onclick="closeBooking()">Cancel</button>
+        <button type="submit" class="btn">Send Request →</button>
+      </div>
+    </form>
+  `;
+  document.getElementById('bookingModalBody').innerHTML = body;
+  document.getElementById('bookingModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBooking() {
+  document.getElementById('bookingModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeBookingIfBackdrop(event) {
+  if (event.target.id === 'bookingModal') {
+    closeBooking();
+  }
+}
+
+function submitBooking(event) {
+  event.preventDefault();
+  const form = event.target;
+  const data = {
+    lesson: form.lesson.value,
+    price: form.price.value,
+    duration: form.duration.value,
+    name: form.name.value,
+    phone: form.phone.value,
+    email: form.email.value,
+    availability: form.availability.value,
+    notes: form.notes.value,
+    payment: form.payment.value,
+  };
+
+  // Build mailto email
+  const subject = `Lesson booking request: ${data.lesson}`;
+  const bodyLines = [
+    `Hi Isabella,`,
+    ``,
+    `I'd like to book a lesson. Here are my details:`,
+    ``,
+    `Lesson: ${data.lesson}`,
+    `Cost: ${data.price}`,
+    `Duration: ${data.duration}`,
+    ``,
+    `Name: ${data.name}`,
+    `Email: ${data.email}`,
+    data.phone ? `Phone: ${data.phone}` : null,
+    ``,
+    `Availability: ${data.availability}`,
+    ``,
+    data.notes ? `Notes: ${data.notes}` : null,
+    data.notes ? `` : null,
+    `Preferred payment method: ${data.payment}`,
+    ``,
+    `Thanks!`,
+    `${data.name}`,
+  ].filter(line => line !== null);
+
+  const body = bodyLines.join('\n');
+  const mailtoUrl = `mailto:i20200289@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  // Try to open mail client
+  window.location.href = mailtoUrl;
+
+  // Show success state after a moment
+  setTimeout(() => {
+    document.getElementById('bookingModalBody').innerHTML = `
+      <div class="booking-success">
+        <div class="booking-success-icon">✦</div>
+        <h3>Your email is ready to send</h3>
+        <p>Your email app should have opened with everything filled in for <strong style="color: var(--ink);">${data.lesson}</strong>.</p>
+        <p>Just hit send and I'll reply within 24-48 hours to confirm a time.</p>
+        <p style="margin-top: 24px; font-size: 12px; color: var(--ink-muted);">If nothing opened, email me directly at <em style="color: var(--craft-deep);">i20200289@gmail.com</em></p>
+        <button class="btn" style="margin-top: 24px;" onclick="closeBooking()">Close</button>
+      </div>
+    `;
+  }, 500);
+}
+
+// ============================================================
+// SCRAPBOOKING STATE
+// ============================================================
+const scrapState = {
+  pageSize: '12x12',
+  layoutStyle: 'single',
+  theme: 'travel',
+  showTitle: true,
+  showJournal: true,
+  showEmb: true,
+};
+
+const PAGE_SIZES = {
+  '12x12': { w: 12, h: 12, name: '12×12"' },
+  '8.5x11': { w: 8.5, h: 11, name: '8.5×11"' },
+  '6x6': { w: 6, h: 6, name: '6×6"' },
+  '8x8': { w: 8, h: 8, name: '8×8"' },
+};
+
+const THEME_COLORS = {
+  travel:  { primary: '#3d2f1f', accent: '#a8612d', soft: '#ede5d6' },
+  family:  { primary: '#5e4731', accent: '#c46545', soft: '#f4e4d4' },
+  wedding: { primary: '#8b6f47', accent: '#a89478', soft: '#fdf4e6' },
+  baby:    { primary: '#a8612d', accent: '#c9b89a', soft: '#fdfbf6' },
+  holiday: { primary: '#3d2f1f', accent: '#a8612d', soft: '#ede5d6' },
+  birthday:{ primary: '#c46545', accent: '#a8612d', soft: '#f4e4d4' },
+  everyday:{ primary: '#5e4731', accent: '#8b6f47', soft: '#ede5d6' },
+  school:  { primary: '#3d2f1f', accent: '#8b6f47', soft: '#fdf4e6' },
+};
+
+// Layout definitions: { photos: [{x%, y%, w%, h%}], title?, journal?, embellishments? }
+const LAYOUTS = {
+  'single': {
+    photos: [{ x: 10, y: 12, w: 80, h: 60 }],
+    title: { x: 10, y: 76, w: 80, h: 8 },
+    journal: { x: 10, y: 86, w: 80, h: 10 },
+    embs: [{ x: 5, y: 5, r: 3 }, { x: 92, y: 5, r: 3 }, { x: 5, y: 92, r: 3 }, { x: 92, y: 92, r: 3 }],
+  },
+  'grid-4': {
+    photos: [
+      { x: 8, y: 12, w: 40, h: 36 },
+      { x: 52, y: 12, w: 40, h: 36 },
+      { x: 8, y: 52, w: 40, h: 36 },
+      { x: 52, y: 52, w: 40, h: 36 },
+    ],
+    title: { x: 8, y: 2, w: 84, h: 8 },
+    embs: [{ x: 50, y: 50, r: 3 }],
+  },
+  'grid-6': {
+    photos: [
+      { x: 5, y: 12, w: 28, h: 26 },
+      { x: 36, y: 12, w: 28, h: 26 },
+      { x: 67, y: 12, w: 28, h: 26 },
+      { x: 5, y: 42, w: 28, h: 26 },
+      { x: 36, y: 42, w: 28, h: 26 },
+      { x: 67, y: 42, w: 28, h: 26 },
+    ],
+    title: { x: 5, y: 2, w: 90, h: 8 },
+    journal: { x: 5, y: 72, w: 90, h: 24 },
+  },
+  'featured-three': {
+    photos: [
+      { x: 8, y: 8, w: 55, h: 48 },
+      { x: 68, y: 8, w: 24, h: 14 },
+      { x: 68, y: 26, w: 24, h: 14 },
+      { x: 68, y: 44, w: 24, h: 14 },
+    ],
+    title: { x: 8, y: 60, w: 55, h: 8 },
+    journal: { x: 8, y: 72, w: 84, h: 22 },
+    embs: [{ x: 4, y: 4, r: 2.5 }, { x: 94, y: 94, r: 2.5 }],
+  },
+  'strip': {
+    photos: [
+      { x: 5, y: 30, w: 28, h: 40 },
+      { x: 36, y: 30, w: 28, h: 40 },
+      { x: 67, y: 30, w: 28, h: 40 },
+    ],
+    title: { x: 5, y: 8, w: 90, h: 16 },
+    journal: { x: 5, y: 76, w: 90, h: 18 },
+  },
+  'cluster': {
+    photos: [
+      { x: 30, y: 20, w: 40, h: 36 }, // big center
+      { x: 6, y: 8, w: 20, h: 18 },
+      { x: 74, y: 8, w: 20, h: 18 },
+      { x: 6, y: 60, w: 20, h: 18 },
+      { x: 74, y: 60, w: 20, h: 18 },
+    ],
+    title: { x: 25, y: 82, w: 50, h: 8 },
+    embs: [{ x: 50, y: 8, r: 3 }, { x: 50, y: 92, r: 3 }, { x: 4, y: 50, r: 2.5 }, { x: 96, y: 50, r: 2.5 }],
+  },
+  'journal-left': {
+    photos: [{ x: 50, y: 8, w: 45, h: 84 }],
+    title: { x: 5, y: 8, w: 40, h: 10 },
+    journal: { x: 5, y: 22, w: 40, h: 70 },
+    embs: [{ x: 25, y: 95, r: 2.5 }],
+  },
+  'journal-top': {
+    photos: [{ x: 5, y: 35, w: 90, h: 60 }],
+    title: { x: 5, y: 3, w: 90, h: 12 },
+    journal: { x: 5, y: 17, w: 90, h: 14 },
+  },
+  'pocket': {
+    photos: [
+      { x: 6, y: 8, w: 42, h: 28 },
+      { x: 52, y: 8, w: 42, h: 28 },
+      { x: 6, y: 40, w: 42, h: 28 },
+      { x: 52, y: 40, w: 42, h: 28 },
+    ],
+    title: { x: 6, y: 72, w: 88, h: 8 },
+    journal: { x: 6, y: 84, w: 88, h: 12 },
+  },
+};
+
+function renderCanvas() {
+  const page = PAGE_SIZES[scrapState.pageSize];
+  const layout = LAYOUTS[scrapState.layoutStyle];
+  const colors = THEME_COLORS[scrapState.theme];
+
+  // Scale to fit in preview (max 400px width)
+  const maxPreviewW = 400;
+  const scale = Math.min(maxPreviewW / (page.w * 50), 1) * 50; // pixels per inch
+  const pxW = page.w * scale;
+  const pxH = page.h * scale;
+
+  // Build elements
+  let elementsHtml = '';
+  layout.photos.forEach((p, i) => {
+    elementsHtml += `<div class="canvas-element photo" style="
+      left: ${p.x}%; top: ${p.y}%; width: ${p.w}%; height: ${p.h}%;
+      background: ${colors.soft}; border-color: ${colors.accent};
+      color: ${colors.accent};">photo ${i + 1}</div>`;
+  });
+  if (scrapState.showTitle && layout.title) {
+    elementsHtml += `<div class="canvas-element title" style="
+      left: ${layout.title.x}%; top: ${layout.title.y}%; width: ${layout.title.w}%; height: ${layout.title.h}%;
+      border-color: ${colors.primary}; color: ${colors.primary};">title</div>`;
+  }
+  if (scrapState.showJournal && layout.journal) {
+    elementsHtml += `<div class="canvas-element text" style="
+      left: ${layout.journal.x}%; top: ${layout.journal.y}%; width: ${layout.journal.w}%; height: ${layout.journal.h}%;
+      border-color: ${colors.primary}; color: ${colors.primary};">journaling</div>`;
+  }
+  if (scrapState.showEmb && layout.embs) {
+    layout.embs.forEach(e => {
+      elementsHtml += `<div class="canvas-element embellishment" style="
+        left: ${e.x - e.r}%; top: ${e.y - e.r}%; width: ${e.r * 2}%; height: ${e.r * 2}%;
+        border-color: ${colors.accent};"></div>`;
+    });
+  }
+
+  document.getElementById('canvasContainer').innerHTML = `
+    <div class="page-canvas" style="width: ${pxW}px; height: ${pxH}px; border-color: ${colors.primary};">
+      ${elementsHtml}
+    </div>
+  `;
+
+  document.getElementById('previewInfo').textContent =
+    `${page.name} · ${layout.photos.length} photo${layout.photos.length === 1 ? '' : 's'} · ${scrapState.theme} theme`;
+}
+
+function setPageSize(size) {
+  scrapState.pageSize = size;
+  document.querySelectorAll('[data-size]').forEach(b => b.classList.toggle('active', b.dataset.size === size));
+  renderCanvas();
+}
+
+function setLayoutStyle(style) {
+  scrapState.layoutStyle = style;
+  renderCanvas();
+}
+
+function setTheme(theme) {
+  scrapState.theme = theme;
+  renderCanvas();
+}
+
+function toggle(item) {
+  if (item === 'title') {
+    scrapState.showTitle = !scrapState.showTitle;
+    document.getElementById('titleToggle').classList.toggle('active', scrapState.showTitle);
+  }
+  if (item === 'journal') {
+    scrapState.showJournal = !scrapState.showJournal;
+    document.getElementById('journalToggle').classList.toggle('active', scrapState.showJournal);
+  }
+  if (item === 'emb') {
+    scrapState.showEmb = !scrapState.showEmb;
+    document.getElementById('embToggle').classList.toggle('active', scrapState.showEmb);
+  }
+  renderCanvas();
+}
+
+// Build the layout as a proper SVG for printing/downloading
+function buildLayoutSVG() {
+  const page = PAGE_SIZES[scrapState.pageSize];
+  const layout = LAYOUTS[scrapState.layoutStyle];
+  const colors = THEME_COLORS[scrapState.theme];
+  const DPI = 96;
+  const w = page.w * DPI;
+  const h = page.h * DPI;
+
+  let elements = '';
+  layout.photos.forEach((p, i) => {
+    const x = (p.x / 100) * w, y = (p.y / 100) * h, ew = (p.w / 100) * w, eh = (p.h / 100) * h;
+    elements += `<rect x="${x}" y="${y}" width="${ew}" height="${eh}" fill="${colors.soft}" stroke="${colors.accent}" stroke-width="2"/>`;
+    elements += `<text x="${x + ew/2}" y="${y + eh/2}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="14" fill="${colors.accent}" text-anchor="middle" dominant-baseline="middle">photo ${i + 1}</text>`;
+  });
+  if (scrapState.showTitle && layout.title) {
+    const t = layout.title;
+    const x = (t.x / 100) * w, y = (t.y / 100) * h, ew = (t.w / 100) * w, eh = (t.h / 100) * h;
+    elements += `<rect x="${x}" y="${y}" width="${ew}" height="${eh}" fill="${colors.soft}" stroke="${colors.primary}" stroke-width="1.5" stroke-dasharray="5,3"/>`;
+    elements += `<text x="${x + ew/2}" y="${y + eh/2}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="14" fill="${colors.primary}" text-anchor="middle" dominant-baseline="middle">title</text>`;
+  }
+  if (scrapState.showJournal && layout.journal) {
+    const t = layout.journal;
+    const x = (t.x / 100) * w, y = (t.y / 100) * h, ew = (t.w / 100) * w, eh = (t.h / 100) * h;
+    elements += `<rect x="${x}" y="${y}" width="${ew}" height="${eh}" fill="white" stroke="${colors.primary}" stroke-width="1.2" stroke-dasharray="2,3"/>`;
+    elements += `<text x="${x + ew/2}" y="${y + eh/2}" font-family="Cormorant Garamond, serif" font-style="italic" font-size="12" fill="${colors.primary}" text-anchor="middle" dominant-baseline="middle">journaling</text>`;
+  }
+  if (scrapState.showEmb && layout.embs) {
+    layout.embs.forEach(e => {
+      const cx = (e.x / 100) * w, cy = (e.y / 100) * h, r = (e.r / 100) * w;
+      elements += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colors.accent}" stroke-width="1.2" stroke-dasharray="3,3"/>`;
+    });
+  }
+
+  return `<svg id="scrapSvg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <rect width="${w}" height="${h}" fill="white" stroke="${colors.primary}" stroke-width="2"/>
+    ${elements}
+    <text x="${w - 8}" y="${h - 8}" font-family="Inter, sans-serif" font-size="10" fill="${colors.primary}" text-anchor="end" opacity="0.5">${page.name} · ${scrapState.layoutStyle} · ${scrapState.theme}</text>
+  </svg>`;
+}
+
+function downloadSVG() {
+  const svgStr = '<?xml version="1.0" encoding="UTF-8"?>\n' + buildLayoutSVG();
+  const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `scrapbook-layout-${scrapState.layoutStyle}-${scrapState.pageSize}.svg`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function printLayout() {
+  const page = PAGE_SIZES[scrapState.pageSize];
+  const svgContent = buildLayoutSVG();
+
+  const w = window.open('', '_blank');
+  if (!w) {
+    alert('Please allow pop-ups to print the layout.');
+    return;
+  }
+  w.document.write(`<!DOCTYPE html><html><head><title>Scrapbook Layout</title>
+<style>
+@page { size: ${page.w}in ${page.h}in; margin: 0; }
+body { margin: 0; padding: 0; font-family: Georgia, serif; background: #f5f1ea; }
+.screen-only { padding: 30px; max-width: 700px; margin: 0 auto; }
+.screen-only h1 { font-style: italic; font-size: 28pt; margin: 0 0 10px 0; color: #3d2f1f; }
+.print-btn { background: #3d2f1f; color: #f5f1ea; border: none; padding: 14px 30px; font-size: 12pt; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin: 10px 5px; font-family: Arial, sans-serif; }
+.info-box { background: #ede5d6; border-left: 4px solid #a8612d; padding: 15px 20px; margin: 20px 0; font-size: 11pt; }
+.page-container { width: ${page.w}in; height: ${page.h}in; page-break-after: avoid; background: white; margin: 20px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.page-container svg { width: 100% !important; height: 100% !important; display: block; }
+@media print { .screen-only { display: none !important; } body { background: white; } .page-container { margin: 0; box-shadow: none; } }
+</style></head><body>
+<div class="screen-only">
+  <h1>Scrapbook Layout</h1>
+  <p style="color: #8b6f47; font-style: italic;">${page.name} · ${scrapState.layoutStyle} · ${scrapState.theme} theme</p>
+  <button class="print-btn" onclick="window.print()">🖨 Print Now</button>
+  <div class="info-box"><strong>Important:</strong> Set print scale to "Actual Size" or "100%" — never "Fit to Page". Print on regular paper to use as a guide, or directly onto your scrapbook page for tracing.</div>
+  <p>Layout below ↓</p>
+</div>
+<div class="page-container">${svgContent}</div>
+</body></html>`);
+  w.document.close();
+}
+
+// ============================================================
+// CALLIGRAPHY LETTERING MODAL
+// ============================================================
+const LETTERING_DATA = {
+  'bouncy': {
+    name: 'Bouncy Script',
+    cssClass: 'style-bouncy',
+    sampleHtml: '<span>h</span><span>e</span><span>l</span><span>l</span><span>o</span>',
+    sampleText: 'hello',
+    difficulty: 'Beginner',
+    tool: 'Fineliner, gel pen, or any thin marker',
+    bestFor: 'Greeting cards, casual notes, fun signs',
+    steps: [
+      'Start with a slanted italic-style base in pencil',
+      'Sketch each letter so the baseline slightly varies — odd letters up, even letters down (by about 3-4mm)',
+      'Make sure connecting points still link up despite the bounce',
+      'Trace over with your pen, lifting between letters if needed',
+      'Erase pencil once ink is dry'
+    ],
+    mistakes: 'Bouncing letters too far. Keep it subtle — 3-4mm variation max, or it stops looking intentional and starts looking shaky.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'faux-calligraphy': {
+    name: 'Faux Calligraphy',
+    cssClass: 'style-faux-calligraphy',
+    sampleHtml: 'love',
+    sampleText: 'love',
+    difficulty: 'Easy',
+    tool: 'Any pen or marker (fineliner ideal)',
+    bestFor: 'Wedding signs, place cards, anywhere you want calligraphy look without buying a nib',
+    steps: [
+      'Write your word in slanted cursive (regular handwriting, slightly angled)',
+      'Identify the downstrokes — these are anywhere your pen would move downward',
+      'Draw a parallel second line beside each downstroke (about 1-2mm away)',
+      'Fill in the gap between the two lines with your pen',
+      'Upstrokes stay as a single thin line'
+    ],
+    mistakes: 'Thickening every stroke. Only DOWN strokes get doubled — that\'s what creates the contrast that makes calligraphy beautiful.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'blocky': {
+    name: 'Blocky Sans',
+    cssClass: 'style-blocky',
+    sampleHtml: 'BOLD',
+    sampleText: 'BOLD',
+    difficulty: 'Easy',
+    tool: 'Thick marker, Sharpie, or chisel-tip',
+    bestFor: 'Titles, labels, modern signs, journal headers',
+    steps: [
+      'All caps, no lowercase',
+      'Use equal spacing between letters (about half a letter\'s width)',
+      'Keep all strokes the same thickness — don\'t taper anywhere',
+      'Letters should sit on the same baseline with the same height',
+      'Make corners square — no rounded edges'
+    ],
+    mistakes: 'Inconsistent stroke widths. Use a marker with a uniform tip and try not to press harder in some places.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'tall-skinny': {
+    name: 'Tall & Skinny',
+    cssClass: 'style-tall-skinny',
+    sampleHtml: 'slim',
+    sampleText: 'slim',
+    difficulty: 'Easy',
+    tool: 'Fineliner or fine-tip marker',
+    bestFor: 'Elegant labels, formal invitations, anywhere refined',
+    steps: [
+      'All caps, sans-serif style',
+      'Make each letter at least 2x taller than it is wide',
+      'Use very wide spacing between letters (almost a full letter width apart)',
+      'Keep stroke thickness thin and uniform',
+      'Add small horizontal serifs at top and bottom for extra elegance (optional)'
+    ],
+    mistakes: 'Making letters too narrow at the top and wider at the bottom. Keep the proportions consistent vertically.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'bubble': {
+    name: 'Bubble Letters',
+    cssClass: 'style-bubble',
+    sampleHtml: 'FUN',
+    sampleText: 'FUN',
+    difficulty: 'Easy',
+    tool: 'Black marker + colored marker for fill',
+    bestFor: 'Kids\' cards, birthday cards, playful projects',
+    steps: [
+      'Sketch each letter in pencil as a simple sans-serif first',
+      'Trace around each letter\'s outline, making the strokes fat and rounded',
+      'Add roundness to corners — no sharp edges',
+      'Outline with marker',
+      'Fill inside with light color or a pattern (dots, stripes, hearts)'
+    ],
+    mistakes: 'Outlines that aren\'t closed all the way. Double-check each letter has a continuous border before you fill.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'vintage': {
+    name: 'Vintage Roman',
+    cssClass: 'style-vintage',
+    sampleHtml: 'CLASSIC',
+    sampleText: 'CLASSIC',
+    difficulty: 'Intermediate',
+    tool: 'Fine marker (for serifs) + medium marker (for strokes)',
+    bestFor: 'Wedding invitations, formal cards, vintage signs',
+    steps: [
+      'All caps in a serif style',
+      'Main strokes should be slightly thicker than the cross strokes (e.g., the vertical of an H is thicker than its horizontal)',
+      'Add small triangular serifs at the top and bottom of each letter',
+      'Keep letters slightly wider than tall',
+      'Even spacing between letters'
+    ],
+    mistakes: 'Serifs that are too big. They should be tiny accents — about 1/8 the width of the letter itself.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'serif-italic': {
+    name: 'Serif Italic',
+    cssClass: 'style-serif-italic',
+    sampleHtml: 'grace',
+    sampleText: 'grace',
+    difficulty: 'Intermediate',
+    tool: 'Any pen with a fine point',
+    bestFor: 'Quotes, framed prints, anywhere classy',
+    steps: [
+      'Slant your hand consistently to the right (about 10-15 degrees)',
+      'Write in lowercase cursive but with serifs',
+      'Add small serif tails at the end of each letter\'s exit stroke',
+      'Letters connect at the baseline',
+      'Keep the slant consistent throughout the word'
+    ],
+    mistakes: 'Slant inconsistency. Pick one angle and stick to it for every letter.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'monoline': {
+    name: 'Monoline Script',
+    cssClass: 'style-monoline',
+    sampleHtml: 'flowing',
+    sampleText: 'flowing',
+    difficulty: 'Easy',
+    tool: 'Fineliner (Micron, Sakura, Pigma) — one consistent line',
+    bestFor: 'Modern wedding signage, casual cards, journaling',
+    steps: [
+      'Write a connected cursive word in one continuous motion',
+      'Try not to lift the pen until you finish the word (or syllable)',
+      'Keep the line thickness identical throughout — no pressure variation',
+      'Add subtle loops on ascenders (l, h, b, k) for character',
+      'Letters should flow into each other smoothly'
+    ],
+    mistakes: 'Inconsistent letter heights. Imagine two horizontal guide lines and keep every lowercase letter the same height between them.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'decorated': {
+    name: 'Decorated Caps',
+    cssClass: 'style-decorated',
+    sampleHtml: 'HELLO',
+    sampleText: 'HELLO',
+    difficulty: 'Easy',
+    tool: 'Marker + colored pen',
+    bestFor: 'Birthday cards, celebration signs, holiday banners',
+    steps: [
+      'Write your word in plain caps first',
+      'Choose a decoration style: wavy underline, dotted underline, double underline, or stars between letters',
+      'Use a different color for the decoration',
+      'Add small flourishes (tiny hearts, dots, dashes) above and below the word',
+      'Keep decorations minimal — let the letters be the star'
+    ],
+    mistakes: 'Too many decorations. One per word is usually plenty. More than that and it looks chaotic.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'arched': {
+    name: 'Arched Letters',
+    cssClass: 'style-arched',
+    sampleHtml: '<span>S</span><span>M</span><span>I</span><span>L</span><span>E</span>',
+    sampleText: 'SMILE',
+    difficulty: 'Intermediate',
+    tool: 'Marker, pencil for sketching',
+    bestFor: 'Decorative posters, framed art, banner-style words',
+    steps: [
+      'Lightly sketch a curved arc in pencil (smile-shape or rainbow)',
+      'Plan each letter\'s position along the arc',
+      'Rotate each letter so it sits perpendicular to the arc (NOT vertical)',
+      'Outer edge letters tilt more, center letters stay upright',
+      'Trace and erase the arc when done'
+    ],
+    mistakes: 'Keeping letters vertical instead of rotating them. The letters need to follow the curve like text on a road sign.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'double-line': {
+    name: 'Outline + Shadow',
+    cssClass: 'style-double-line',
+    sampleHtml: 'POP',
+    sampleText: 'POP',
+    difficulty: 'Intermediate',
+    tool: 'Fine marker for outline + colored pencil/marker for shadow',
+    bestFor: 'Posters, signs, anywhere you want letters to pop',
+    steps: [
+      'Sketch sans-serif letters in pencil',
+      'Outline each letter with your fine marker — don\'t fill them in',
+      'Decide on a shadow direction (usually down-right)',
+      'Draw a second outline offset 2-3mm in that direction',
+      'Fill the offset shadow with color, leaving the letters white'
+    ],
+    mistakes: 'Shadow on the wrong side. Pick ONE direction (down-right is most common) and apply it consistently to every letter.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'shaded': {
+    name: 'Shaded Serif',
+    cssClass: 'style-shaded',
+    sampleHtml: 'BOLD',
+    sampleText: 'BOLD',
+    difficulty: 'Intermediate',
+    tool: 'Thick marker + lighter colored marker',
+    bestFor: 'Headlines, framed quotes, gift tags',
+    steps: [
+      'Write a thick serif letter in your main marker',
+      'Pick a softer accent color',
+      'Draw a soft offset shape behind each letter (down-right by about 3-4mm)',
+      'The shadow shape mirrors the letter but a softer color',
+      'Don\'t outline the shadow — just fill it'
+    ],
+    mistakes: 'Making the shadow as dark as the main letter. The shadow must be SOFTER to create depth — try a 50% lighter shade.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'flourish': {
+    name: 'Flourish Script',
+    cssClass: 'style-flourish',
+    sampleHtml: 'amore',
+    sampleText: 'amore',
+    difficulty: 'Advanced',
+    tool: 'Brush pen (Tombow, Pentel Fude) or fine marker',
+    bestFor: 'Wedding invites, formal signs, special calligraphy',
+    steps: [
+      'Write the word in slanted cursive with bouncy heights',
+      'Identify exit strokes — the end of the last letter, descenders (g, y, p, j)',
+      'Extend those exit strokes into smooth, looping curves',
+      'Keep flourishes balanced — usually one big one at the start and one at the end',
+      'Practice the loops on scrap paper before going for the real thing'
+    ],
+    mistakes: 'Too many flourishes. Two big flourishes per word is the maximum — typically the first ascender and the last descender.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'art-deco': {
+    name: 'Art Deco',
+    cssClass: 'style-art-deco',
+    sampleHtml: 'CHIC',
+    sampleText: 'CHIC',
+    difficulty: 'Easy',
+    tool: 'Fineliner with very thin tip',
+    bestFor: 'Vintage-inspired projects, jewelry packaging, gift tags',
+    steps: [
+      'All caps, sans-serif',
+      'Make letters thin and tall',
+      'Use very wide letter spacing (almost a full letter width between each)',
+      'Keep every line uniform thickness — no thick/thin variation',
+      'Optional: add tiny geometric accents above letters (small triangles or lines)'
+    ],
+    mistakes: 'Letters too close together. Art Deco style depends on generous breathing room between letters.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'vintage-script': {
+    name: 'Underlined Script',
+    cssClass: 'style-vintage-script',
+    sampleHtml: 'elegant',
+    sampleText: 'elegant',
+    difficulty: 'Easy',
+    tool: 'Two pens — black + colored',
+    bestFor: 'Recipe titles, framed quotes, garden labels',
+    steps: [
+      'Write a flowing italic cursive word',
+      'Use the same pen for all letters',
+      'Switch to colored pen for the underline',
+      'Draw underline as one smooth line, slightly below the baseline',
+      'Optional: add small decorative ends to the underline (dots, curls)'
+    ],
+    mistakes: 'Underline that\'s too close to the letters. Leave 4-6mm of breathing room.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'dots': {
+    name: 'Banner Letters',
+    cssClass: 'style-dots',
+    sampleHtml: 'JOY',
+    sampleText: 'JOY',
+    difficulty: 'Intermediate',
+    tool: 'Two markers (main + accent color)',
+    bestFor: 'Holiday banners, birthday cards, celebration signs',
+    steps: [
+      'Write thick caps in your main color',
+      'Add a small banner ribbon shape above the letters in accent color',
+      'Or add small decorative shapes (stars, dots, hearts) above/below',
+      'The shapes should be smaller than the letters',
+      'Keep decorations symmetrical'
+    ],
+    mistakes: 'Decorations that compete with the letters. Keep accents about 1/3 the size of the letters.',
+    alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  },
+  'handprint': {
+    name: 'Casual Print',
+    cssClass: 'style-handprint',
+    sampleHtml: 'hello',
+    sampleText: 'hello',
+    difficulty: 'Easy',
+    tool: 'Any pen — works with all',
+    bestFor: 'Journal entries, planner labels, sticky notes, casual cards',
+    steps: [
+      'Write naturally in your normal handwriting but cleaner',
+      'Use a slight slant (5-10 degrees right)',
+      'Print each letter — no cursive connections',
+      'Add subtle pressure on the down-strokes',
+      'Vary letter heights slightly for organic feel'
+    ],
+    mistakes: 'Trying too hard to make it look "designed." This style works best when it looks naturally hand-written.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+  'romantic': {
+    name: 'Romantic Cursive',
+    cssClass: 'style-romantic',
+    sampleHtml: 'forever',
+    sampleText: 'forever',
+    difficulty: 'Advanced',
+    tool: 'Brush pen — Tombow Fudenosuke recommended',
+    bestFor: 'Wedding invitations, love notes, anniversary cards',
+    steps: [
+      'Slant consistently right (about 15-20 degrees)',
+      'Use pressure variation — press hard on down-strokes, light on up-strokes',
+      'Loop ascenders (h, l, b, f, k) generously',
+      'Loop descenders (g, j, p, y) elegantly below the baseline',
+      'Keep connections smooth and flowing'
+    ],
+    mistakes: 'No pressure variation. The beauty of this style comes from thick down-strokes and thin up-strokes — you have to control your pen pressure.',
+    alphabet: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+  },
+};
+
+function openLetteringStyle(styleId) {
+  const style = LETTERING_DATA[styleId];
+  if (!style) return;
+
+  // Build alphabet preview HTML
+  const alphabetHtml = style.alphabet.map(letter =>
+    `<span style="display:inline-block;margin:6px 4px;padding:8px;color:var(--craft-deep);min-width:30px;text-align:center;font-size:24px;" class="${style.cssClass}">${letter}</span>`
+  ).join('');
+
+  // Build steps HTML
+  const stepsHtml = style.steps.map((step, i) => `
+    <div class="modal-step">
+      <div class="step-circle">${i + 1}</div>
+      <div style="font-size:13px;line-height:1.6;color:var(--ink);">${step}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('letteringModalBody').innerHTML = `
+    <div class="modal-header">
+      <h2 class="modal-name">${style.name}</h2>
+      <div class="modal-difficulty">${style.difficulty}</div>
+    </div>
+
+    <div class="modal-sample">
+      <div class="${style.cssClass}">${style.sampleHtml}</div>
+    </div>
+
+    <div class="modal-tools">
+      <strong>What you need</strong>
+      ${style.tool}
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">Best used for</h3>
+      <p>${style.bestFor}</p>
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">How to do it</h3>
+      ${stepsHtml}
+    </div>
+
+    <div class="modal-mistakes">
+      <strong>Common mistake to avoid</strong>
+      ${style.mistakes}
+    </div>
+
+    <div class="modal-section">
+      <h3 class="modal-section-title">The alphabet</h3>
+      <p style="font-size:12px;color:var(--ink-muted);font-style:italic;margin-bottom:12px;">Preview of how letters look in this style. The downloadable practice sheet has uppercase, lowercase, numbers, and ruled lines for tracing.</p>
+      <div style="background:white;border:1px solid var(--craft-soft);padding:16px;line-height:1;">
+        ${alphabetHtml}
+      </div>
+    </div>
+
+    <div class="modal-purchase">
+      <div class="modal-purchase-title">Get the practice sheet</div>
+      <p class="modal-purchase-desc">
+        A printable PDF with the full alphabet (uppercase, lowercase, numbers), guide lines, sample words, and blank ruled rows for tracing practice.
+      </p>
+      <button class="btn" onclick="purchaseLetteringSheet('${styleId}')">Download practice sheet</button>
+      <div class="price-line">First download free · $1.50 each after</div>
+    </div>
+  `;
+
+  document.getElementById('letteringModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLettering() {
+  document.getElementById('letteringModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeLetteringIfBackdrop(event) {
+  if (event.target.id === 'letteringModal') {
+    closeLettering();
+  }
+}
+
+function purchaseLetteringSheet(styleId) {
+  const style = LETTERING_DATA[styleId];
+  alert(`To download the "${style.name}" practice sheet, email i20200289@gmail.com with the style name. (When the site is live, this will be a real download flow with payment.)`);
+}
+
+// Close modal on ESC key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeLettering();
+    closeBooking();
+  }
+});
+
+// ============================================================
+// CARD MAKING DESIGNER
+// ============================================================
+const cardState = {
+  size: 'a2',
+  fold: 'single',
+  layout: 'centered-greeting',
+  occasion: 'birthday',
+  inside: 'message',
+};
+
+const CARD_SIZES = {
+  a2:     { wFlat: 5.5, h: 4.25, name: 'A2 (4.25×5.5")' },
+  a7:     { wFlat: 7,   h: 5,    name: 'A7 (5×7")' },
+  square: { wFlat: 10,  h: 5,    name: 'Square (5×5")' },
+  mini:   { wFlat: 6,   h: 3,    name: 'Mini (3×3")' },
+};
+
+const OCCASION_COPY = {
+  birthday: { front: 'Happy Birthday', inside: 'Wishing you a day as wonderful as you are.' },
+  wedding:  { front: 'Congratulations', inside: 'May your love grow more beautiful with every passing year.' },
+  thanks:   { front: 'Thank you', inside: 'For everything you do — and everything you are. Grateful for you.' },
+  holiday:  { front: 'Joy & Peace', inside: 'Wishing you warmth, light, and laughter this season.' },
+  anniversary: { front: 'Happy Anniversary', inside: 'Celebrating you and the love you share.' },
+  sympathy: { front: 'Thinking of You', inside: 'Holding you close in our thoughts and prayers.' },
+  welcome:  { front: 'Welcome Little One', inside: 'So much joy has just arrived. Congratulations!' },
+  encouragement: { front: "You've Got This", inside: 'Rooting for you, always.' },
+  blank:    { front: 'Your title here', inside: 'Your message here.' },
+};
+
+function setCardSize(size) {
+  cardState.size = size;
+  document.querySelectorAll('[data-cardsize]').forEach(b => b.classList.toggle('active', b.dataset.cardsize === size));
+  renderCard();
+}
+function setCardFold(fold) {
+  cardState.fold = fold;
+  document.querySelectorAll('[data-cardfold]').forEach(b => b.classList.toggle('active', b.dataset.cardfold === fold));
+  renderCard();
+}
+function setCardLayout(layout) { cardState.layout = layout; renderCard(); }
+function setCardOccasion(occ) { cardState.occasion = occ; renderCard(); }
+function setCardInside(inside) {
+  cardState.inside = inside;
+  document.querySelectorAll('[data-cardinside]').forEach(b => b.classList.toggle('active', b.dataset.cardinside === inside));
+  renderCard();
+}
+
+function renderCard() {
+  const size = CARD_SIZES[cardState.size];
+  const copy = OCCASION_COPY[cardState.occasion];
+
+  let frontW;
+  if (cardState.fold === 'trifold') frontW = size.wFlat / 3;
+  else frontW = size.wFlat / 2;
+  const frontH = size.h;
+
+  const scale = Math.min(220 / (frontW * 50), 1) * 50;
+  const pxW = frontW * scale;
+  const pxH = frontH * scale;
+
+  const frontContent = buildCardFrontContent(cardState.layout, copy.front);
+  const insideContent = buildCardInsideContent(cardState.inside, copy.inside);
+
+  document.getElementById('cardFaces').innerHTML = `
+    <div>
+      <div class="card-face" style="width:${pxW}px;height:${pxH}px;">${frontContent}</div>
+      <div class="card-face-label">Front</div>
+    </div>
+    <div>
+      <div class="card-face" style="width:${pxW}px;height:${pxH}px;">${insideContent}</div>
+      <div class="card-face-label">Inside</div>
+    </div>
+  `;
+
+  document.getElementById('cardInfo').textContent =
+    `${size.name} · ${cardState.fold} fold · ${cardState.occasion}`;
+}
+
+function buildCardFrontContent(layout, frontText) {
+  const layouts = {
+    'centered-greeting': `<div style="position:absolute;inset:20% 10%;display:flex;align-items:center;justify-content:center;border:1px dashed var(--craft);background:var(--craft-pale);color:var(--craft-deep);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;text-align:center;padding:8px;">${frontText}</div>`,
+    'title-top': `<div style="position:absolute;left:10%;right:10%;top:12%;height:22%;display:flex;align-items:center;justify-content:center;border:1px dashed var(--craft);background:var(--craft-pale);color:var(--craft-deep);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;text-align:center;padding:4px;">${frontText}</div><div style="position:absolute;left:15%;right:15%;top:42%;bottom:15%;border:1.5px solid var(--craft);background:var(--craft-soft);font-size:9px;color:var(--craft);display:flex;align-items:center;justify-content:center;">image</div>`,
+    'image-frame': `<div style="position:absolute;inset:12%;border:2px solid var(--craft);background:var(--craft-soft);font-size:10px;color:var(--craft);display:flex;align-items:center;justify-content:center;">photo or art</div><div style="position:absolute;left:0;right:0;bottom:3%;text-align:center;color:var(--craft-deep);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;">${frontText}</div>`,
+    'banner': `<div style="position:absolute;left:0;right:0;top:38%;height:24%;background:var(--craft);color:white;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;text-align:center;padding:4px;">${frontText}</div>`,
+    'quad': `<div style="position:absolute;inset:10%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4px;"><div style="border:1px solid var(--craft);background:var(--craft-soft);"></div><div style="border:1px solid var(--craft);background:var(--craft-pale);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:8px;color:var(--craft-deep);text-align:center;padding:2px;">${frontText}</div><div style="border:1px solid var(--craft);background:var(--craft-pale);"></div><div style="border:1px solid var(--craft);background:var(--craft-soft);"></div></div>`,
+    'corner-flowers': `<div style="position:absolute;top:6%;left:6%;width:24%;height:24%;border:1px dashed var(--craft);border-radius:50%;background:var(--craft-pale);"></div><div style="position:absolute;bottom:6%;right:6%;width:24%;height:24%;border:1px dashed var(--craft);border-radius:50%;background:var(--craft-pale);"></div><div style="position:absolute;inset:30% 12%;display:flex;align-items:center;justify-content:center;color:var(--craft-deep);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;text-align:center;padding:8px;">${frontText}</div>`,
+    'minimal': `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--craft-deep);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;text-align:center;padding:20%;">${frontText}</div>`,
+  };
+  return layouts[layout] || layouts['centered-greeting'];
+}
+
+function buildCardInsideContent(inside, insideText) {
+  if (inside === 'blank') {
+    return `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);font-size:9px;font-style:italic;">(blank inside)</div>`;
+  }
+  if (inside === 'message-decoration') {
+    return `<div style="position:absolute;left:0;right:0;top:8%;text-align:center;color:var(--craft);font-size:11px;">✦ ✦ ✦</div><div style="position:absolute;left:10%;right:10%;top:25%;bottom:25%;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;text-align:center;padding:8px;">${insideText}</div><div style="position:absolute;left:0;right:0;bottom:8%;text-align:center;color:var(--craft);font-size:11px;">✦ ✦ ✦</div>`;
+  }
+  return `<div style="position:absolute;inset:15%;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;text-align:center;padding:8px;">${insideText}</div>`;
+}
+
+function printCard() {
+  const size = CARD_SIZES[cardState.size];
+
+  const w = window.open('', '_blank');
+  if (!w) {
+    alert('Please allow pop-ups to print the card template.');
+    return;
+  }
+
+  let foldGuide = '';
+  if (cardState.fold === 'single') {
+    foldGuide = `<div style="position:absolute;left:50%;top:0;bottom:0;border-left:1.5px dashed #c8755e;"></div><div style="position:absolute;left:50%;top:-22px;font-size:9pt;color:#c8755e;transform:translateX(-50%);font-family:Arial;letter-spacing:1px;">fold here</div>`;
+  } else if (cardState.fold === 'gatefold') {
+    foldGuide = `<div style="position:absolute;left:25%;top:0;bottom:0;border-left:1.5px dashed #c8755e;"></div><div style="position:absolute;left:75%;top:0;bottom:0;border-left:1.5px dashed #c8755e;"></div><div style="position:absolute;left:25%;top:-22px;font-size:9pt;color:#c8755e;transform:translateX(-50%);font-family:Arial;letter-spacing:1px;">fold</div><div style="position:absolute;left:75%;top:-22px;font-size:9pt;color:#c8755e;transform:translateX(-50%);font-family:Arial;letter-spacing:1px;">fold</div>`;
+  } else if (cardState.fold === 'trifold') {
+    foldGuide = `<div style="position:absolute;left:33.33%;top:0;bottom:0;border-left:1.5px dashed #c8755e;"></div><div style="position:absolute;left:66.66%;top:0;bottom:0;border-left:1.5px dashed #c8755e;"></div>`;
+  }
+
+  w.document.write(`<!DOCTYPE html><html><head><title>Card Template — ${size.name}</title>
+<style>
+@page { size: ${size.wFlat + 1}in ${size.h + 1}in; margin: 0.5in; }
+body { margin: 0; padding: 30px; font-family: Georgia, serif; background: #f5f1ea; }
+.screen-only { max-width: 700px; margin: 0 auto; }
+.screen-only h1 { font-style: italic; font-size: 28pt; margin: 0 0 10px 0; color: #3d2f1f; }
+.print-btn { background: #c8755e; color: white; border: none; padding: 14px 30px; font-size: 12pt; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin: 10px 5px; font-family: Arial, sans-serif; }
+.info-box { background: #ede5d6; border-left: 4px solid #c8755e; padding: 15px 20px; margin: 20px 0; font-size: 11pt; }
+.card-template { width: ${size.wFlat}in; height: ${size.h}in; background: white; margin: 50px auto 30px; position: relative; border: 1px solid #3d2f1f; }
+@media print {
+  .screen-only { display: none !important; }
+  body { background: white; padding: 0; }
+  .card-template { margin: 0; border: 1px dashed #999; }
+}
+</style></head><body>
+<div class="screen-only">
+  <h1>Card Template</h1>
+  <p style="color: #8b6f47; font-style: italic;">${size.name} · ${cardState.fold} fold · ${cardState.occasion}</p>
+  <button class="print-btn" onclick="window.print()">🖨 Print Now</button>
+  <div class="info-box"><strong>Important:</strong> Set print scale to "Actual Size" or "100%". Use cardstock (65 lb / 176 gsm or heavier). After printing, score along the fold lines with a bone folder or the back of a butter knife before folding for a clean crease.</div>
+  <p>Flat card layout (fold lines shown as dashed):</p>
+</div>
+<div class="card-template">
+  ${foldGuide}
+</div>
+</body></html>`);
+  w.document.close();
+}
+
+// ============================================================
+// Initial render
+document.body.classList.add('theme-home');
+renderCanvas();
+renderCard();
+</script>
+
+</body>
+</html>
